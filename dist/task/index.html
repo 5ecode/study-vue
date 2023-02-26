@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  </style>
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Essentials">Essentials</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">Vue.jsってこういうもの</h1>
+          <div class="u-mb2">
+            <p>Vue.jsは、独自のテンプレート構文とVueインスタンスでDOM（Document Object Model）を描画することができるJavaScriptのフレームワーク。</p>
+            <p>データに変更があれば描画は自動で更新され、何らかのアクションを起こしたり、挙動を変わったりする。こういったデータありきで動く仕組みを<strong>データバインディング</strong>という。<br>Vue.jsでは「何を」「どうしたいか」を記述すればDOMが構築される仕組みになっていて、どうやってするかはコンパイラ（Vue.jsの本体）が勝手にやってくれるので気にしなくてもいいらしい。</p>
+          </div>
+          <div class="u-mb2">
+            <p>Vue.jsのインストールはひとまず<a href="https://jp.vuejs.org/v2/guide/installation.html" target="_blank" class="c-txtLink">公式</a>からダウンロードするか、CDN版を利用する。</p>
+          </div>
+
+          <h2 class="c-ttlType02 u-mb1">Vue.js基本的な書き方</h2>
+          <div class="u-mb2">
+            <p>Vueを始めるにはまず、Vueオブジェクトからnew演算子を使ってVueインスタンスを生成する。以降、これはルートインスタンス（ルート Vue インスタンス）と呼ばれる。</p>
+<pre>
+var vm = new Vue({
+  // オプション
+})
+</pre>
+            <p>コンストラクタの引数には、オブジェクト表記であらかじめ定められているオプションを持たせる。オプションとは<strong>elオプション、dataオプション、methodsオプション</strong>などインスタンスの中で使用するデータや関数など様々なプロパティのことを指す。</p>
+<pre>
+var vm = new Vue({
+  el: #App,
+  data: {
+    msg : 'Hello Vue.js'
+  }
+})
+</pre>
+            <p>インスタンスで登録したデータをhtmlに反映するにはテンプレートを使用する。</p>
+<pre>
+// テンプレート
+&lt;div id="App"&gt;
+  &lt;p&gt;{{msg}}&lt;/p&gt;
+  &lt;p&gt;{{ msg + '!!!' }}&lt;/p&gt;
+&lt;div&gt;
+</pre>
+            <p>最も基本的なテンプレートは上記の<strong>Mustache（マスタッシュ）構文</strong>。登録したデータをテキストとして表示するときに使用する。</p>
+            <p>二重括弧（{{}}）の中に<strong>dataオプション</strong>で定義したプロパティを入れるとその値が表示される、また値に「+」演算子を使って文字列を連結するなどの式も記述可能。</p>
+<pre>
+// 描画
+&lt;div id="App"&gt;
+  &lt;p&gt;Hello Vue.js/p&gt;
+  &lt;p&gt;Hello Vue.js!!!&lt;/p&gt;
+&lt;div&gt;
+</pre>
+            <p>上記の例を「何を」「どうしたいか」に当てはめると、「データmsgの値を、pタグのテキストとして表示したい」といった具合になる。<br>Mustacheには他に関数や後述する算出プロパティも使用できるので、複雑な式はそちらを使うことが主流。</p>
+          </div>
+
+          <h3 class="c-ttlType03 u-mb1">オプション</h3>
+          <div class="u-mb2">
+            <p>Vueインスタンスの引数で使用するデータやメソッドのこと。</p>
+          </div>
+          <div class="u-mb2">
+            <table class="c-table">
+              <caption>基本的なオプション</caption>
+              <tbody>
+                <tr>
+                  <th>el</th>
+                  <td>DOMの描画を行うエリアを指定するもの。クラスかID名で指定をする。ただしクラスの場合は同クラス名の要素が重複していると使用できないので、基本的にはID名を使ったほうがいい。</td>
+                </tr>
+                <tr>
+                  <th>data</th>
+                  <td>データの登録を行う。数値、文字列、配列、連想配列、真偽値を入れられる。</td>
+                </tr>
+                <tr>
+                  <th>computed</th>
+                  <td>算出（された）プロパティと呼ばれる。dataの持つ値に何らかの加工をして結果を返す（return）もの。computedの関数内で扱う値に変更があると自動的に再度処理が走る仕様。プロパティ扱いなので、呼び出すときに「()」は付けない。</td>
+                </tr>
+                <tr>
+                  <th>watch</th>
+                  <td>監視（する）プロパティ。対象プロパティの値に変更があった場合、定義した関数を実行。関数の第一引数に更新後の値、第二引数に更新前の値を渡すことができる。これも呼び出すときに「()」は不要。</td>
+                </tr>
+                <tr>
+                  <th>methods</th>
+                  <td>関数（メソッド）。呼び出されるたびに際限なく毎回処理が走る。関数なので呼び出すときには「関数名()」となる。</td>
+                </tr>
+                <tr>
+                  <th>filters</th>
+                  <td>テンプレートにバインドしたテキストの変換処理のみを行う。mustacheもしくはv-bindの値の末尾に「|」でフィルター名をフィルター名を繋げて記述することで呼び出せる。</td>
+                </tr>
+                <tr>
+                  <th>ライフサイクルフック</th>
+                  <td>登録した処理を、特定のタイミングで自動的に呼び出す関数。例えば、インスタンスが作成されオプションのセットアップ処理が完了したタイミングで呼び出す「created」などがある。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 class="c-ttlType03 u-mb1">ディレクティブ</h3>
+          <div class="u-mb2">
+            <p>ディレクティブとは、<strong>v-</strong>を接頭辞にした特別な属性で、Vue本体に「こうしたい」という何らかの指示をするテンプレート構文の一種。</p>
+          </div>
+          <div class="u-mb2">
+            <table class="c-table">
+              <caption>代表的なディレクティブ</caption>
+              <tbody>
+                <tr>
+                  <th>v-bind</th>
+                  <td>データをDOMの属性値（style、src、alt、class他）に紐づける。</td>
+                </tr>
+                <tr>
+                  <th>v-for</th>
+                  <td>データオプションに登録した配列や連想配列から値を取り出し要素を繰り返し描画する。</td>
+                </tr>
+                <tr>
+                  <th>v-on</th>
+                  <td>clickやchangeなどのイベントが発生した時になんらかの処理を紐づけ実行する。</td>
+                </tr>
+                <tr>
+                  <th>v-show</th>
+                  <td>表示の切り替えができる。値がfalseの時は、要素に「display:none」が自動で付加される。</td>
+                </tr>
+                <tr>
+                  <th>v-if</th>
+                  <td>要素の表示非表示を切り替える点はv-showと同じ。値がfalseの場合、こちらはDOMから要素が削除される。if文による条件分岐なので「v-else-if」「v-else」と合わせて複数の分岐も可能。</td>
+                </tr>
+                <tr>
+                  <th>v-model</th>
+                  <td>双方向データバインディング。データとフォームの入力項目を紐づけ、入力された値を即座にDOMに反映できる。</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div id="App">
+            <h2 class="c-ttlType02 u-mb1">書き方</h2>
+            <h3 class="c-ttlType03 u-mb1">データの紐づけ（v-bind）</h3>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;p v-bind:style="styleColor" v-bind:class="addClass">Hello {{ message }} !&lt;/p&gt;
+&lt;input type="text" v-bind:value="date"&gt;
+---------------------------
+const app = new Vue({
+  el: '#App',
+  data: {
+    message: 'World',
+    styleColor: 'color: #f00',
+    addClass: 'test-class',
+    date: new Date().toLocaleString()
+  }
+})
+</pre>
+              <p v-bind:style="styleColor" v-bind:class="addClass">Hello {{ message }} !</p>
+              <input type="text" v-bind:value="date">
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">要素を繰り返し描画（v-for）</h3>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;ul&gt;
+  &lt;li v-for="(item, index) in list"&gt;{{item}}: index番号{{index}}&lt;/li&gt;
+  //（変数名,index番号）in 配列
+  //index不要な時は（）も取る。変数名 in 配列
+&lt;/ul&gt;
+---------------------------
+const app = new Vue({
+  el: '#App',
+  data: {
+    list: ['spring（春）','summer（夏）','autumn（秋）','winter（冬）']
+  }
+})
+</pre>
+              <ul v-bind:style="styleList">
+                <li v-for="(item,i) in list">{{item}}: index番号{{i}}</li>
+              </ul>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">データの即時反映（v-model）と条件分岐（v-show）</h3>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;ul&gt;
+  &lt;li v-for="todo in todos"&gt;
+    &lt;label&gt;
+      &lt;input type="checkbox" v-bind:checked="todo.status" v-model="todo.status"&gt;
+      {{todo.text}}
+      &lt;strong v-show="todo.status"&gt;◎&lt;/strong&gt;
+    &lt;/label&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;div>todos:[&lt;p v-for="todo in todos"&gt;{{todo}}&lt;/p&gt;]&lt;/div&gt;
+---------------------------
+const app = new Vue({
+  el: '#App',
+  data: {
+    todos:[
+      {status: true, text: 'Vue.jsの学習'},
+      {status: false, text: '部屋の片づけ'}
+    ]
+  }
+})
+</pre>
+              <ul>
+                <li v-for="todo in todos">
+                  <label><input type="checkbox" v-bind:checked="todo.status" v-model="todo.status">{{todo.text}}<strong v-show="todo.status">◎</strong></label>
+                </li>
+              </ul>
+              <div>todos:[<p v-for="todo in todos">{{todo}}</p>]</div>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">複数の条件分岐（v-if）とイベント感知（v-on）</h3>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;p v-if="counter > 5" v-bind:style="styleColor"&gt;counterの値が6以上（true）の場合&lt;/p&gt;
+&lt;p v-else-if="counter &lt; 0"&gt;counterの値が0以下の場合&lt;/p&gt;
+&lt;p v-else>counterの値が5以下（false）の場合&lt;/p&gt;
+
+&lt;button type="button" v-on:click="counter++"&gt;カウントアップ&lt;/button&gt;
+&lt;button type="button" v-on:click="counter--"&gt;カウントダウン&lt;/button&gt;
+&lt;p&gt;[counter = {{counter}}]&gt;/p&gt;
+---------------------------
+const app = new Vue({
+  el: '#App',
+  data: {
+    counter: 0,
+    styleColor: 'color: #f00'
+  }
+})
+</pre>
+              <p v-if="counter > 5" v-bind:style="styleColor">counterの値が6以上の場合</p>
+              <p v-else-if="counter < 0">counterの値が0以下の場合</p>
+              <p v-else>counterの値が5から0の場合</p>
+              <button type="button" v-on:click="counter++">カウントアップ</button>
+              <button type="button" v-on:click="counter--">カウントダウン</button>
+              <p>[counter = {{counter}}]</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">何らかのアクションが起こったときの処理（methods）</h3>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;ul v-bind:style="styleList" class="u-mb1"&gt;
+  &lt;li v-for="(item,i) in items"&gt;
+    {{item.name}}:在庫{{item.stock}}
+    &lt;button v-if="item.stock" v-on:click="saleStock(i)"&gt;買う&lt;/button&gt;
+    &lt;span v-else&gt;完売しました&lt;/span&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+&lt;label&gt;品名：&lt;input type="text" v-model="newItemName"&gt;&lt;/label&gt;
+&lt;label&gt;仕入数：&lt;select v-model="newItemStock"&gt;
+&lt;option value="5"&gt;5&lt;/option&gt;
+&lt;option value="10"&gt;10&lt;/option&gt;
+&lt;option value="15"&gt;15&lt;/option&gt;
+&lt;option value="20"&gt;20&lt;/option&gt;
+&lt;/select&gt;&lt;/label&gt;
+&lt;button v-on:click="addItem"&gt;リストに追加する&lt;/button&gt;
+---------------------------
+const app = new Vue({
+  el: '#App',
+  data: {
+    items: [
+      {id:0, name:'チーズケーキ', stock:3},
+      {id:1, name:'クリームパン', stock:10},
+      {id:2, name:'麩まんじゅう', stock:1}
+    ],
+    newItemName: '',
+    newItemStock: '10'
+  },
+  methods: {
+    addItem: function() {
+      var max = this.items.reduce(function(a,b){
+        return a.id > b.id ? a.id : b.id;
+      },0)
+
+      if(this.newItemName){
+        this.items.push({
+          id: max + 1,
+          name: this.newItemName,
+          stock: this.newItemStock
+        });
+      }
+    },
+    saleStock(i){
+      if(this.items[i].stock > 0){
+        this.items[i].stock -= 1;
+      }
+    }
+  }
+})
+</pre>
+              <ul v-bind:style="styleList" class="u-mb1">
+                <li v-for="(item,i) in items">
+                  {{item.name}}:在庫{{item.stock}}
+                  <button v-if="item.stock" v-on:click="saleStock(i)">買う</button>
+                  <span v-else>完売しました</span>
+                </li>
+              </ul>
+              <label>品名：<input type="text" v-model="newItemName"></label>
+              <label>仕入数：<select v-model="newItemStock">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+              </select></label>
+              <button v-on:click="addItem">リストに追加する</button>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">データに何らかの加工を施し使用する（computed）</h3>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;label v-for="(item,i) in filtersort" v-bind:key="item.id"&gt;&lt;input type="checkbox" v-model="order" v-bind:value="item.price"&gt;{{item.name}} : {{item.price}}円&lt;/label&gt;
+&lt;p&gt;合計：{{totalPrice}}円&lt;/p&gt;
+---------------------------
+const app = new Vue({
+  el: '#App',
+  data: {
+    items: [
+      {id:0, name:'チーズケーキ', stock:3, price:370},
+      {id:1, name:'クリームパン', stock:10, price:200},
+      {id:2, name:'麩まんじゅう', stock:1, price:240},
+      {id:3, name:'タルト', stock:10}
+    ],
+    order: [0],
+    tax: 8
+  },
+  computed: {
+    filtersort(){
+      const sweets = this.items.filter(function(val){
+        return val.price;
+      });
+
+      return sweets.sort((a, b) => a.price - b.price);
+    },
+    totalPrice(){
+      const total = this.order.reduce(function(a,b){
+        return a + b;
+      });
+      return Math.round(total + total * this.tax / 100);
+    }
+  }
+})
+</pre>
+              <label v-for="(item,i) in filtersort" v-bind:key="item.id"><input type="checkbox" v-model="order" v-bind:value="item.price">{{item.name}} : {{item.price}}円</label>
+              <p>合計：{{totalPrice}}円（税込）</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">データを常に監視し変更があれば処理をする（watch）</h3>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;input type="tel" v-model="number" v-bind:class="{'is-error': isError}"&gt;
+&lt;p v-bind:style="styleColor" v-if="isError"&gt;{{errorMsg}}&lt;/p&gt;
+---------------------------
+const app = new Vue({
+  el: '#App',
+  data: {
+    number :'',
+    pattern: /^[0-9]+$/,
+    isError: false,
+    errorMsg: '半角数字で入力してください'
+  },
+  watch: {
+    number(val){
+      if (!this.pattern.test(val) && val) {
+        this.isError = true;
+      } else {
+        this.isError = false;
+      }
+    }
+  }
+})
+</pre>
+              <label>電話番号：<input type="tel" v-model="number" v-bind:class="{'is-error': isError}"></label>
+              <p v-bind:style="styleColor" v-if="isError">{{errorMsg}}</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">filters</h2>
+            <div class="u-mb2">
+              <p>共通のテキストフォーマットを適用するための機能。コンポーネント内にオプションとして記述し特定のコンポーネント内でのみ使用可能なローカルフィルターと、コンポーネントの外に記述しすべてのコンポーネントから使用できるグローバルフィルターがある。加工したデータを返す処理はcomputedと同じだが、filtersの中ではthisが使えないのが特徴。Vue.js 3では廃止されていて、methodsやcomputedを使うよう推奨されている。</p>
+            </div>
+            <h3 class="c-ttlType03 u-mb1">フィルターの使い方</h3>
+            <div class="u-mb2">
+<pre v-pre>
+{{対象のデータ | フィルター名 | フィルター名(引数,...)}}
+
+<要素名 v-bind:属性名="対象のデータ | フィルター名">
+</pre>
+      <p>フィルターは対象データの末尾を「|（パイプ）」で区切りフィルター名を記述することで呼び出し、複数繋げて使用する場合は左から順に実行される。<br>またフィルターは対象のデータを第一引数として受け取り処理を実行するが、第二、第三引数を持たせることも可能である。</p>
+<pre v-pre>
+&lt;label&gt;数値を入力 : &lt;input v-model.number="price" type="number"&gt;&lt;/label&gt;
+&lt;p&gt;{{ price }}円（税抜）&lt;/p&gt;
+&lt;p&gt;{{ price | addTax(tax) }}円（税込）&lt;/p&gt;
+&lt;p&gt;{{ price | addTax | addComma }}円（税込）&lt;/p&gt;
+</pre>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">ローカルへの登録</h3>
+            <div class="u-mb2">
+<pre v-pre>
+const app = new Vue({
+  el: '#App',
+  data: {
+    price: 10000,
+    tax: 8
+  },
+  filters: {
+    addTax: function (price, rate) {
+      const tax = (rate) ? rate : 10;
+      return Math.round(price + price * tax / 100);
+    }
+  }
+})
+</pre>
+              <label>数値を入力 : <input v-model.number="price" type="number"></label>
+              <p>{{ price }}円（税抜）</p>
+              <p>{{ price | addTax(tax) }}円（税込）</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">グローバルへの登録</h3>
+            <div class="u-mb2">
+<pre v-pre>
+//フィルター名が「addComma」の場合
+Vue.filter('addComma', function (val) {
+  return val.toLocaleString();
+});
+</pre>
+              <p>{{ price }}円（税抜）</p>
+              <p>{{ price | addTax | addComma}}円（税込）</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">ライフサイクルフック</h2>
+            <div class="u-mb2">
+              <p>ライフサイクルフックとは、Vueのインスタンスが生成されてから破棄されるまでに、決まったタイミングで実行される関数のことで、この関数に処理を追記することができる。</p>
+<pre v-pre>
+const app = new Vue({
+  el: '#App',
+  data: {
+    products: []
+  },
+  created: function () {
+  axios.get('外部データの格納場所').then(function (response) {
+    this.products = response.data;
+  }.bind(this)).catch(function (e) {
+      console.log(e);
+    })
+  }
+})
+</pre>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table u-mb1">
+                <caption>ライフサイクルフックの一部</caption>
+                <tbody>
+                  <tr>
+                    <th>beforeCreate</th>
+                    <td>インスタンスの生成時リアクティブデータが初期化される前に実行される。<br>このタイミングでインスタンスプロパティ利用し、dataオプションの内容やelオプションで紐づけた要素を例えばconsole.log($data)やconsole.log($el)と呼び出しても「undefined」になる。</td>
+                  </tr>
+                  <tr>
+                    <th>created</th>
+                    <td>インスタンスの生成時リアクティブデータが初期化される後に実行される。<br>この時点でインスタンス自身を指すthisにアクセスできるので、dataオプションに予め定義したプロパティに外部から読み込んだjsonなどのデータを代入することができる。</td>
+                  </tr>
+                  <tr>
+                    <th>beforeMount</th>
+                    <td>インスタンスがDOMに結びつく（マウント）される前。テンプレートがコンパイルがされ、インスタンスのプロパティがHTMLに描画される直前を指す。インスタンスにtemplateオプションがない場合、elオプションに定義された要素がテンプレートとされるので、この時点で$elの参照ができるが、レンダリングはされていない状態なのでDOMの操作はできない。</td>
+                  </tr>
+                  <tr>
+                    <th>mounted</th>
+                    <td>インスタンスがDOMに結びつく（マウント）された後。最初の描画が完了し、DOMへの操作が可能な状態。</td>
+                  </tr>
+                  <tr>
+                    <th>beforeUpdate</th>
+                    <td>リアクティブデータが変更され、DOMに反映される前（再描画される前）。再描画前のDOMからの要素の取得処理などを記述する。</td>
+                  </tr>
+                  <tr>
+                    <th>updated</th>
+                    <td>リアクティブデータが変更され、DOMに反映された後（再描画された後）。</td>
+                  </tr>
+                  <tr>
+                    <th>beforeDestroy</th>
+                    <td>インスタンスが破棄される直前。<br>createdやmountedなどでaddeventlistener関数を使ってイベントハンドラを登録している場合、このタイミングか次のdestoryedでremoveEventListener関数を使って必ず解除する。</td>
+                  </tr>
+                  <tr>
+                    <th>destoryed</th>
+                    <td>インスタンスが破棄された直後。<br><small>※インスタンスは「$destroy()」で意図的に破棄できる。</small></td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>Chromeデベロッパーツールを開いて確認。<br>↓クリックするとこのページで紐づけたインスタンスが破棄される。</p>
+              <button v-on:click="$destroy()">破棄</button>
+            </div>
+          </div>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/" class="m-paging_page">INDEX</a>
+            <a href="/task/component.html" class="m-paging_next">コンポーネントという機能</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/assets/inc/layout/footer.html" -->
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+  <script src="/assets/js/task/index.js"></script>
+</body>
+</html>
