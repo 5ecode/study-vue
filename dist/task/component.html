@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <link rel="stylesheet" href="/assets/css/pages/index.css">
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Component">Component</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">コンポーネントという機能</h1>
+          <div id="App">
+            <div class="u-mb2">
+              <p>Vue.jsのコンポーネントとは、機能（役割）ごとにテンプレートとJavaScriptを1つにまとめて管理するという仕組みのこと。<br><a href="https://jp.vuejs.org/v2/guide/instance.html#Vue-%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank" class="c-txtLink">公式</a>によると「全てのVueコンポーネントはVueインスタンスであり、同じオプションオブジェクトを受け入れる（いくつかのルート特有のオプションを除く）」とある。<br>つまりnew Vue()で生成されたルートインスタンスもコンポーネントであり、これを基盤に再利用可能な複数のコンポーネントを部品のように組み合わせるとメンテナンス性の高いサイトやアプリケーションを作ることができるというのがVue.jsのウリのよう。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">コンポーネントの定義</h2>
+            <div class="u-mb2">
+              <p>再利用可能なコンポーネントには、すべてのVueインスタンスで利用可能な<strong>グローバルコンポーネント</strong>と、特定のコンポーネントの領域内でのみ使用する<strong>ローカルコンポーネント</strong>があり、どちらも任意の名前で作成したタグ（<strong>カスタムタグ</strong>）で呼び出すことができる。</p>
+              <p>コンポーネントを定義するポイントは、必ずルートインスタンスが生成される前に定義すること。コンポーネントが記述されたスクリプトファイルを読み込む際は、new Vue()を記述したファイルより前になるよう順番に気をつける。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">グローバルコンポーネント</h3>
+            <div class="u-mb2">
+              <p>グローバルコンポーネントはvue.componentメソッドを使って登録する。第一引数にはコンポーネント名、第二引数にはコンポーネントのオプションを持たせる。</p>
+<pre v-pre>
+// 子となるグローバルコンポーネント
+Vue.component('global-component', {
+  template: '&lt;div&gt;&lt;p&gt;{{ message }}&lt;/p&gt;&lt;p&gt;グローバルコンポーネントの使い方&lt;/p&gt;&lt;/div&gt;',
+  data: function(){
+    return {
+      message: 'Hello Vue!'
+    }
+  }
+});
+---------------------------
+// 親のテンプレートに子コンポーネントのカスタムタグを設置
+&lt;div id="App"&gt;
+  &lt;global-component&gt;&lt;/global-component&gt;
+&lt;/div&gt;
+---------------------------
+// 親となるコンポーネント
+const app = new Vue({
+  el: '#App'
+});
+</pre>
+              <global-component></global-component>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">ローカルコンポーネント</h3>
+            <div class="u-mb2">
+              <p>ローカルコンポーネントはコンポーネント名を変数名として、オブジェクトリテラルで定義。<br>特定のコンポーネントの<strong>componentsオプション</strong>に登録することでそのコンポーネントの範囲内でのみ使用が可能なローカルスコープとなる。<br></p>
+<pre v-pre>
+// 子となるローカルコンポーネント
+const localComponent = {
+  template: '&lt;div&gt;&lt;p&gt;{{ message }}&lt;/p&gt;&lt;p&gt;ローカルコンポーネントの使い方&lt;/p&gt;&lt;/div&gt;',
+  data: function(){
+    return {
+      message: 'Hello Vue!'
+    }
+  }
+}
+---------------------------
+// 親のテンプレートに子コンポーネントのカスタムタグを設置
+&lt;div id="App"&gt;
+  &lt;local-component&gt;&lt;/local-component&gt;
+&lt;/div&gt;
+---------------------------
+// 親となるコンポーネントに子コンポーネントを登録
+const app = new Vue({
+  el: '#App',
+  components: {
+    'local-component': localComponent
+  }
+});
+</pre>
+              <local-component></local-component>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">コンポーネント名とカスタムタグの命名規則</h2>
+            <div class="u-mb2">
+              <p>コンポーネントの名前は、ケバブケース（kebab-case）か、パスカルケース（PascalCase）のどちらかを選択することができるが、コンポーネントを呼び出す場所がhtmlに記述されたテンプレート内（ルートインスタンスのelオプションで定義した領域内）である場合は、カスタムタグはケバブケースにしなければならない（パスカルケースは正しくブラウザに認識されないため）。</p>
+              <p>ローカルコンポーネントは変数名がコンポーネント名であり、必然的にパスカルケースとなるため、親となるコンポーネントにはカスタムタグ名（kebab-case）を、keyとして値にコンポーネント名（PascalCase）を登録する。</p>
+              <p>コンポーネントの名前はそのコンポーネントの機能や役割がわかる名前が好ましく、単語ひとつよりふたつ以上でできるだけ簡潔な名前をつけるとよい。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">コンポーネントのオプション</h2>
+            <div class="u-mb2">
+              <p>コンポーネントはVueインスタンスなので、ルートインスタンスのそれと同じようにdata、methods、computed、watchなどのオプションが定義できるが、dataオプションだけはオブジェクト形式ではなく、オブジェクトを返す関数リテラルで記述する。またelオプションはルート固有のものなのでグローバル、ローカルコンポーネントでは使用できない。</p>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table">
+                <caption>コンポーネントオプション</caption>
+                <tbody>
+                  <tr>
+                  <tr>
+                    <th>data</th>
+                    <td>コンポーネントのdataオプションはオブジェクトリテラルを返す関数で記述する。</td>
+                  </tr>
+                  <tr>
+                    <th>template</th>
+                    <td>コンポーネントのテンプレート。<br>ここで指定するテンプレートは必ず単一のタグで終了しなければならい。<br><span v-pre>NG「template: &lt;span&gt;{{name}}&lt;/span&gt; : &lt;span&gt;{{price}}円&lt;/span&gt;」</span><br><span v-pre>OK「template: &lt;p&gt;&lt;span&gt;{{name}}&lt;/span&gt; : &lt;span&gt;{{price}}円&lt;/span&gt;&lt;/p&gt;」</span></td>
+                  </tr>
+                  <tr>
+                    <th>props</th>
+                    <td>親要素から子要素に渡されたデータの受け皿。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">コンポーネント間のやりとり</h2>
+            <div class="u-mb2">
+              <p>コンポーネントは親であるルートインスタンスまたは他のコンポーネントと組み合わせて使用するのが基本となる。しかしそれぞれが独立した存在なので、コンポーネントは自身（this）の外にあるデータやメソッド、テンプレートなどに直接アクセスすることはできない。受け取り側と受け渡す側がそれぞれ態勢を整えることで、データの共有や相手のメソッドを呼び出すなどが可能になるいくつかの方法がある。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">親コンポーネントから子コンポーネントにデータを受け渡す方法</h3>
+            <div class="u-mb2">
+              <p>まずデータを受け取る側（子）がデータの受け皿となるpropsオプションに、親から受け取る属性（プロパティ）名を定義する。<br>次にデータを送る側（親）は子コンポーネントのpropsオプションに定義した属性をそのカスタムタグに追加して送りたいデータを値として持たせる。これで親の持つデータを子コンポーネントで扱うことができるようになる。</p>
+              <p>イメージとしては、上層階にいる親が下層に向けて属性という容器に入れたデータを落とし、子がそれを受け皿でキャッチしている感じ。このため親から子へのデータのやり取りは単方向になる。</p>
+<pre v-pre>
+// 子となるコンポーネント
+Vue.component('text-link', {
+  props: ['text', 'url'],
+  template: '&lt;p&gt;&lt;a v-bind:href="url" class="c-txtLink" target="_blank"&gt;{{ text }}&lt;/a&gt;&lt;/p&gt;'
+});
+---------------------------
+// 親となるテンプレート
+&lt;div id="App"&gt;
+  &lt;text-link text="Yahoo! JAPAN" url="https://www.yahoo.co.jp"&gt;&lt;/text-link&gt;
+  &lt;text-link text="Google マップ" url="https://www.google.com/maps/@35.681983,139.773973,15z?hl=ja"&gt;&lt;/text-link&gt;
+&lt;/div&gt;
+---------------------------
+// 親となるコンポーネント
+const app = new Vue({
+  el: #App
+});
+</pre>
+              <text-link text="Yahoo! JAPAN" url="https://www.yahoo.co.jp"></text-link>
+              <text-link text="Google マップ" url="https://www.google.com/maps/@35.681983,139.773973,15z?hl=ja"></text-link>
+            </div>
+
+            <div class="u-mb2">
+              <p>送るデータが親コンポネートが持っているリアクティブなデータの場合、v-bindディレクティブでカスタムタグにバインドすることで子コンポーネントにデータを反映できる。</p>
+              <p>propsで受け取ったデータを子コンポーネント内で直接書き換えることはできないので、データに何らかの変更を加えたい場合は、算出プロパティで新しいデータを作成してから自身のテンプレートにバインドする。</p>
+<pre v-pre>
+// 子となるコンポーネント
+Vue.component('wish-list', {
+  template:'&lt;li&gt;{{name}} : {{filter}}円（税込）&lt;/li&gt;',
+  props: ['name', 'price', 'tax'],
+  computed: {
+    filter() {
+      const total = Math.round(this.price + this.price * this.tax / 100);
+      return total.toLocaleString();
+    }
+  }
+});
+---------------------------
+// 親のテンプレートに子コンポーネントのカスタムタグを設置
+&lt;div id="App"&gt;
+  &lt;ul&gt;
+    &lt;wish-list v-for="item in items" v-bind:key="item.id" v-bind:name="item.name" v-bind:price="item.price" v-bind:tax="tax"&gt;&lt;/wish-list&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+---------------------------
+// 親となるコンポーネント
+var app = new Vue({
+  el: '#App',
+  data: {
+    items: [
+      { id: 0, name: '人間工学オフィスチェア', price: 21817 },
+      { id: 1, name: 'FINAL FANTASY VII REMAKE INTERGRADE', price: 8980 },
+      { id: 2, name: 'PINARELLO Prince', price: 465000 },
+      { id: 3, name: 'エアウィーヴ 02 シングル', price: 100000 }
+    ],
+    tax: 10
+  }
+});
+</pre>
+              <ul class="c-dotList">
+                <wish-list v-for="item in items" v-bind:key="item.id" v-bind:name="item.name" v-bind:price="item.price" v-bind:tax="tax"></wish-list>
+              </ul>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">propsで受け取るデータ（値）の型</h4>
+            <div class="u-mb2">
+              <p>propsでは受け取るデータの型を指定しておくことが推奨されている。例えば、数値での計算が必要なときに文字列が渡されていてもエラーが出ないため、レンダリングに問題があってもどこに原因があるのか把握しにくいからである。そこでpropsを下記のように書くことで間違った型を渡した場合にブラウザのコンソールでエラーを確認できるようになる。</p>
+<pre v-pre>
+props: { '属性（プロパティ）名': 型 }
+</pre>
+              <p>もっと詳しい指定が必要な場合は<a href="https://jp.vuejs.org/v2/guide/components-props.html#%E3%83%97%E3%83%AD%E3%83%91%E3%83%86%E3%82%A3%E3%81%AE%E3%83%90%E3%83%AA%E3%83%87%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3" class="c-txtLink" target="_blank">公式</a>を参考にする。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">複数の属性（プロパティ）をまとめてpropsに渡す</h4>
+            <div class="u-mb2">
+              <p>子に渡すデータがプロパティが複数あるオブジェクトの場合、v-bindにオブジェクトを渡すと一括でバインドできるので、テンプレートの可読性が保たれる。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('obj-bundle', {
+template: '&lt;p v-bind:style="style"&gt;&lt;/p&gt;',
+props: ['style']
+});
+---------------------------
+// 親のテンプレート
+&lt;obj-bundle v-for="style in styleObject" v-bind:style="style"&gt;&lt;/obj-bundle&gt;
+---------------------------
+// 親コンポーネント
+var app = new Vue({
+el: '#App',
+data: {
+styleObject: [
+  { display: 'inline-block', width: '30%', height: '100px', background: '#4d7dc5' },
+  { display: 'inline-block', width: '40%', height: '150px', background: '#4fc54d' },
+  { display: 'inline-block', width: '30%', height: '200px', background: '#eb4034' }
+]
+});
+</pre>
+              <obj-bundle v-for="style in styleObject" v-bind:style="style"></obj-bundle>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">子コンポーネントから親コンポーネントにデータを受け渡す方法</h3>
+            <div class="u-mb2">
+              <p>子から親にデータを渡す仕組みをざっくり例えると、子は自力で親のいる上階へ荷（データ）を運ぶことができないので、親が荷を受け取るためのリフト（イベントハンドラ）を用意する。子が$emitという装置を使って合図（カスタムイベント）を送ると、親側でv-onが子の合図を検知しリフトが自動可動しデータを受け取るといった感じになる（あくまで個人的な解釈）。</p>
+              <p>$emitはVueのインスタンスメソッドのひとつで、第一引数にイベント名、第二引数以降にイベントハンドラに渡す任意のデータを必要なだけ持たせることができる。</p>
+<pre v-pre>
+// 子となるコンポーネント
+const childProduct = {
+  template: `
+    &lt;li&gt;
+      ◎{{name}}:在庫{{stock}}
+      &lt;button v-if="stock" v-on:click="doSaleStock"&gt;買う&lt;/button&gt;
+      &lt;span v-else&gt;完売しました&lt;/span&gt;
+    &lt;/li&gt;
+  `,
+  props: {
+    'name': String,
+    'stock': Number,
+    'index': Number
+  },
+  methods: {
+    doSaleStock() {
+      // 親に知らせるイベントを発火
+      this.$emit('child-click', this.index);
+    }
+  }
+};
+---------------------------
+// 親のテンプレートに子コンポーネントのカスタムタグを設置
+&lt;div id="App"&gt;
+  &lt;ul&gt;
+    &lt;child-product v-for="(item,i) in product" v-bind:key="item.id" v-bind:index="i" v-bind="item" v-on:child-click="saleStock"&gt;&lt;/child-product&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+---------------------------
+// 親となるコンポーネント
+var app = new Vue({
+  el: '#App',
+  components: {
+    'child-product': childProduct
+  }
+  data: {
+    product: [
+      {id:0, name:'フルーツタルト', stock:3, price:410},
+      {id:1, name:'極生塩パン', stock:10, price:180},
+      {id:2, name:'草餅', stock:1, price:240}
+    ]
+  },
+  methods: {
+    // 子のイベントを検知して発火
+    saleStock(i) {
+      if (this.product[i].stock > 0) {
+        this.product[i].stock -= 1;
+      }
+    }
+  }
+})
+</pre>
+              <ul>
+                <child-product v-for="(item,i) in product" v-bind:key="item.id" v-bind:index="i" v-bind="item" v-on:child-click="saleStock"></child-product>
+              </ul>
+            </div>
+
+            <div class="u-mb2">
+              <p>送るデータがなくても、子のイベントだけをキャッチさせイベントハンドラを呼び出すこともできる。</p>
+<pre v-pre>
+// 子となるコンポーネント
+Vue.component('child-btn', {
+  template: '&lt;div&gt;&lt;button v-on:click="handleClick"&gt;子側でクリック&lt;/button&gt; {{msg}}&lt;/div&gt;',
+  props: { 'msg': String },
+  methods: {
+    handleClick() {
+      this.$emit('child-event');
+    }
+  }
+});
+---------------------------
+// 親のテンプレートに子コンポーネントのカスタムタグを設置
+&lt;div id="App"&gt;
+  &lt;child-btn v-on:child-event="parentMethods" v-bind:msg="msg"&gt;&lt;/child-btn&gt;
+&lt;/div&gt;
+---------------------------
+// 親となるコンポネート
+const app = new Vue({
+  el: '#App',
+  data: {
+    msg: 'イベント待機'
+  },
+  methods: {
+    parentMethods() {
+      this.msg = '親側でイベントをキャッチ';
+    }
+  }
+});
+</pre>
+              <child-btn v-on:child-event="parentMethods" v-bind:msg="msg"></child-btn>
+            </div>
+          </div>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/task/" class="m-paging_prev">Vue.jsってこういうもの</a>
+            <a href="/" class="m-paging_page">INDEX</a>
+            <a href="/task/prototyping-01.html" class="m-paging_next">練習その1</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/assets/inc/layout/footer.html" -->
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+  <script src="/assets/js/task/component-global.js"></script>
+  <script src="/assets/js/task/component-local.js"></script>
+  <script src="/assets/js/task/component-child.js"></script>
+  <script src="/assets/js/task/component-main.js"></script>
+</body>
+</html>
