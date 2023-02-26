@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <link rel="stylesheet" href="/assets/css/pages/task/prototyping-01.css">
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Prototyping">Prototyping</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">練習その1「簡単な絞り込みともっと見るボタンのあるリスト」</h1>
+          <p class="u-mb1">Vue.jsの基本的なテンプレートやオプションを使って、商品リストを制作。</p>
+          <dl class="u-mb2">
+            <dt class="u-fontB">制作条件・仕様</dt>
+            <dd class="u-mb1">
+              <ul class="c-dotList">
+                <li>商品のデータは外部データで持たせる。</li>
+                <li>商品のデータから絞り込みのセレクトボックスをつくる。</li>
+                <li>商品の種類によって絞り込みができる。</li>
+                <li>新しい商品には「new」アイコンを付ける。</li>
+                <li>商品の金額は税込みの価格に変換し、「¥」マークと3桁カンマをつける。</li>
+                <li>割引商品には、割引率と割り引いたあとの金額も表示。</li>
+                <li>1度に表示されるのは最大12枚。</li>
+                <li>「もっと見る」ボタンで更に最大12枚表示。</li>
+                <li>「もっと見る」で表示するものがなくなったらボタンは非表示。</li>
+                <li>商品カードが12枚以下のときは「もっと見る」ボタンは表示させない。</li>
+              </ul>
+            </dd>
+          </dl>
+          <div id="App">
+            <product-contents v-bind:master-data="masterData" img-path="/assets/images/task/prototype-01/"></product-contents>
+          </div>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/task/component.html" class="m-paging_prev">コンポーネントという機能</a>
+            <a href="/" class="m-paging_page">INDEX</a>
+            <a href="#" class="m-paging_next is-inactive">その他の機能</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/assets/inc/layout/footer.html" -->
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="/assets/js/task/prototyping-01-header.js"></script>
+  <script src="/assets/js/task/prototyping-01-product.js"></script>
+  <script src="/assets/js/task/prototyping-01-contents.js"></script>
+  <script src="/assets/js/task/prototyping-01.js"></script>
+</body>
+</html>

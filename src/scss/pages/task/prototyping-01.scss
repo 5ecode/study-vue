@@ -1,0 +1,91 @@
+@charset "utf-8";
+@use "../../setting" as *;
+/*--------------------------------------------------------------------
+  @練習その1
+----------------------------------------------------------------------*/
+.contents{
+  &_list{
+    margin-bottom: 50px;
+  }
+}
+.productList{
+  @include flexGrid(0 percent(-6,768));
+  align-items: stretch;
+  > *{
+    @include flexItemCell(2,percent(12,768));
+    margin: percent(6,768);
+  }
+}
+.product{
+  display: flex;
+  flex-direction: column;
+  &:hover{
+    @include alpha(.7);
+  }
+  &_img{
+    overflow: hidden;
+    position: relative;
+    background: #f4f4f4;
+    margin-bottom: 5px;
+    &.is-new{
+      &::before{
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px;
+        background: #f00;
+        font-size: 1.4rem;
+        color: #fff;
+        line-height: 1.1;
+        content: "NEW!";
+      }
+    }
+    img{
+      aspect-ratio: 300 / 410;
+    }
+  }
+  &_detail{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  &_name{
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.3;
+  }
+}
+.price{
+  font-size: 2rem;
+  line-height: 1;
+  &.is-sale{
+    color: #f00;
+  }
+  &_original{
+    .is-sale & {
+      margin: 4px 0 3px;
+      font-size: 1.2rem;
+      color: #888;
+      text-decoration: line-through;
+    }
+  }
+  &_off{
+    .is-sale & {
+      display: inline-block;
+      border: 1px solid #f00;
+      font-size: 1.4rem;
+      vertical-align: bottom;
+      line-height: 1.2;
+      >*{
+        font-size: 1.0rem;
+      }
+    }
+  }
+  &_sale{
+    display: inline-block;
+  }
+}
