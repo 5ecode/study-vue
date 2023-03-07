@@ -33,6 +33,7 @@
         position: fixed;
         opacity: .1;
         width: calc(100% * (768 / 1024) - 20px);
+        max-width: 1080px;
         min-width: 748px;
         text-align: center;
         content: attr(data-ttl);
