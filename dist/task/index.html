@@ -361,7 +361,8 @@ const app = new Vue({
     number :'',
     pattern: /^[0-9]+$/,
     isError: false,
-    errorMsg: '半角数字で入力してください'
+    errorMsg: '半角数字で入力してください',
+    styleColor: 'color: #f00'
   },
   watch: {
     number(val){
@@ -442,11 +443,11 @@ const app = new Vue({
     products: []
   },
   created: function () {
-  axios.get('外部データの格納場所').then(function (response) {
-    this.products = response.data;
-  }.bind(this)).catch(function (e) {
+    axios.get('外部データの格納場所').then(function (response) {
+      this.products = response.data;
+    }.bind(this)).catch(function (e) {
       console.log(e);
-    })
+    });
   }
 })
 </pre>
@@ -505,7 +506,7 @@ const app = new Vue({
         </div>
       </div>
     </main>
-    <!--#include virtual="/assets/inc/layout/footer.html" -->
+    <!--#include virtual="/inc/layout/footer.html" -->
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
   <script src="/assets/js/task/index.js"></script>
