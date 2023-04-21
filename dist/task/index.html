@@ -30,13 +30,14 @@
           <div class="u-mb2">
             <p>Vueを始めるにはまず、Vueオブジェクトからnew演算子を使ってVueインスタンスを生成する。以降、これはルートインスタンス（ルート Vue インスタンス）と呼ばれる。</p>
 <pre>
-var vm = new Vue({
+const vm = new Vue({
   // オプション
 })
 </pre>
+            <p>上記では変数に代入しているが、しなくても使用可能。複数のVueインスタンスを使用する場合や、そのVueインスタンスの持つメソッドを外部から呼び出すなどしたいときには任意の変数に代入するらしい。</p>
             <p>コンストラクタの引数には、オブジェクト表記であらかじめ定められているオプションを持たせる。オプションとは<strong>elオプション、dataオプション、methodsオプション</strong>などインスタンスの中で使用するデータや関数など様々なプロパティのことを指す。</p>
 <pre>
-var vm = new Vue({
+const vm = new Vue({
   el: #App,
   data: {
     msg : 'Hello Vue.js'
@@ -147,11 +148,13 @@ var vm = new Vue({
 &lt;p v-bind:style="styleColor" v-bind:class="addClass">Hello {{ message }} !&lt;/p&gt;
 &lt;input type="text" v-bind:value="date"&gt;
 ---------------------------
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     message: 'World',
-    styleColor: 'color: #f00',
+    styleColor: {
+      'color': '#f00', 'font-weight': 'bold'
+    },
     addClass: 'test-class',
     date: new Date().toLocaleString()
   }
@@ -160,17 +163,27 @@ const app = new Vue({
               <p v-bind:style="styleColor" v-bind:class="addClass">Hello {{ message }} !</p>
               <input type="text" v-bind:value="date">
             </div>
+            <h4 class="c-ttlType04 u-mb1">引数</h4>
+            <div class="u-mb2">
+              <p>v-bindを含む一部のディレクティブ名の後ろにコロンで繋げた値をvueでは「引数」と呼ぶ。v-bindはhtmlの属性（style、src…）、v-onではDOMイベント名（click、submit…）などディレクティブによって値はそれぞれ。</p>
+            </div>
+            <h4 class="c-ttlType04 u-mb1">クラスとスタイルのバインディング</h4>
+            <div class="u-mb2">
+              <p>v-bindは基本的には属性値と値をバインドするためものだが、style、class属性に対してv-bindを用いるときは文字列のほかに、オブジェクトまたは配列も利用できる。</p>
+              <p>詳しくは<a href="https://jp.vuejs.org/v2/guide/class-and-style.html" target="
+              " class="c-txtLink">公式</a>を参考にすること。</p>
+            </div>
 
             <h3 class="c-ttlType03 u-mb1">要素を繰り返し描画（v-for）</h3>
             <div class="u-mb2">
 <pre v-pre>
 &lt;ul&gt;
-  &lt;li v-for="(item, index) in list"&gt;{{item}}: index番号{{index}}&lt;/li&gt;
-  //（変数名,index番号）in 配列
-  //index不要な時は（）も取る。変数名 in 配列
+  &lt;li v-for="(item, index) in list" v-bind:key="item"&gt;{{item}}: index番号{{index}}&lt;/li&gt;
+  //（変数名,index番号）in オブジェクト名
+  //index不要な時は（）も取る。変数名 in オブジェクト名
 &lt;/ul&gt;
 ---------------------------
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     list: ['spring（春）','summer（夏）','autumn（秋）','winter（冬）']
@@ -178,15 +191,53 @@ const app = new Vue({
 })
 </pre>
               <ul v-bind:style="styleList">
-                <li v-for="(item,i) in list">{{item}}: index番号{{i}}</li>
+                <li v-for="(item, index) in list" v-bind:key="item">{{item}}: index番号{{index}}</li>
               </ul>
+            </div>
+            <h4 class="c-ttlType04 u-mb1">key属性が必需品</h4>
+            <div class="u-mb1">
+              <p>v-forを使用する際は、必ずv-bindを使ってkey属性を指定する必要がある。この必要性は下記のkeyのないリスト、あるリストのテキストボックスにそれぞれ左から順に1～3の数字を入れて、「先頭を削除」ボタンをクリックするとわかる。</p>
+<pre v-pre>
+&lt;ul&gt;
+  &lt;li v-for="(item,i) in items"&gt;{{item}}: &lt;input type="text"&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul&gt;
+  &lt;li v-for="(item,i) in items" v-bind:key="item"&gt;{{item}}: &lt;input type="text"&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;button @click="removeColor"&gt;先頭を削除&lt;/button&gt;
+---------------------------
+new Vue({
+  el: '#App',
+  data: {
+    colors: ['あか','あお','きいろ']
+  },
+  methods: {
+    removeColor(){
+      // 配列の先頭を削除
+      this.colors.shift();
+    }
+  }
+})
+</pre>
+              <p>key設定がないリスト</p>
+              <ul class="l-grid u-mb1">
+                <li v-for="(item,i) in colors" class="l-cell2">{{item}}: <input type="text" size="2"></li>
+              </ul>
+              <p>「v-bind:key="item"」でkey設定があるリスト</p>
+              <ul class="l-grid u-mb1">
+                <li v-for="(item,i) in colors" v-bind:key="item" class="l-cell2">{{item}}: <input type="text" size="2"></li>
+              </ul>
+              <button @click="removeColor">先頭を削除</button>
+            </div>
+            <div class="u-mb2">
+              <p>上記で正しい結果（先頭の要素が削除される）が得られるのはkeyの設定がある方で、ない方は先頭ではなく最後尾の要素が消えてしまう。これはvueの<a href="https://jp.vuejs.org/v2/guide/list.html#%E7%8A%B6%E6%85%8B%E3%81%AE%E7%B6%AD%E6%8C%81" target="_blank" class="c-txtLink">特性</a>によるものらしいが、正直言ってることが理解できず…。<br>おそらくv-forで描画された要素が更新される際、すべてを再描写するのではなく使える部分は再利用するということだと思う。<br>上記の例でいうと、配列の先頭のデータが削除され、3回描画されていたものが2回になるが、DOM上のinputタグには変更箇所はなく再利用され2つ目までのものが残る。結果、DOM上リストの最後尾が削除されているように見えてしまう。<br>こういったちぐはぐな現象を回避するために、keyの設定が不可欠となる。keyの設定は配列とDOM要素を紐づける役割があり、配列が削除されるとそれに紐づいた要素のみが削除され、残り2つの要素には変更はないので再描画もなく意図した結果が得られる。</p>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">データの即時反映（v-model）と条件分岐（v-show）</h3>
             <div class="u-mb2">
 <pre v-pre>
 &lt;ul&gt;
-  &lt;li v-for="todo in todos"&gt;
+  &lt;li v-for="todo in todos" v-bind:key="todo.id"&gt;
     &lt;label&gt;
       &lt;input type="checkbox" v-bind:checked="todo.status" v-model="todo.status"&gt;
       {{todo.text}}
@@ -194,24 +245,49 @@ const app = new Vue({
     &lt;/label&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
-&lt;div>todos:[&lt;p v-for="todo in todos"&gt;{{todo}}&lt;/p&gt;]&lt;/div&gt;
+&lt;div>todos:[&lt;p v-for="todo in todos" v-bind:key="todo.id"&gt;{{todo}}&lt;/p&gt;]&lt;/div&gt;
 ---------------------------
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     todos:[
-      {status: true, text: 'Vue.jsの学習'},
-      {status: false, text: '部屋の片づけ'}
+      {id:1, status: true, text: 'Vue.jsの学習'},
+      {id:2, status: false, text: '部屋の片づけ'}
     ]
   }
 })
 </pre>
               <ul>
-                <li v-for="todo in todos">
+                <li v-for="todo in todos" v-bind:key="todo.id">
                   <label><input type="checkbox" v-bind:checked="todo.status" v-model="todo.status">{{todo.text}}<strong v-show="todo.status">◎</strong></label>
                 </li>
               </ul>
-              <div>todos:[<p v-for="todo in todos">{{todo}}</p>]</div>
+              <div>todos:[<p v-for="todo in todos" v-bind:key="todo.id">{{todo}}</p>]</div>
+            </div>
+            <h4 class="c-ttlType04 u-mb1">v-modelとは</h4>
+            <div class="u-mb2">
+              <p>v-modelは実は入力と反映の2つの処理をひとつにまとめて簡潔にしている糖衣構文（シンタックスシュガー）である。</p>
+<pre v-pre>
+&lt;input v-model="searchText"&gt;
+{{searchText}}
+</pre>
+              <p class="u-mb1"><input v-model="searchText">&nbsp;{{searchText}}</p>
+              <p>これ↑を省略せずに書くと下のようになり、v-onでinputイベントが起きたとき入力値をデータに代入し、そのデータをプロパティとしてv-bindでvalue属性に紐づけている。</p>
+<pre v-pre>
+&lt;input v-bind:value="searchText" v-on:input="searchText = $event.target.value"&gt;
+</pre>
+              <p class="u-mb1"><input v-bind:value="searchText" v-on:input="searchText = $event.target.value"></p>
+              <p>2つのフォームが同じものという証拠に、どちらかにテキストを入力すると同時にもう一方にも同じ内容が入力され、Mustache構文でテキストがDOMに反映される。</p>
+              <p>このようなデータの入力と即時反映が自動化されたものを「双方向データバインディング」と呼ぶ。</p>
+            </div>
+            <h4 class="c-ttlType04 u-mb1">v-modelのプロパティとイベント</h4>
+            <div class="u-mb2">
+              <p class="u-mb1">v-modelはフォーム要素の種類によってそれぞれ定型のプロパティとイベントを使用している。</p>
+              <ul class="c-dotList">
+                <li>テキストボックスとテキストエリアは、valueをプロパティ、inputをイベントとして使用。</li>
+                <li>チェックボックスとラジオボタンは、checkedをプロパティ、changeをイベントとして使用</li>
+                <li>セレクトボックスはvalueをプロパティ、changeをイベントとして使用。</li>
+              </ul>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">複数の条件分岐（v-if）とイベント感知（v-on）</h3>
@@ -222,10 +298,12 @@ const app = new Vue({
 &lt;p v-else>counterの値が5以下（false）の場合&lt;/p&gt;
 
 &lt;button type="button" v-on:click="counter++"&gt;カウントアップ&lt;/button&gt;
-&lt;button type="button" v-on:click="counter--"&gt;カウントダウン&lt;/button&gt;
+&lt;button type="button" @click="counter--"&gt;カウントダウン&lt;/button&gt;
+//v-on:イベント名="式（またはメソッド名）"
+//v-on:は@に省略可。
 &lt;p&gt;[counter = {{counter}}]&gt;/p&gt;
 ---------------------------
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     counter: 0,
@@ -237,15 +315,63 @@ const app = new Vue({
               <p v-else-if="counter < 0">counterの値が0以下の場合</p>
               <p v-else>counterの値が5から0の場合</p>
               <button type="button" v-on:click="counter++">カウントアップ</button>
-              <button type="button" v-on:click="counter--">カウントダウン</button>
+              <button type="button" @click="counter--">カウントダウン</button>
               <p>[counter = {{counter}}]</p>
+            </div>
+            <h4 class="c-ttlType04 u-mb1">イベントハンドリング</h4>
+            <div class="u-mb2">
+              <p>v-onディレクティブは、:（コロン）の後にイベント名を指定し、メソッドをバインドする<strong>メソッドイベントハンドラ</strong>と、短いJavaScriptの式を記述する<strong>インラインメソッドハンドラ</strong>がある。</p>
+            </div>
+            <h4 class="c-ttlType04 u-mb1">&lt;template&gt;での複数要素のグループ化</h4>
+            <div class="u-mb2">
+              <p>v-ifまたはv-forで複数の要素をまとめて描画したいときは&lt;template&gt;タグを使用する。</p>
+<pre v-pre>
+&lt;dl class="u-mb1"&gt;
+&lt;template v-if="ok"&gt;
+  &lt;dt class="c-fontB"&gt;◆材料&lt;/dt&gt;
+  &lt;dd&gt;A.砂糖…大さじ3&lt;/dd&gt;
+  &lt;dd&gt;A.水…小さじ2&lt;/dd&gt;
+  &lt;dd&gt;つまようじ…数本&lt;/dd&gt;
+&lt;/template&gt;
+&lt;template v-else&gt;
+  &lt;dt class="c-fontB"&gt;◆作り方&lt;/dt&gt;
+  &lt;dd&gt;
+    &lt;ol&gt;
+      &lt;li&gt;①耐熱容器にAの材料を入れて軽く混ぜてから電子レンジ（600W）で色がつくまで加熱（2～3分）。&lt;/li&gt;
+      &lt;li&gt;②レンジから取り出し、平らなところに敷いたアルミホイルの上にスプーンですくって水玉をつくるように落としていく。&lt;/li&gt;
+      &lt;li&gt;③熱いうちに水玉1つに1本のつまようじをセットして、固まったら完成。&lt;/li&gt;
+    &lt;/ol&gt;
+  &lt;/dd&gt;
+&lt;/template&gt;
+&lt;/dl&gt;
+&lt;button @click="ok = !ok"&gt;表示切替&lt;/button&gt;
+</pre>
+              <dl class="u-mb1">
+              <template v-if="ok">
+                <dt class="c-fontB">◆材料</dt>
+                <dd>A.砂糖…大さじ3</dd>
+                <dd>A.水…小さじ2</dd>
+                <dd>つまようじ…数本</dd>
+              </template>
+              <template v-else>
+                <dt class="c-fontB">◆作り方</dt>
+                <dd>
+                  <ol>
+                    <li>①耐熱容器にAの材料を入れて軽く混ぜてから電子レンジ（600W）で色がつくまで加熱（2～3分）。</li>
+                    <li>②レンジから取り出し、平らなところに敷いたアルミホイルの上にスプーンですくって水玉をつくるように落としていく。</li>
+                    <li>③熱いうちに水玉1つに1本のつまようじをセットして、固まったら完成。</li>
+                  </ol>
+                </dd>
+              </template>
+              </dl>
+              <button @click="ok = !ok">表示切替</button>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">何らかのアクションが起こったときの処理（methods）</h3>
             <div class="u-mb2">
 <pre v-pre>
 &lt;ul v-bind:style="styleList" class="u-mb1"&gt;
-  &lt;li v-for="(item,i) in items"&gt;
+  &lt;li v-for="(item,i) in items" v-bind:key="item.id"&gt;
     {{item.name}}:在庫{{item.stock}}
     &lt;button v-if="item.stock" v-on:click="saleStock(i)"&gt;買う&lt;/button&gt;
     &lt;span v-else&gt;完売しました&lt;/span&gt;
@@ -260,13 +386,13 @@ const app = new Vue({
 &lt;/select&gt;&lt;/label&gt;
 &lt;button v-on:click="addItem"&gt;リストに追加する&lt;/button&gt;
 ---------------------------
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     items: [
-      {id:0, name:'チーズケーキ', stock:3},
-      {id:1, name:'クリームパン', stock:10},
-      {id:2, name:'麩まんじゅう', stock:1}
+      {id:1, name:'チーズケーキ', stock:3},
+      {id:2, name:'クリームパン', stock:10},
+      {id:3, name:'麩まんじゅう', stock:1}
     ],
     newItemName: '',
     newItemStock: '10'
@@ -294,7 +420,7 @@ const app = new Vue({
 })
 </pre>
               <ul v-bind:style="styleList" class="u-mb1">
-                <li v-for="(item,i) in items">
+                <li v-for="(item,i) in items" v-bind:key="item.id">
                   {{item.name}}:在庫{{item.stock}}
                   <button v-if="item.stock" v-on:click="saleStock(i)">買う</button>
                   <span v-else>完売しました</span>
@@ -313,17 +439,17 @@ const app = new Vue({
             <h3 class="c-ttlType03 u-mb1">データに何らかの加工を施し使用する（computed）</h3>
             <div class="u-mb2">
 <pre v-pre>
-&lt;label v-for="(item,i) in filtersort" v-bind:key="item.id"&gt;&lt;input type="checkbox" v-model="order" v-bind:value="item.price"&gt;{{item.name}} : {{item.price}}円&lt;/label&gt;
+&lt;label v-for="item in filtersort" v-bind:key="item.id"&gt;&lt;input type="checkbox" v-model="order" v-bind:value="item.price"&gt;{{item.name}} : {{item.price}}円&lt;/label&gt;
 &lt;p&gt;合計：{{totalPrice}}円&lt;/p&gt;
 ---------------------------
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     items: [
-      {id:0, name:'チーズケーキ', stock:3, price:370},
-      {id:1, name:'クリームパン', stock:10, price:200},
-      {id:2, name:'麩まんじゅう', stock:1, price:240},
-      {id:3, name:'タルト', stock:10}
+      {id:1, name:'チーズケーキ', stock:3, price:370},
+      {id:2, name:'クリームパン', stock:10, price:200},
+      {id:3, name:'麩まんじゅう', stock:1, price:240},
+      {id:4, name:'タルト', stock:10}
     ],
     order: [0],
     tax: 8
@@ -333,7 +459,6 @@ const app = new Vue({
       const sweets = this.items.filter(function(val){
         return val.price;
       });
-
       return sweets.sort((a, b) => a.price - b.price);
     },
     totalPrice(){
@@ -345,7 +470,7 @@ const app = new Vue({
   }
 })
 </pre>
-              <label v-for="(item,i) in filtersort" v-bind:key="item.id"><input type="checkbox" v-model="order" v-bind:value="item.price">{{item.name}} : {{item.price}}円</label>
+              <label v-for="item in filtersort" v-bind:key="item.id"><input type="checkbox" v-model="order" v-bind:value="item.price">{{item.name}} : {{item.price}}円</label>
               <p>合計：{{totalPrice}}円（税込）</p>
             </div>
 
@@ -355,7 +480,7 @@ const app = new Vue({
 &lt;input type="tel" v-model="number" v-bind:class="{'is-error': isError}"&gt;
 &lt;p v-bind:style="styleColor" v-if="isError"&gt;{{errorMsg}}&lt;/p&gt;
 ---------------------------
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     number :'',
@@ -402,7 +527,7 @@ const app = new Vue({
             <h3 class="c-ttlType03 u-mb1">ローカルへの登録</h3>
             <div class="u-mb2">
 <pre v-pre>
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     price: 10000,
@@ -437,7 +562,7 @@ Vue.filter('addComma', function (val) {
             <div class="u-mb2">
               <p>ライフサイクルフックとは、Vueのインスタンスが生成されてから破棄されるまでに、決まったタイミングで実行される関数のことで、この関数に処理を追記することができる。</p>
 <pre v-pre>
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     products: []
@@ -508,7 +633,7 @@ const app = new Vue({
     </main>
     <!--#include virtual="/inc/layout/footer.html" -->
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
   <script src="/assets/js/task/index.js"></script>
 </body>
 </html>

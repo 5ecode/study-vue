@@ -2,8 +2,8 @@
 子コンポーネント
 ----------------------------------------------------------------------*/
 Vue.component('text-link', {
-  props: ['text', 'url'],
-  template: '<p><a v-bind:href="url" class="c-txtLink" target="_blank">{{ text }}</a></p>'
+  template: '<p><a v-bind:href="url" class="c-txtLink" target="_blank">{{ text }}</a></p>',
+  props: ['text', 'url']
 });
 
 Vue.component('wish-list', {
@@ -18,8 +18,8 @@ Vue.component('wish-list', {
 });
 
 Vue.component('obj-bundle', {
-  template: '<p v-bind:style="style"></p>',
-  props: ['style']
+  template: '<p v-bind:style="styling"></p>',
+  props: ['styling']
 });
 
 const childProduct = {
@@ -86,6 +86,178 @@ Vue.component('child-btn', {
   methods: {
     handleClick() {
       this.$emit('child-event');
+    }
+  }
+});
+
+Vue.component('custom-input-checkbox', {
+  model: {
+    prop: 'checked',
+    event: 'change'
+  },
+  template: `
+    <label><input type="checkbox" v-bind:checked="checked" v-on:change="$emit('change', $event.target.checked)">{{checked}}</label>
+  `,
+  props: {
+    checked: Boolean
+  },
+})
+Vue.component('custom-input', {
+  template: `<p>
+    <input v-bind:value="value" v-on:input="$emit('child-input', $event.target.value)">
+    子側：{{value}}
+    </p>
+  `,
+  props: ['value']
+})
+
+// 双方向v-model
+Vue.component('radio-tax-check', {
+  model: {
+    event: 'change'
+  },
+  template: `<label><input type="radio" v-bind:name="name" v-bind:value="data.val" v-on:change="$emit('change', $event.target.value)" v-bind:checked="value === data.val">{{data.theme}}</label>`,
+  props: {
+    data: Object,
+    name: String,
+    value: Number
+  }
+})
+Vue.component('checkbox-fruits-list', {
+  model: {
+    prop: 'order',
+    event: 'change'
+  },
+  template: `
+    <ul>
+      <li v-for="item in filtersort" v-bind:key="item.id">
+        <label><input type="checkbox" name="name" v-bind:value="item.price" v-on:change="orders">{{item.name}} : {{item.price}}円</label>
+      </li>
+    </ul>
+  `,
+  props: {
+    filtersort: Array,
+    name: String,
+    order: Array
+  },
+  data: function(){
+    return {
+      myOrder: [0],
+    }
+  },
+  methods: {
+    orders(e) {
+      const value = parseInt(e.target.value);
+      if (e.target.checked) {
+        this.myOrder.push(value);
+      } else {
+        const index = this.myOrder.indexOf(value);
+        this.myOrder.splice(index, 1)
+      }
+      this.$emit('change', this.myOrder);
+    }
+  }
+})
+Vue.component('new-item-input', {
+  template: `<label>{{theme}}：<input type="text" v-bind:value="value" v-on:input="$emit('input', $event.target.value)" v-bind:size="size"></label>`,
+  props: {
+    value: String,
+    theme: String,
+    size: Number
+  }
+})
+Vue.component('add-item-component',{
+  template: `
+    <dl>
+      <dt>商品追加</dt>
+      <dd>
+        <div class="u-mb1">
+          <new-item-input v-model="newItemName" v-bind:theme="'品名'"></new-item-input>
+          <new-item-input v-model="newItemPrice" v-bind:theme="'本体価格'" v-bind:size="10"></new-item-input> 円<span v-bind:style="styleColor" v-if="isError">{{errorMsg}}</span>
+        </div>
+        <button v-on:click="$emit('add-item')">リストに追加する</button>
+      </dd>
+    </dl>
+  `,
+  props: {
+    name: String,
+    price: [Number,String]
+  },
+  data() {
+    return {
+      isError: false,
+      errorMsg: '半角数字で入力してください',
+      styleColor: 'color: #f00'
+    }
+  },
+  computed: {
+    newItemName: {
+      get () { return this.name },
+      set (newVal) { return this.$emit('update:name', newVal) }
+    },
+    newItemPrice: {
+      get () { return this.price },
+      set (newVal) { return this.$emit('update:price', newVal) }
+    }
+  },
+  watch: {
+    price(val) {
+      if (val && isNaN(val)) {
+        this.isError = true;
+      } else {
+        this.isError = false;
+      }
+    }
+  }
+})
+
+Vue.component('sync-component',{
+  template: `
+    <div class="u-mb1">
+      <label>メール<input type="email" :value="email" @input="$emit('update:email', $event.target.value)"></label>
+      <label>パスワード<input type="password" :value="password" @input="$emit('update:password', $event.target.value)" size="10"></label>
+      子側props【{{email}} : {{password}}】
+    </div>
+  `,
+  props: {
+    email: String,
+    password: String
+  }
+})
+
+Vue.component('slot-component', {
+  template: `
+    <div class="slotBox">
+      <slot>何もないとき</slot>
+    </div>
+  `
+})
+Vue.component('name-slot-component', {
+  template: `
+    <div class="nameSlotBox">
+      <p class="noname"><slot>名前なしスロット</slot></P>
+      <slot name="slot2">名前ありスロットひとつめ</slot>
+      <slot name="slot3">名前ありスロットふたつめ</slot>
+      <slot name="slot4"></slot>
+      <p>ここは子側のテンプレートに元々記述されているところ。「v-slot:スロット名」は「#スロット名」と省略することも可能。</p>
+    </div>
+  `,
+})
+Vue.component('scoped-slot-component', {
+  template: `
+    <div class="nameSlotBox">
+      <slot v-bind:childData="childData">{{ childData.childItem }}</slot>
+      <slot name="scoped-slot" v-bind:childData="childData"></slot>
+      <slot name="scoped-slot2"></slot>
+    </div>
+  `,
+  data() {
+    return{
+      childData:{
+        childItem: '子の持つデータ',
+        childItem2: '子の持つデータ2',
+        childItem3: '子の持つデータ3',
+      }
     }
   }
 });

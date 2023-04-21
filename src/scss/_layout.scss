@@ -25,4 +25,10 @@
   &contents{
     margin-bottom: 80px;
   }
+  &grid{
+    @include flexGrid(5px);
+  }
+  &cell2{
+    @include flexItemCell(2,10px);
+  }
 }
