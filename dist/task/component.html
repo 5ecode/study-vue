@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Vue.js学習帳</title>
   <link rel="stylesheet" href="/assets/css/shared.css">
-  <link rel="stylesheet" href="/assets/css/pages/index.css">
+  <link rel="stylesheet" href="/assets/css/pages/task/component.css">
 </head>
 <body>
   <div class="l-wrap">
@@ -20,7 +20,7 @@
           <h1 class="c-ttlType01 u-mb1">コンポーネントという機能</h1>
           <div id="App">
             <div class="u-mb2">
-              <p>Vue.jsのコンポーネントとは、機能（役割）ごとにテンプレートとJavaScriptを1つにまとめて管理するという仕組みのこと。<br><a href="https://jp.vuejs.org/v2/guide/instance.html#Vue-%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank" class="c-txtLink">公式</a>によると「全てのVueコンポーネントはVueインスタンスであり、同じオプションオブジェクトを受け入れる（いくつかのルート特有のオプションを除く）」とある。<br>つまりnew Vue()で生成されたルートインスタンスもコンポーネントであり、これを基盤に再利用可能な複数のコンポーネントを部品のように組み合わせるとメンテナンス性の高いサイトやアプリケーションを作ることができるというのがVue.jsのウリのよう。</p>
+              <p>Vue.jsのコンポーネントとは、機能（役割）ごとにテンプレートとJavaScriptを1つにまとめて管理するという仕組みのこと。<br><a href="https://jp.vuejs.org/v2/guide/instance.html#Vue-%E3%82%A4%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%B3%E3%82%B9%E3%81%AE%E4%BD%9C%E6%88%90" target="_blank" class="c-txtLink">公式</a>によると「全てのVueコンポーネントはVueインスタンスであり、同じオプションオブジェクトを受け入れる（いくつかのルート特有のオプションを除く）」とある。<br>つまりnew Vue()で生成されたルートインスタンスもコンポーネントであり、これを基盤に再利用可能な複数のコンポーネントを部品のように組み合わせるとメンテナンス性の高いサイトやアプリケーションを作ることができる！ というのがVue.jsのウリのよう。</p>
             </div>
 
             <h2 class="c-ttlType02 u-mb1">コンポーネントの定義</h2>
@@ -49,7 +49,7 @@ Vue.component('global-component', {
 &lt;/div&gt;
 ---------------------------
 // 親となるコンポーネント
-const app = new Vue({
+const vm = new Vue({
   el: '#App'
 });
 </pre>
@@ -76,7 +76,7 @@ const localComponent = {
 &lt;/div&gt;
 ---------------------------
 // 親となるコンポーネントに子コンポーネントを登録
-const app = new Vue({
+const vm = new Vue({
   el: '#App',
   components: {
     'local-component': localComponent
@@ -141,16 +141,15 @@ Vue.component('text-link', {
 &lt;/div&gt;
 ---------------------------
 // 親となるコンポーネント
-const app = new Vue({
+const vm = new Vue({
   el: #App
 });
 </pre>
               <text-link text="Yahoo! JAPAN" url="https://www.yahoo.co.jp"></text-link>
               <text-link text="Google マップ" url="https://www.google.com/maps/@35.681983,139.773973,15z?hl=ja"></text-link>
             </div>
-
             <div class="u-mb2">
-              <p>送るデータが親コンポネートが持っているリアクティブなデータの場合、v-bindディレクティブでカスタムタグにバインドすることで子コンポーネントにデータを反映できる。</p>
+              <p>送るデータが親コンポーネントが持っているリアクティブなデータの場合、v-bindディレクティブでカスタムタグにバインドすることで子コンポーネントにデータを反映できる。</p>
               <p>propsで受け取ったデータを子コンポーネント内で直接書き換えることはできないので、データに何らかの変更を加えたい場合は、算出プロパティで新しいデータを作成してから自身のテンプレートにバインドする。</p>
 <pre v-pre>
 // 子となるコンポーネント
@@ -173,14 +172,14 @@ Vue.component('wish-list', {
 &lt;/div&gt;
 ---------------------------
 // 親となるコンポーネント
-var app = new Vue({
+new Vue({
   el: '#App',
   data: {
     items: [
-      { id: 0, name: '人間工学オフィスチェア', price: 21817 },
-      { id: 1, name: 'FINAL FANTASY VII REMAKE INTERGRADE', price: 8980 },
-      { id: 2, name: 'PINARELLO Prince', price: 465000 },
-      { id: 3, name: 'エアウィーヴ 02 シングル', price: 100000 }
+      { id: 1, name: '人間工学オフィスチェア', price: 21817 },
+      { id: 2, name: 'FINAL FANTASY VII REMAKE INTERGRADE', price: 8980 },
+      { id: 3, name: 'PINARELLO Prince', price: 465000 },
+      { id: 4, name: 'エアウィーヴ 02 シングル', price: 100000 }
     ],
     tax: 10
   }
@@ -193,7 +192,7 @@ var app = new Vue({
 
             <h4 class="c-ttlType04 u-mb1">propsで受け取るデータ（値）の型</h4>
             <div class="u-mb2">
-              <p>propsでは受け取るデータの型を指定しておくことが推奨されている。例えば、数値での計算が必要なときに文字列が渡されていてもエラーが出ないため、レンダリングに問題があってもどこに原因があるのか把握しにくいからである。そこでpropsを下記のように書くことで間違った型を渡した場合にブラウザのコンソールでエラーを確認できるようになる。</p>
+              <p>propsでは受け取るデータの型を指定しておくことが推奨されている。<br>例えば、数値での計算が必要なとき、propsで受け取ったデータが文字列であったとしても、Vue.jsでは何故かコンソールにエラーが出ない。そのためレンダリングが意図しない結果になってもどこに原因があるのか把握しにくく解決までにムダに時間を取られる可能性がある。それを回避するためpropsは極力下記のように書いておくと、間違った型を渡した場合ブラウザのコンソールでエラーを確認できるようになる。</p>
 <pre v-pre>
 props: { '属性（プロパティ）名': 型 }
 </pre>
@@ -206,25 +205,25 @@ props: { '属性（プロパティ）名': 型 }
 <pre v-pre>
 // 子コンポーネント
 Vue.component('obj-bundle', {
-template: '&lt;p v-bind:style="style"&gt;&lt;/p&gt;',
-props: ['style']
+template: '&lt;p v-bind:style="styling"&gt;&lt;/p&gt;',
+props: ['styling']
 });
 ---------------------------
-// 親のテンプレート
-&lt;obj-bundle v-for="style in styleObject" v-bind:style="style"&gt;&lt;/obj-bundle&gt;
+// 親のテンプレートに子コンポーネントのカスタムタグを設置
+&lt;obj-bundle v-for="styling in styleObject" v-bind:style="styling"&gt;&lt;/obj-bundle&gt;
 ---------------------------
 // 親コンポーネント
-var app = new Vue({
-el: '#App',
-data: {
-styleObject: [
-  { display: 'inline-block', width: '30%', height: '100px', background: '#4d7dc5' },
-  { display: 'inline-block', width: '40%', height: '150px', background: '#4fc54d' },
-  { display: 'inline-block', width: '30%', height: '200px', background: '#eb4034' }
-]
+new Vue({
+  el: '#App',
+  data: {
+  styleObject: [
+    { display: 'inline-block', width: '30%', height: '100px', background: '#4d7dc5' },
+    { display: 'inline-block', width: '40%', height: '150px', background: '#4fc54d' },
+    { display: 'inline-block', width: '30%', height: '200px', background: '#eb4034' }
+  ]
 });
 </pre>
-              <obj-bundle v-for="style in styleObject" v-bind:style="style"></obj-bundle>
+              <obj-bundle v-for="styling in styleObject" v-bind:style="styling"></obj-bundle>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">子コンポーネントから親コンポーネントにデータを受け渡す方法</h3>
@@ -262,16 +261,16 @@ const childProduct = {
 &lt;/div&gt;
 ---------------------------
 // 親となるコンポーネント
-var app = new Vue({
+new Vue({
   el: '#App',
   components: {
     'child-product': childProduct
   }
   data: {
     product: [
-      {id:0, name:'フルーツタルト', stock:3, price:410},
-      {id:1, name:'極生塩パン', stock:10, price:180},
-      {id:2, name:'草餅', stock:1, price:240}
+      {id: 1, name: 'フルーツタルト', stock: 3, price: 410},
+      {id: 2, name: '極生塩パン', stock: 10, price: 180},
+      {id: 3, name: '草餅', stock: 1, price: 240}
     ]
   },
   methods: {
@@ -288,11 +287,10 @@ var app = new Vue({
                 <child-product v-for="(item,i) in product" v-bind:key="item.id" v-bind:index="i" v-bind="item" v-on:child-click="saleStock"></child-product>
               </ul>
             </div>
-
             <div class="u-mb2">
               <p>送るデータがなくても、子のイベントだけをキャッチさせイベントハンドラを呼び出すこともできる。</p>
 <pre v-pre>
-// 子となるコンポーネント
+// 子コンポーネント
 Vue.component('child-btn', {
   template: '&lt;div&gt;&lt;button v-on:click="handleClick"&gt;子側でクリック&lt;/button&gt; {{msg}}&lt;/div&gt;',
   props: { 'msg': String },
@@ -303,13 +301,13 @@ Vue.component('child-btn', {
   }
 });
 ---------------------------
-// 親のテンプレートに子コンポーネントのカスタムタグを設置
+// 親テンプレートに子コンポーネントのカスタムタグを設置
 &lt;div id="App"&gt;
   &lt;child-btn v-on:child-event="parentMethods" v-bind:msg="msg"&gt;&lt;/child-btn&gt;
 &lt;/div&gt;
 ---------------------------
-// 親となるコンポネート
-const app = new Vue({
+// 親コンポーネント
+new Vue({
   el: '#App',
   data: {
     msg: 'イベント待機'
@@ -323,8 +321,547 @@ const app = new Vue({
 </pre>
               <child-btn v-on:child-event="parentMethods" v-bind:msg="msg"></child-btn>
             </div>
-          </div>
-        </div>
+
+            <h3 class="c-ttlType03 u-mb1">親子間で双方向データバインディングする方法</h3>
+            <div class="u-mb2">
+              <p>単純な一行テキストボックスをコンポーネント化し、前述した「親から子」「子から親」へのデータ受け取りの仕組みを両方設定する。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('custom-input', {
+  template: `&lt;p&gt;
+    &lt;input v-bind:value="value" v-on:input="$emit('child-input', $event.target.value)"&gt;
+    子側：{{value}}
+    &lt;/p&gt;`,
+  props: ['value'],
+})
+---------------------------
+// 親テンプレート
+&lt;custom-input v-bind:value="testText" v-on:child-input="testTextEvent"&gt;&lt;/custom-input&gt;
+&lt;p&gt;親側：{{testText}}&lt;/p&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+  el: '#App',
+  data: {
+    testText: '初期値'
+  },
+  methods: {
+    testTextEvent(event) {
+      this.testText = event;
+    }
+  }
+});
+</pre>
+              <custom-input v-on:child-input="testTextEvent" v-bind:value="testText"></custom-input>
+              <p>親側：{{testText}}</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">コンポーネントにv-modelを使う</h4>
+            <div class="u-mb2">
+              <p>上記の方法でもフォームの入力とDOMへの反映が自動化されていることが確認できるが、このコンポーネントにv-modelを使うともう少しだけシンプルに「双方向データバインディング」ができる。</p>
+<pre v-pre>
+&lt;custom-input v-model="testText"&gt;&lt;/custom-input&gt;
+</pre>
+              <custom-input v-on:input="testText = $event" v-bind:value="testText"></custom-input>
+              <p class="u-mb1">親側：{{testText}}</p>
+              <p>ただしこれだけではまだこのフォームに入力してもデータは反映されず用を成さない。<br>現状フォームに入力された値は$emitされたカスタムイベント「child-input」の引数として親のイベントハンドラに渡されることになっているからだ。親テンプレートではv-modelを使うことにしたので、子のカスタムイベントを検知する術がなく入力値を受け取れないのである。これを解消するには単純にカスタムイベントを「input」とすればよい。</p>
+<pre v-pre>
+$emit('input', $event.target.value)
+</pre>
+              <p>コンポーネントのv-modelは下記に置き換えることができ、子から送られるイベントが「input」であれば、発火を検知してイベントハンドラで入力値を受け取るが可能である。</p>
+<pre v-pre>
+&lt;custom-input v-on:input="testText = $event" v-bind:value="testText"&gt;&lt;/custom-input&gt;
+</pre>
+              <p>ここで登場した<strong>$event</strong>は$emitの第2引数に指定したデータを受け入れることができる特別な変数であり、ここではそれをtestTextプロパティに代入している。</p>
+              <p>このような値を代入するだけの単純なケースであればv-modelを使用したほうが、記述量は抑えられるため状況に応じて使い分けていくといいのかと思う。</p>
+            </div>
+
+            <h5 class="u-mb1">v-modelのオプション</h5>
+            <div class="u-mb2">
+              <p>コンポーネントにおけるv-modelはデフォルトでvalueをプロパティ、inputをイベントとして設定されている。使用するフォーム要素や状況に応じて別のイベントやプロパティを使うときはmodelオプションでカスタマイズが可能。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('custom-input-checkbox', {
+  model: {
+    prop: 'checked',
+    event: 'change'
+  },
+  template: `
+    &lt;label&gt;&lt;input type="checkbox" v-bind:checked="checked" v-on:change="$emit('change', $event.target.checked)"&gt;{{checked}}&lt;/label&gt;
+  `,
+  props: {
+    checked: Boolean
+  },
+})
+---------------------------
+// 親テンプレート
+&lt;custom-input-checkbox v-model="testCheckbox"&gt;&lt;/custom-input-checkbox&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+  el: '#App',
+  data: {
+    testCheckbox: false
+  }
+})
+</pre>
+              <custom-input-checkbox v-model="testCheckbox"></custom-input-checkbox>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">.sync修飾子で複数のプロパティをバインド</h4>
+            <div class="u-mb2">
+              <p>1つのコンポーネントに1つしか使用できないv-model（親から子へ単一の値の受け渡し）に対して、.sync修飾子は際限なく利用できるので複数の値の受け渡しが可能。基本的な使い方はv-modelと同じだが、$emitの第一引数は「update:propsで受け取る属性名」の形でイベントを発火する。Vue.js 3ではv-modelを複数使用することができるようになっているため、この機能は廃止されていている。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('sync-component',{
+  template: `
+    &lt;div class="u-mb1"&gt;
+      &lt;label&gt;メール&lt;input type="email" :value="email" @input="$emit('update:email', $event.target.value)"&gt;&lt;/label&gt;
+      &lt;label&gt;パスワード&lt;input type="password" :value="password" @input="$emit('update:password', $event.target.value)" size="10"&gt;&lt;/label&gt;
+      子側props【{{email}} : {{password}}】
+    &lt;/div&gt;
+  `,
+  props: {
+    email: String,
+    password: String
+  }
+})
+---------------------------
+// 親テンプレート
+&lt;sync-component v-bind:email.sync="login.email" v-bind:password.sync="login.password"&gt;&lt;/sync-component&gt;
+&lt;p&gt;親側dataオプション：{{login}}&lt;/p&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+  el: '#App',
+  data: {
+    login: { email: '', password: '' }
+  }
+})
+</pre>
+              <sync-component v-bind:email.sync="login.email" v-bind:password.sync="login.password"></sync-component>
+              <p>親側dataオプション: {{login}}</p>
+            </div>
+
+            <h4 id="scrollAnchor" class="c-ttlType04 u-mb1">コンポーネントで双方向バインディング使用例</h4>
+            <div class="u-mb2">
+              <template v-if="codeType === 'radio'">
+<pre v-pre>
+Vue.component('radio-tax-check', {
+  model: {
+    event: 'change'
+  },
+  template: `&lt;label&gt;&lt;input type="radio" v-bind:name="name" v-bind:value="data.val" v-on:change="$emit('change', $event.target.value)" v-bind:checked="value === data.val"&gt;{{data.theme}}&lt;/label&gt;`,
+  props: {
+    data: Object,
+    name: String,
+    value: Number
+  }
+})
+---------------------------
+// 親テンプレート
+&lt;radio-tax-check v-for="data in taxRate" v-bind:key="data.id" v-bind:data="data" v-model.number="orderType" name="tax"&gt;&lt;/radio-tax-check&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+  el: '#App',
+  data: {
+    taxRate: [
+      { id: 1, theme: 'テイクアウト', val: 1 },
+      { id: 2, theme: 'イートイン', val: 2 },
+    ],
+    orderType: 1,
+    tax: 10
+  },
+  watch: {
+    orderType: {
+      handler() {
+        if (this.orderType === 1) {
+        this.reducedTaxRate = 8;
+        } else {
+          this.reducedTaxRate = this.tax;
+        }
+      },
+      immediate: true
+    }
+  }
+})
+</pre>
+              </template>
+              <template v-if="codeType === 'check'">
+<pre v-pre>
+Vue.component('checkbox-fruits-list', {
+  model: {
+    prop: 'order',
+    event: 'change'
+  },
+  template: `
+    &lt;ul&gt;
+      &lt;li v-for="item in filtersort" v-bind:key="item.id"&gt;
+        &lt;label&gt;&lt;input type="checkbox" name="name" v-bind:value="item.price" v-on:change="orders"&gt;{{item.name}} : {{item.price}}円&lt;/label&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  `,
+  props: {
+    filtersort: Array,
+    name: String,
+    order: Array
+  },
+  data: function(){
+    return {
+      myOrder: [0],
+    }
+  },
+  methods: {
+    orders(e) {
+      const value = parseInt(e.target.value);
+      if (e.target.checked) {
+        this.myOrder.push(value);
+      } else {
+        const index = this.myOrder.indexOf(value);
+        this.myOrder.splice(index, 1)
+      }
+      this.$emit('change', this.myOrder);
+    }
+  }
+})
+---------------------------
+// 親テンプレート
+&lt;checkbox-fruits-list v-bind:filtersort="filtersort" v-model="order" name="sweets"&gt;&lt;/checkbox-fruits-list&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+...
+  data: {
+    sweetsList: [
+      { id: 1, name: '季節のフルーツタルト', price: 860 },
+      { id: 2, name: 'オレンジのタルト', price: 760 },
+      { id: 3, name: '5種の柑橘のタルト', price: 900 }
+    ],
+    order: [0]
+  },
+  computed: {
+    filtersort(){
+      const sweets = this.sweetsList.filter(function(val){
+        return val.price;
+      });
+      return sweets.sort((a, b) => a.price - b.price);
+    }
+  }
+...
+</pre>
+              </template>
+              <template v-if="codeType === 'input'">
+<pre v-pre>
+Vue.component('new-item-input', {
+  template: `&lt;label&gt;{{theme}}：&lt;input type="text" v-bind:value="value" v-on:input="$emit('input', $event.target.value)" v-bind:size="size"&gt;&lt;/label&gt;`,
+  props: {
+    value: String,
+    theme: String,
+    size: Number
+  }
+})
+</pre>
+              </template>
+              <template v-if="codeType === 'sync'">
+<pre v-pre>
+Vue.component('add-item-component',{
+  template: `
+    &lt;dl&gt;
+      &lt;dt&gt;商品追加&lt;/dt&gt;
+      &lt;dd&gt;
+        &lt;div class="u-mb1"&gt;
+          &lt;new-item-input v-model="newItemName" v-bind:theme="'品名'"&gt;&lt;/new-item-input&gt;
+          &lt;new-item-input v-model="newItemPrice" v-bind:theme="'本体価格'" v-bind:size="10"&gt;&lt;/new-item-input&gt; 円&lt;span v-bind:style="styleColor" v-if="isError"&gt;{{errorMsg}}&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;button v-on:click="$emit('add-item')"&gt;リストに追加する&lt;/button&gt;
+      &lt;/dd&gt;
+    &lt;/dl&gt;
+  `,
+  props: {
+    name: String,
+    price: [Number,String]
+  },
+  data() {
+    return {
+      isError: false,
+      errorMsg: '半角数字で入力してください',
+      styleColor: 'color: #f00'
+    }
+  },
+  computed: {
+    newItemName: {
+      get () { return this.name },
+      set (newVal) { return this.$emit('update:name', newVal) }
+    },
+    newItemPrice: {
+      get () { return this.price },
+      set (newVal) { return this.$emit('update:price', newVal) }
+    }
+  },
+  watch: {
+    price(val) {
+      if (val && isNaN(val)) {
+        this.isError = true;
+      } else {
+        this.isError = false;
+      }
+    }
+  }
+})
+---------------------------
+// 親テンプレート
+&lt;add-item-component v-bind:price.sync="newItemPrice" v-bind:name.sync="newItemName" v-on:add-item="addItem"&gt;&lt;/add-item-component&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+...
+  data: {
+    newItemName: '',
+    newItemPrice: '',
+  },
+  methods: {
+    addItem() {
+      var max = this.sweetsList.reduce(function(a,b){
+        return a.id > b.id ? a.id : b.id;
+      },0)
+
+      if (this.newItemPrice && isNaN(this.newItemPrice)) {
+        return false;
+      }
+      if (this.newItemName) {
+        this.sweetsList.push({
+          id: max + 1,
+          name: this.newItemName,
+          price: this.newItemPrice
+        });
+      }
+    }
+  }
+...
+</pre>
+              </template>
+              <button @click="codeType = 'radio'" v-bind:class="[codeType === 'radio' ? activeClass : '']">ラジオボタン</button>
+              <button @click="codeType = 'check'" v-bind:class="[codeType === 'check' ? activeClass : '']">チェックボックス</button>
+              <button @click="codeType = 'input'" v-bind:class="[codeType === 'input' ? activeClass : '']">テキストボックス</button>
+              <button @click="codeType = 'sync'" v-bind:class="[codeType === 'sync' ? activeClass : '']">複数のプロパティ</button>
+              <button @click="codeType = ''">コードを閉じる</button>
+            </div>
+            <div class="u-mb2">
+              <div class="u-mb1">
+                <radio-tax-check v-for="data in taxRate" v-bind:key="data.id" v-bind:data="data" v-model.number="orderType" name="tax"></radio-tax-check>
+
+                <checkbox-fruits-list v-bind:filtersort="filtersort" v-model="order" name="sweets"></checkbox-fruits-list>
+
+                <p>合計：{{totalPrice}}円（税込）</p>
+              </div>
+              <add-item-component v-bind:price.sync="newItemPrice" v-bind:name.sync="newItemName" v-on:add-item="addItem"></add-item-component>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">スロットでコンポーネントをカスタマイズ</h2>
+            <div class="u-mb2">
+              <p>スロットは同じコンポーネントを複数の個所で配置したいが、場所によってテンプレートに少し要素を追加したい、またはテンプレートの一部をカスタマイズしたいといった場合に使用する。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">デフォルトスロット</h3>
+            <div class="u-mb2">
+              <p>デフォルトスロットでは親テンプレートに設置したカスタムタグの開始タグと閉じタグの間に、子コンポーネントに差し込みたい要素（スロットコンテンツ）を記述し、子となるコンポーネントのテンプレートに、&lt;slot&gt;タグを追加すると、親側で定義した内容が埋め込まれる。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('slot-component', {
+  template: `
+    &lt;div class="slotBox"&gt;
+      &lt;slot&gt;&lt;/slot&gt;
+    &lt;/div&gt;
+  `
+})
+---------------------------
+// 親テンプレート
+&lt;slot-component&gt;スロットコンテンツ&lt;/slot-component&gt;
+---------------------------
+// css
+.slotBox{
+  display: inline-flex;
+  padding: 10px;
+  border: 1px solid #b9c9c9;
+}
+</pre>
+              <slot-component>スロットコンテンツ</slot-component>
+            </div>
+            <div class="u-mb2">
+              <p>&lt;slot&gt;タグの内側には親から差し込まれるスロットコンテンツがなかったときのフォールバック（デフォルト）コンテンツが設定できるので、表示の出し分けも可能。またスロットではコンテンツを定義した親側のデータにアクセスができ、親のスコープで使用できるものであれば他のコンポーネントのカスタムタグを定義することも可能。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('slot-component', {
+  template: `
+    &lt;div class="slotBox"&gt;
+      &lt;slot&gt;何もないとき&lt;/slot&gt;
+    &lt;/div&gt;
+  `
+})
+---------------------------
+// 親テンプレート
+&lt;slot-component&gt;&lt;/slot-component&gt;
+&lt;slot-component&gt;{{parentData}}&lt;/slot-component&gt;
+&lt;slot-component&gt;
+  &lt;custom-input-checkbox v-model="testCheckbox"&gt;&lt;/custom-input-checkbox&gt;
+&lt;/slot-component&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+  el: '#App',
+  data: {
+    parentData: '親の持つデータ'
+  }
+});
+</pre>
+
+              <slot-component></slot-component>
+              <slot-component>{{parentData}}</slot-component>
+              <slot-component>
+                <custom-input-checkbox v-model="testCheckbox"></custom-input-checkbox>
+              </slot-component>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">名前付きスロット</h3>
+            <div class="u-mb2">
+              <p>&lt;slot&gt;タグごとにname属性を使って異なる名前をつけることで、1つのコンポーネントで複数のスロットが使用できるようになる。<br>親側では差し込みたいスロットコンテンツを囲う&lt;template&gt;タグに、v-slotディレクティブに差し込みたい場所に対応したスロット名を引数として指定すればよい。このとき名前付きの&lt;template&gt;タグの範囲外はすべて名前なしスロットにまとめて引き渡されるので、記述には注意が必要。明示的に名前なしスロットにコンテンツを表示したいのであれば、その内容を&lt;template v-slot:default&gt;&lt;/template&gt;で囲む。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('name-slot-component', {
+  template: `
+    &lt;div class="nameSlotBox"&gt;
+      &lt;p class="noname"&gt;&lt;slot&gt;名前なしスロット&lt;/slot&gt;&lt;/p&gt;
+      &lt;slot name="slot2"&gt;名前ありスロットひとつめ&lt;/slot&gt;
+      &lt;slot name="slot3"&gt;名前ありスロットふたつめ&lt;/slot&gt;
+      &lt;slot name="slot4">&lt;/slot&gt;
+      &lt;p&gt;ここは子側のテンプレートに元々記述されているところ。&lt;/p&gt;
+    &lt;/div&gt;
+  `,
+})
+---------------------------
+// 親テンプレート
+&lt;name-slot-component&gt;
+  &lt;template v-slot:slot3&gt;
+    &lt;p class="bgC02"&gt;こちらはスロット名「slot3」に埋め込まれます。&lt;/p&gt;
+  &lt;/template&gt;
+  &lt;template&gt;タグの範囲外のこのテキストは名前なしスロットに入ります。ただしv-slot:defaultがある場合は、無視されます。
+  &lt;template #slot2&gt;
+    &lt;p class="bgC01"&gt;スロット名「slot2」に差し込まれます。「v-slot:スロット名」は「#スロット名」と省略することも可能。&lt;/p&gt;
+  &lt;/template&gt;
+  &lt;template v-slot:default&gt;
+  このテキストだけが名前なしスロットに入ります。
+  &lt;/template&gt;
+&lt;/name-slot-component&gt;
+</pre>
+              <name-slot-component>
+                <template v-slot:slot3>
+                  <p class="bgC02">こちらはスロット名「slot3」に埋め込まれます。</p>
+                </template>
+                &lt;template&gt;タグの範囲外のこのテキストは名前なしスロットに入ります。ただしv-slot:defaultがある場合は、無視されます。
+                <template #slot2>
+                  <p class="bgC01">スロット名「slot2」に差し込まれます。「v-slot:スロット名」は「#スロット名」と省略することも可能。</p>
+                </template>
+                <template v-slot:default>
+                このテキストだけが名前なしスロットに入ります。
+                </template>
+              </name-slot-component>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">スコープ付きスロット</h3>
+            <div class="u-mb2">
+              <p>親テンプレート側から子コンポーネントの持つデータにアクセスできるようになる機能。子コンポーネント側では、&lt;slot&gt;タグに属性（スロットプロパティ）として子のデータプロパティをバインドし、親側ではv-slotの値として名前を指定することで、スロットプロパティを受け取る。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('scoped-slot-component', {
+  template: `
+    &lt;div class="nameSlotBox"&gt;
+      &lt;slot v-bind:childData="childData"&gt;{{ childData.childItem }}&lt;/slot&gt;
+    &lt;/div&gt;
+  `,
+  data() {
+    return{
+      childData:{
+        childItem: '子の持つデータ',
+        childItem2: '子の持つデータ2',
+        childItem3: '子の持つデータ3',
+      }
+    }
+  }
+});
+---------------------------
+// 親テンプレート
+&lt;scoped-slot-component&gt;
+  &lt;template v-slot:default="slotProps"&gt;
+    &lt;p&gt;{{slotProps}}&lt;/p&gt;
+    &lt;p class="bgC02"&gt;{{slotProps.childData.childItem2}}&lt;/p&gt;
+    &lt;p class="bgC01"&gt;{{slotProps.childData.childItem2}}&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/scoped-slot-component&gt;
+</pre>
+              <scoped-slot-component>
+                <template v-slot:default="slotProps">
+                  <p>{{slotProps}}</p>
+                  <p class="bgC02">{{slotProps.childData.childItem2}}</p>
+                  <p class="bgC01">{{slotProps.childData.childItem3}}</p>
+                </template>
+              </scoped-slot-component>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">スロットプロパティの分割代入</h4>
+            <div class="u-mb2">
+              <p>スロットプロパティの取得ははES2015から導入された<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#object_destructuring" target="_blank" class="c-txtLink">分割代入</a>というものを使った記述でも可能で、子から渡される変数の名前を{}で括りv-slotの値にすると少しだけコードが短くなる。またリネームや、スロットプロパティが未定義だった場合のフォールバックを定義することもできる。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('scoped-slot-component', {
+  template: `
+    &lt;div class="nameSlotBox"&gt;
+      &lt;slot v-bind:childData="childData"&gt;{{ childData.childItem }}&lt;/slot&gt;
+      &lt;slot name="scoped-slot" v-bind:childData="childData"&gt;&lt;/slot&gt;
+      &lt;slot name="scoped-slot2"&gt;&lt;/slot&gt;
+    &lt;/div&gt;
+  `,
+  data() {
+    return{
+      childData:{
+        childItem: '子の持つデータ',
+        childItem2: '子の持つデータ2',
+        childItem3: '子の持つデータ3',
+      }
+    }
+  }
+});
+---------------------------
+// 親テンプレート
+&lt;scoped-slot-component&gt;
+  &lt;template v-slot:default="{childData}"&gt;
+    &lt;p&gt;{{childData.childItem3}}&lt;/p&gt;
+  &lt;/template&gt;
+  // リネーム
+  &lt;template v-slot:scoped-slot="{childData: child_data}"&gt;
+    &lt;p&gt;{{child_data.childItem2}}&lt;/p&gt;
+  &lt;/template&gt;
+  // フォールバック
+  &lt;template v-slot:scoped-slot2="{fallback = { fallbackItem: 'フォールバック設定' } }"&gt;
+    &lt;p&gt;{{fallback.fallbackItem}}&lt;/p&gt;
+  &lt;/template&gt;
+&lt;/scoped-slot-component&gt;
+</pre>
+              <scoped-slot-component>
+                <template v-slot:default="{childData}">
+                  <p class="bgC01">{{childData.childItem3}}</p>
+                </template>
+                <template v-slot:scoped-slot="{childData: child_data}">
+                  <p>{{child_data.childItem2}}</p>
+                </template>
+                <template v-slot:scoped-slot2="{fallback = { fallbackItem: 'フォールバック設定' } }">
+                  <p class="bgC02">{{fallback.fallbackItem}}</p>
+                </template>
+              </scoped-slot-component>
+              <p>
+            </div>
+          </div><!--/#App-->
+        </div><!--/l-base-->
       </div><!--/l-contents-->
 
       <div class="st-flowFoot">
@@ -339,7 +876,7 @@ const app = new Vue({
     </main>
     <!--#include virtual="/inc/layout/footer.html" -->
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
   <script src="/assets/js/task/component-global.js"></script>
   <script src="/assets/js/task/component-local.js"></script>
   <script src="/assets/js/task/component-child.js"></script>

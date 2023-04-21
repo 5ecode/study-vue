@@ -2,24 +2,29 @@ Vue.filter('addComma', function (val) {
   return val.toLocaleString();
 });
 
-const app = new Vue({
+new Vue({
   el: '#App',
   data: {
     message: 'World',
-    styleColor: 'color: #f00',
+    styleColor: {
+      'color': '#f00', 'font-weight': 'bold'
+    },
     addClass: 'test-class',
     styleList: 'list-style-type: disc',
     date: new Date().toLocaleString(),
     list: ['spring（春）','summer（夏）','autumn（秋）','winter（冬）'],
+    colors: ['あか','あお','きいろ'],
     todos: [
-      {status: true, text: 'Vue.jsの学習'},
-      {status: false, text: '部屋の片づけ'},
+      {id:1, status: true, text: 'Vue.jsの学習'},
+      {id:2, status: false, text: '部屋の片づけ'},
     ],
+    searchText: '',
     counter: 0,
+    ok: true,
     items: [
-      {id:0, name:'チーズケーキ', stock:3, price:370},
-      {id:1, name:'クリームパン', stock:10, price:200},
-      {id:2, name:'麩まんじゅう', stock:1, price:240}
+      {id:1, name:'チーズケーキ', stock:3, price:370},
+      {id:2, name:'クリームパン', stock:10, price:200},
+      {id:3, name:'麩まんじゅう', stock:1, price:240}
     ],
     newItemName: '',
     newItemStock: '10',
@@ -51,7 +56,10 @@ const app = new Vue({
       if(this.items[i].stock > 0){
         this.items[i].stock -= 1;
       }
-    }
+    },
+    removeColor(){
+      this.colors.shift()
+    },
   },
   computed: {
     filtersort(){
