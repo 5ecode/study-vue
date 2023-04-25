@@ -1,0 +1,39 @@
+@charset "utf-8";
+@use "../../setting" as *;
+/*--------------------------------------------------------------------
+  @その他の機能
+----------------------------------------------------------------------*/
+.tabMenu{
+  padding: 6px 10px;
+  border: solid #ccc;
+  border-width: 1px 1px 0;
+  background: #f0f0f0;
+  cursor: pointer;
+  &:hover,
+  &.is-active {
+    background: #e0e0e0;
+  }
+  $this: &;
+  + #{$this}{
+    border-left: 0;
+  }
+}
+.tabContainer{
+  padding: 10px;
+  border: 1px solid #b9c9c9;
+}
+
+/* トランジション */
+.v-enter,
+.v-leave-to {
+  opacity: 0;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 1s ease;
+}
+.v-enter-to,
+.v-leave {
+  opacity: 1;
+}
+

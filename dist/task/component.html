@@ -102,7 +102,6 @@ const vm = new Vue({
                 <caption>コンポーネントオプション</caption>
                 <tbody>
                   <tr>
-                  <tr>
                     <th>data</th>
                     <td>コンポーネントのdataオプションはオブジェクトリテラルを返す関数で記述する。</td>
                   </tr>
@@ -795,7 +794,7 @@ Vue.component('scoped-slot-component', {
   &lt;template v-slot:default="slotProps"&gt;
     &lt;p&gt;{{slotProps}}&lt;/p&gt;
     &lt;p class="bgC02"&gt;{{slotProps.childData.childItem2}}&lt;/p&gt;
-    &lt;p class="bgC01"&gt;{{slotProps.childData.childItem2}}&lt;/p&gt;
+    &lt;p class="bgC01"&gt;{{slotProps.childData.childItem3}}&lt;/p&gt;
   &lt;/template&gt;
 &lt;/scoped-slot-component&gt;
 </pre>
@@ -810,7 +809,7 @@ Vue.component('scoped-slot-component', {
 
             <h4 class="c-ttlType04 u-mb1">スロットプロパティの分割代入</h4>
             <div class="u-mb2">
-              <p>スロットプロパティの取得ははES2015から導入された<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#object_destructuring" target="_blank" class="c-txtLink">分割代入</a>というものを使った記述でも可能で、子から渡される変数の名前を{}で括りv-slotの値にすると少しだけコードが短くなる。またリネームや、スロットプロパティが未定義だった場合のフォールバックを定義することもできる。</p>
+              <p>スロットプロパティの取得はES2015から導入された<a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#object_destructuring" target="_blank" class="c-txtLink">分割代入</a>というものを使った記述でも可能で、子から渡される変数の名前を{}で括りv-slotの値にすると少しだけコードが短くなる。またリネームや、スロットプロパティが未定義だった場合のフォールバックを定義することもできる。</p>
 <pre v-pre>
 // 子コンポーネント
 Vue.component('scoped-slot-component', {

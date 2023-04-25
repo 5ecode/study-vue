@@ -224,7 +224,6 @@ Vue.component('sync-component',{
     password: String
   }
 })
-
 Vue.component('slot-component', {
   template: `
     <div class="slotBox">

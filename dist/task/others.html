@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <link rel="stylesheet" href="/assets/css/pages/task/others.css">
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Others">Others</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">その他の機能</h1>
+          <div id="App">
+            <div class="u-mb2">
+              <p>前述してきたのはVue.jsのごく基本的な内容で、その他にも機能は細かく色々ある。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">トランジション</h2>
+            <div class="u-mb2">
+              <p>Vue.jsでは、要素が追加、更新、削除された際にアニメーション効果を簡単に付与できる機能がある。基本的には、アニメーションを付けたい要素を&lt;transition&gt;タグで囲むだけでトランジション用のクラスが自動で追加される。追加されるクラスは、指定した要素が追加されるときは「enter」、削除されるときは「leave」という文字を含みそれぞれ開始と終了、トランジションがアクティブ状態のタイミングで適用される計6つ。下記のクラスは&lt;transition&gt;に名前（name属性）がない場合はデフォルトで接頭辞が「v-」となり、例えば名前が「fade」だった場合は「fade-*」となる。</p>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table">
+                <caption>自動で付与されるトランジション用デフォルトクラス</caption>
+                <tbody>
+                  <tr>
+                    <th>v-enter</th>
+                    <td>対象要素がDOMに追加される前に適用され、トランジション（アニメーション効果）の開始直後に削除される。トランジションの開始時の状態（標準はopacity: 0）を指定。</td>
+                  </tr>
+                  <tr>
+                    <th>v-enter-active</th>
+                    <td>要素がDOMに追加されるとほぼ同時に追加されトランジションの終了時に削除される。トランジションの期間、遅延、イージングを定義する。</td>
+                  </tr>
+                  <tr>
+                    <th>v-enter-to</th>
+                    <td>要素がDOMに追加されるのとほぼ同時に追加され(同時にv-enterが削除)、トランジション終了時に削除される。</td>
+                  </tr>
+                  <tr>
+                    <th>v-leave</th>
+                    <td>トランジションの開始直前に追加され、直後に削除される。要素が削除される前、トランジションの開始時の状態（標準はopacity: 1）を指定。</td>
+                  </tr>
+                  <tr>
+                    <th>v-leave-active</th>
+                    <td>トランジション開始直前に追加され終了時に削除される。トランジションの期間、遅延、イージングを定義する。</td>
+                  </tr>
+                  <tr>
+                    <th>v-leave-to</th>
+                    <td>トランジション開始直前に追加され(同時にv-leaveが削除)、トランジション終了時に削除される。</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="u-mb2">
+<pre v-pre>
+// 親テンプレート
+&lt;button v-on:click="isShow = !isShow"&gt;表示・非表示切り替え&lt;/button&gt;
+&lt;transition&gt;
+  &lt;div v-if="isShow"&gt;トランジションしたい要素&lt;/div&gt;
+&lt;/transition&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+...
+  data: {
+    isShow: true
+  }
+...
+---------------------------
+// css
+.v-enter,
+.v-leave-to {
+  opacity: 0;
+}
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 1s ease;
+}
+.v-enter-to,
+.v-leave {
+  opacity: 1;
+}
+</pre>
+              <button v-on:click="isShow = !isShow">表示・非表示切り替え</button>
+              <transition>
+                <div v-if="isShow">トランジションしたい要素</div>
+              </transition>
+            </div>
+            <div class="u-mb2">
+              <p>今のところ、トランジションについてはそんなに使う機会があるかなあといった感じ。追々必要になったところで<a harf="https://jp.vuejs.org/v2/guide/transitions.html" target="_blank" class="c-txtLink">公式</a>を参考に掘り下げたい。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">動的引数</h2>
+            <div class="u-mb2">
+              <p>v-bind、v-on、v-slotディレクティブの引数にあたる部分は[角括弧]で囲むとJavaScriptの式として動的に評価され、そこで評価された値が最終的な引数を指す値として使用される。これを<a href="https://jp.vuejs.org/v2/guide/syntax.html#%E5%8B%95%E7%9A%84%E5%BC%95%E6%95%B0" target="_blank" class="c-txtLink">動的引数</a>と呼ぶ。<br>下記の例では、「attributeName」は「href」に置き換えられ「v-bind:href」と同じとなるのだが、現状わざわざそんな書き方をする理由がわからないので、使いどころが不明。ついでに「JavaScriptの式として動的に評価される」という意味も理解できず。とりあえず、こういった書き方もある程度に…。</p>
+<pre v-pre>
+&lt;a v-bind:[attributeName]="url"&gt;リンク&lt;/a&gt;
+&lt;a v-on:[eventName]="doSomething"&gt;click&lt;/a&gt;
+---------------------------
+new Vue({
+  el: '#App',
+  data: {
+    attributeName: 'href',
+    eventName: 'click',
+    url: 'https://jp.vuejs.org/v2/guide/syntax.html'
+  }
+})
+</pre>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">動的コンポーネント</h2>
+            <div class="u-mb2">
+              <p class="u-mb1">Vue独自タグの&lt;component&gt;にis属性を使うことで、ユーザーの操作などによって複数のコンポーネントを動的に切り替えることができる。</p>
+              <toggle-component>
+<pre v-pre>
+// 子コンポーネント
+const tabContents1 = {
+  template: `
+  &lt;div class="tabContainer"&gt;
+    &lt;p&gt;タブコンポーネントのコンテンツ1&lt;/p&gt;
+  &lt;/div&gt;
+  `
+};
+const tabContents2 = {
+  template: `
+  &lt;div class="tabContainer"&gt;
+    &lt;p&gt;タブコンポーネントのコンテンツ2&lt;/p&gt;
+    &lt;label&gt;&lt;input type="checkbox" v-bind:checked="checked" v-on:change="$emit('change', $event.target.checked)"&gt;{{checked}}&lt;/label&gt;
+  &lt;/div&gt;
+  `,
+  model: {
+    prop: 'checked',
+    event: 'change'
+  },
+  props: {
+    checked: Boolean
+  },
+};
+const tabContents3 = {
+  template: `
+  &lt;div class="tabContainer"&gt;
+    &lt;p&gt;タブコンポーネントのコンテンツ3&lt;/p&gt;
+    &lt;button @click="show = !show"&gt;クリック@{{show}}&lt;/button&gt;
+    &lt;template v-if="show"&gt;
+      &lt;p&gt;表示がアクティブのときだけ表示する。&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  `,
+  data() {
+    return {
+      show: false
+    }
+  }
+};
+---------------------------
+// 親テンプレート
+&lt;button v-for="tab in tabs" v-bind:key="tab.key" v-bind:class="['tabMenu', { 'is-active': currentTab === tab.key }]" v-on:click="currentTab = tab.key"&gt;{{ tab.name }}&lt;/button&gt;
+&lt;component v-bind:is="tabComponents" v-model="testCheckbox"&gt;&lt;/component&gt;
+---------------------------
+// 親コンポーネント
+new Vue({
+...
+  components: {
+    'tab-contents1': tabContents1,
+    'tab-contents2': tabContents2,
+    'tab-contents3': tabContents3,
+  },
+  data: {
+    currentTab: 'contents1',
+    tabs: [
+      {
+        key: 'contents1',
+        name: 'タブ1'
+      },
+      {
+        key: 'contents2',
+        name: 'タブ2'
+      },
+      {
+        key: 'contents3',
+        name: 'タブ3'
+      }
+    ],
+    testCheckbox: false
+  },
+  computed: {
+    tabComponents() {
+      return 'tab-' + this.currentTab.toLowerCase()
+    }
+  }
+...
+</pre>
+              </toggle-component>
+              <div class="u-mb1">
+                <button v-for="tab in tabs" v-bind:key="tab.key" v-bind:class="['tabMenu', { 'is-active': currentTab === tab.key }]" v-on:click="currentTab = tab.key">{{ tab.name }}</button>
+                <component v-bind:is="tabComponents" v-model="testCheckbox"></component>
+              </div>
+              <p>上記のタブ2の持つチェックボックスは子から親にチェックボックスのvalueの値を渡しているので、タブが切り替えられても状態が保持される。タブ3内のテキストの表示切り替えは、子コンポーネント内で処理されているため、一度テキストを表示したあとタブの表示を切り替えると初期状態に戻る。これを回避したいときは、コンポーネントの状態を保持（キャッシュ）する&lt;keep-alive&gt;で&lt;component&gt;要素をラップすればよい。</p>
+<pre v-pre>
+&lt;keep-alive&gt;
+  &lt;component v-bind:is="tabComponents" v-model="testCheckbox"&gt;&lt;/component&gt;
+&lt;/keep-alive&gt;
+</pre>
+              <keep-alive>
+                <component v-bind:is="tabComponents" v-model="testCheckbox"></component>
+              </keep-alive>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">Mixin</h2>
+            <div class="u-mb2">
+              <p class="u-mb1">複数のコンポーネントで同一の機能（data、methods、computedなどのオプションやライフサイクルフック）を持たせたいとき、Mixinを利用することで機能を共通化できる。</p>
+              <toggle-component>
+<pre v-pre>
+// Mixinオブジェクト
+const myMixin = {
+  data(){
+    return {
+      mixinMsg: '「ミックスインで持つデータ」',
+      btnTxt: 'ミックスインのメソッド'
+    }
+  },
+  created: function () {
+    console.log('ミックスインのcreated');
+  },
+  methods: {
+    changeMsg: function () {
+      this.mixinMsg = 'ミックスインでデータを変更';
+    }
+  }
+}
+---------------------------
+// 子コンポーネント
+Vue.component('mixin-component-01', {
+  mixins: [myMixin],
+  template: `
+    &lt;div class="u-mb1"&gt;
+      &lt;p&gt;{{mixinMsg}}&lt;/p&gt;
+      &lt;button @click="changeMsg"&gt;{{btnTxt}}&lt;/button&gt;
+    &lt;/div&gt;
+  `,
+  created: function () {
+    console.log('コンポーネントのcreated');
+  }
+});
+Vue.component('mixin-component-02', {
+  mixins: [myMixin],
+  template: `
+    &lt;div class="u-mb1"&gt;
+      &lt;p&gt;{{addMsg}}&lt;/p&gt;
+      &lt;button @click="changeMsg"&gt;{{btnTxt}}&lt;/button&gt;
+    &lt;/div&gt;
+  `,
+  data(){
+    return {
+      compoMsg: 'にコンポーネントでテキストを追加',
+      btnTxt: 'コンポーネントのメソッド'
+    }
+  },
+  computed:{
+    addMsg() {
+      return this.mixinMsg + this.compoMsg;
+    },
+  },
+  methods: {
+    changeMsg: function () {
+      this.mixinMsg = '「コンポーネントでデータを変更」';
+      this.compoMsg = 'コンポーネントのメソッド';
+    }
+  }
+});
+---------------------------
+// 親テンプレート
+&lt;mixin-component-01&gt;&lt;/mixin-component-01&gt;
+&lt;mixin-component-02&gt;&lt;/mixin-component-02&gt;
+</pre>
+              </toggle-component>
+              <mixin-component-01></mixin-component-01>
+              <mixin-component-02></mixin-component-02>
+
+              <p>Mixinとコンポーネントでdata、methods、computedなどのプロパティ名が同じものだった場合はコンポーネント側が優先され、ライフサイクルフックが重複している場合は、Mixin→コンポーネントの順で両方実行される。Mixinはグローバルな使用も可能だが使う際には注意が必要ということで、多用は推奨されないらしい。詳しくは<a href="https://jp.vuejs.org/v2/guide/mixins.html#%E3%82%B0%E3%83%AD%E3%83%BC%E3%83%90%E3%83%AB%E3%83%9F%E3%83%83%E3%82%AF%E3%82%B9%E3%82%A4%E3%83%B3" target="_blank" class="c-txtLink">公式</a>を参照。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">DOM要素へのアクセス</h2>
+            <div class="u-mb2">
+              <p class="u-mb1">特別な属性refとインスタンスプロパティ$refsを使うことで、getElementbyIdのように特定の要素を取得できる。</p>
+              <toggle-component>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('toggle-component', {
+  template: `
+    &lt;div class="u-mb2" ref="target"&gt;
+    // 対象の要素に任意の名前でref属性を付与
+      &lt;template v-if="isShow"&gt;
+        &lt;slot&gt;&lt;/slot&gt;
+      &lt;/template&gt;
+      &lt;button @click="toggleEvent"&gt;{{btnTxt}}&lt;/button&gt;
+    &lt;/div&gt;
+  `,
+  data() {
+    return {
+      btnTxt: '',
+      isShow: false,
+      target:''
+    }
+  },
+  mounted: function () {
+    this.changeTxt();
+    this.target = this.$refs.target;
+    // 要素へのアクセスはDOMの生成が完了しているタイミングで行う
+  },
+  methods: {
+    toggleEvent(){
+      this.isShow = !this.isShow;
+      this.changeTxt();
+      this.target.scrollIntoView();
+    },
+    changeTxt() {
+      if (this.isShow) {
+        this.btnTxt = 'コードを閉じる';
+      } else {
+        this.btnTxt = 'コードを見る';
+      }
+    }
+  }
+});
+---------------------------
+// 親テンプレート
+&lt;toggle-component&gt;
+  &lt;pre v-pre&gt;...省略...&lt;/pre&gt;
+&lt;/toggle-component&gt;
+</pre>
+              </toggle-component>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">カスタムディレクティブ</h2>
+            <div class="u-mb2">
+              <p>「v-**」の形でディレクティブを自作できる。カスタムディレクティブの定義方法はdirective関数を使ってグローバルに登録するか、コンポーネントのdirectiveオプションで登録するか2通り。グローバルであれば全てのコンポーネントで使用できるのでこちらの方が利便性はありそう。まだ理解は足りていないので触りだけ。</p>
+<pre v-pre>
+// グローバルカスタムディレクティブ
+Vue.directive('カスタムディレクティブ名', {
+  フック関数: function (フック引数) {
+    ...対象要素に対する処理
+  }
+})
+// グローバルカスタムディレクティブ
+directives: {
+  カスタムディレクティブ名: {
+    フック関数: function (フック引数) {
+      ...対象要素に対する処理
+    }
+  }
+}
+</pre>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table u-mb1">
+                <caption>フック関数（決まったタイミングに処理を割り込ませる）</caption>
+                <colgroup>
+                  <col width="22%">
+                  <col width="78%">
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <th>bind</th>
+                    <td>ディレクティブが初めて要素と紐づいた時</td>
+                  </tr>
+                  <tr>
+                    <th>inserted</th>
+                    <td>紐づいている要素が親Nodeに挿入された時</td>
+                  </tr>
+                  <tr>
+                    <th>update</th>
+                    <td>紐づいた要素を含むコンポーネントのVNode<sup>※</sup>が更新された時（子コンポーネントが更新される前）</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table class="c-table u-mb1">
+                <caption>フック引数</caption>
+                <tbody>
+                  <tr>
+                    <th>el</th>
+                    <td>ディレクティブが紐づく要素</td>
+                  </tr>
+                  <tr>
+                    <th>binding</th>
+                    <td>name（v-（接頭辞）なしのディレクティブ名）やvalue（ディレクティブに渡される値）などのプロパティを含むオブジェクト</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>フック関数と引数については、上記以外にもいくつかある。詳しくは<a href="https://jp.vuejs.org/v2/guide/custom-directive.html#%E3%83%95%E3%83%83%E3%82%AF%E9%96%A2%E6%95%B0" target="_blank" class="c-txtLink">公式</a>を確認。</p>
+              <p><small>※VNodeについては保留で。</small></p>
+            </div>
+            <div class="u-mb2">
+<pre v-pre>
+// グローバルカスタムディレクティブ
+Vue.directive('custom-directive', {
+  bind: function (el, binding) {
+    console.group('bind');
+    console.log(el);
+    console.log(binding);
+    console.log(vnode);
+    console.log(oldVnode);
+    el.style.backgroundColor = binding.value;
+    el.style.padding = '5px';
+    el.placeholder = 'コンソールも確認'
+  }
+})
+---------------------------
+// テンプレート
+&lt;input type="text" v-custom-directive="'#dbf4f4'"&gt;
+</pre>
+              <input type="text" v-custom-directive="'#dbf4f4'">
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">テンプレート制御ディレクティブ</h2>
+            <div class="u-mb2">
+              <p>テンプレートやコンパイル制御のためのディレクティブ。</p>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table u-mb1">
+                <tr>
+                  <th>v-pre</th>
+                  <td>テンプレートのコンパイルをスキップする。マスタッシュ構文タグもそのまま表示される。</td>
+                </tr>
+                <tr>
+                  <th>v-once</th>
+                  <td>対象を一度だけ描画し、そのあとは静的なコンテンツとして扱われる。</td>
+                </tr>
+                <tr>
+                  <th>v-text</th>
+                  <td>要素内のテキストコンテンツがマスタッシュ構文のみであれば、代わりにv-textを使って記述できる。</td>
+                </tr>
+                <tr>
+                  <th>v-html</th>
+                  <td>htmlタグをそのまま表示させる。主にAPIから取得したHTML文章を描画するときに使用される。</td>
+                </tr>
+                <tr>
+                  <th>v-clock</th>
+                  <td>Vueインスタンスのコンパイル完了すると取り除かれるので、CSSと組み合わせてコンパイル前のテンプレートが画面に表示されるのを防ぐ。CSSで指定するときは、要素名[v-clock]とする。</td>
+                </tr>
+              </table>
+<pre v-pre>
+&lt;div class="testCloak" v-cloak&gt;
+  {{ message }}
+&lt;/div&gt;
+---------------------------
+// CSS
+.testCloak{
+  animation: cloak-in 1s;
+}
+.testCloak[v-cloak]{
+  opacity: 0;
+}
+@keyframes cloak-in{
+  0% {opacity: 0;}
+}
+</pre>
+              <div class="testCloak" v-cloak>
+                {{ message }}
+              </div>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">修飾子</h2>
+            <div class="u-mb2">
+              <p>ディレクティブを使用するときに追加できる処理（修飾子）のこと。</p>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table u-mb1">
+                <caption>v-modelに追加できる修飾子</caption>
+                <colgroup>
+                  <col width="20%">
+                  <col width="80%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>修飾子</th>
+                    <th>処理</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>.lazy</th>
+                    <td>入力されたタイミングではなく、入力が確定されたタイミングでバインドさせる。</td>
+                  </tr>
+                  <tr>
+                    <th>.number</th>
+                    <td>入力された値を数値に変換する。</td>
+                  </tr>
+                  <tr>
+                    <th>.trim</th>
+                    <td>入力された値の余計なスペースを削除する。</td>
+                  </tr>
+                </tbody>
+              </table>
+              <pre><code>v-model.lazy="プロパティ名"</code></pre></p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">イベント修飾子</h3>
+            <div class="u-mb2">
+              <p>イベント修飾子はイベントの振る舞いを変更する修飾子でv-onと合わせて使用する。</p>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table u-mb1">
+                <colgroup>
+                  <col width="20%">
+                  <col width="80%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>修飾子</th>
+                    <th>処理</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>stop</td>
+                    <td>event.stopPropagation()を呼ぶ（イベント伝播の停止）</td>
+                  </tr>
+                  <tr>
+                    <td>prevent</td>
+                    <td>event.preventDefault()を呼ぶ（イベントの無効）</td>
+                  </tr>
+                  <tr>
+                    <td>capture</td>
+                    <td>親要素のイベントを子要素のそれより先に実行できる。</td>
+                  </tr>
+                  <tr>
+                    <td>self</td>
+                    <td>イベントが発生した要素が自分自身のときにハンドラが呼び出される。</td>
+                  </tr>
+                  <tr>
+                    <td>once</td>
+                    <td>初回に一度だけ実行される。ネイティブDOM専用。</td>
+                  </tr>
+                  <tr>
+                    <td>passive</td>
+                    <td>ハンドラがevent.preventDefault()を含んでいても、呼び出さない。モバイルでのスクロールイベントでかくつきを防ぐのに使われる。</td>
+                  </tr>
+                  <tr>
+                    <td>native</td>
+                    <td>コンポーネントのルート要素にあるイベントを呼び出す。ただし$emitを使う方法が主流で、Vue 3では廃止されている。</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>使用方法などは<a href="https://jp.vuejs.org/v2/guide/events.html?#%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88%E4%BF%AE%E9%A3%BE%E5%AD%90" target="_blank" class="c-txtLink">公式</a>を参考にする。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">キー修飾子</h3>
+            <div class="u-mb2">
+              <p>特定のキーがクリックされたときイベントを発火したい場合にv-onに追加して利用する。</p>
+            </div>
+            <div class="u-mb2">
+              <table class="c-table u-mb1">
+                <colgroup>
+                  <col width="20%">
+                  <col width="80%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>修飾子</th>
+                    <th>処理</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>.enter</th>
+                    <td>エンターキーが押下されたとき。</td>
+                  </tr>
+                  <tr>
+                    <th>.enter</th>
+                    <td>エンターキーが押下されたとき。</td>
+                  </tr>
+                  <tr>
+                    <th>.left</th>
+                    <td>マウスの左ボタンがクリックされたとき。</td>
+                  </tr>
+                  <tr>
+                    <th>.right</th>
+                    <td>マウスの右ボタンがクリックされたとき。</td>
+                  </tr>
+                  <tr>
+                    <th>.middle</th>
+                    <td>マウス中央のボタンがクリックされたとき。</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>詳しくは<a href="https://jp.vuejs.org/v2/guide/events.html#%E3%82%AD%E3%83%BC%E4%BF%AE%E9%A3%BE%E5%AD%90" target="_blank" class="c-txtLink">公式</a>を参考にする。</p>
+            </div>
+          </div>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/task/prototyping-01.html" class="m-paging_prev">練習その1</a>
+            <a href="/" class="m-paging_page">INDEX</a>
+            <a href="#" class="m-paging_next is-inactive">単一ファイルコンポーネント</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/inc/layout/footer.html" -->
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="/assets/js/task/mixin-samlpe.js"></script>
+  <script src="/assets/js/task/custom-samlpe.js"></script>
+  <script src="/assets/js/task/others-child.js"></script>
+  <script src="/assets/js/task/others.js"></script>
+</body>
+</html>
