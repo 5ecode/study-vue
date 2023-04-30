@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Single File Component">Single File Component</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">単一ファイルコンポーネント</h1>
+          <div id="App">
+            <div class="u-mb2">
+              <p><strong>単一ファイルコンポーネント</strong>とは、1つのファイルでHTML、JavaScript、CSSをセットにして1つの機能を持った部品（モジュール）として管理する仕組み、またはそのファイル（拡張子は.vue）のことを指す。英語でいうと<strong>Single File Component</strong>、頭文字を取って<strong>SFC</strong>と呼ばれることもある。</p>
+              <p>SFCは機能ごとにモジュール化されているため保守性も高く再利用性がしやすい。そのためコードが煩雑になりがちな規模の大きい開発では特に有用性が高いとされる。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">単一ファイルコンポーネントの構成</h2>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;template&gt;
+  &lt;div id="App"&gt;
+    &lt;h1 class="ttl"&gt;{{ mainTtl }}&lt;/h1&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'App'
+  data: function () {
+    return {
+      mainTtl: '単一ファイルコンポーネント'
+    }
+  }
+}
+&lt;/script&gt;
+
+&lt;style scoped&gt;
+.ttl {
+  text-align: center;
+  color: #4d7dc5;
+  font-family: "Verdana";
+  font-size: 100px;
+  font-weight: bold;
+  line-height: 1.2;
+}
+&lt;/style&gt;
+</pre>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">&lt;template&gt;</h3>
+            <div class="u-mb2">
+              <p>HTMLの部分。これまで記述してきたコンポーネントのtemplateプロパティと同じもの。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">&lt;script&gt;</h3>
+            <div class="u-mb2">
+              <p>コンポーネントのロジック。JavaScriptの部分。先述のコンポーネントのtemplate以外の部分にあたる。<br>「export default」は、ES6のモジュール構文のひとつで、ざっくり言うと関数やオブジェクトを外部に書き出すための記述。1ファイル内で、1度しか使えないという特徴を持つ。そして書き出された内容は「import」で別のモジュールで読み込むことができる。SFCではこの「export default」と「import」で部品同士を組み合わせてひとつのページを構築していく。</p>
+<pre v-pre>
+&lt;script&gt;
+  import コンポーネント名 from "単一ファイルコンポーネントのファイルパス"
+  export default {
+    components: { コンポーネント名 }
+  }
+&lt;/script&gt;
+</pre>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">&lt;style&gt;</h3>
+            <div class="u-mb2">
+              <p>コンポーネントの見た目を調整する所謂cssの部分。&lt;style&gt;要素にscoped属性を設定すると、同ファイル内のテンプレートにのみ適用される。scoped属性のない&lt;style&gt;を記述できるが、他のコンポーネントに影響してしまうことを考えると積極的には使えない気がする。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">Vue開発環境の構築</h2>
+            <div class="u-mb2">
+              <p>SFCは専用の開発環境下でのみ実行することができる特殊な形式なので、サーバーに反映するときはブラウザ上でも動作するファイルに変換（ビルド）する必要がある。このビルド機能を持ったVueの開発環境には「Vue CLI」が広く使用されていたが、2023年4月現在は「create-vue」が推奨されている<a href="https://cli.vuejs.org/index.html" target="_blank" class="c-txtLink">様子</a>なので、現行インストールされているNode.js「v14.20.0」で環境構築を開始。</p>
+<pre>
+// vue.js 2の場合
+<code>npm create vue@2</code>
+
+// vue.js 3の場合
+<code>npm create vue@3</code>
+</pre>
+              <p class="u-mb1">プロジェクト名とオプションを有無を聞かれるので、ひとまずオプションはすべてNOを選択。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_01.png" alt="" width="655" height="211"></p>
+              <p>次に上記で決めたプロジェクトに移動（例だと「cd create-vue-test」）して、コマンドを順に実行する。</p>
+<pre>
+<code>npm install
+npm run dev</code>
+</pre>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_02.png" alt="" class="u-fullImg"></p>
+              <p class="u-mb1">表示されたURLにアクセスするとプロジェクトのTOPページが表示される。これでひとまず環境は整ったことになるので、思ったよりは手軽と言える。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">ディレクトリ構成</h3>
+            <div class="u-mb2">
+              <p class="u-mb1">作成したプロジェクトのデフォルトの構成は以下の通り。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_03.png" alt="" width="283" height="730"></p>
+              <p class="u-mb1">ぱっと見でわかるのは「src &gt; components」が、子コンポーネントの格納場所で、「src &gt; assets」が、コンポーネント以外のもの（画像やcssなど）を格納するようになっているんだろうということ。「public」フォルダは現在ファビコンしかないけど、用途はまだわらかないので保留。他に気になるのは設定ファイル以外では、ルートの「index.html」と「src」配下の「App.vue」「main.js」の3つ。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">index.html</h4>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;link rel="icon" href="/favicon.ico" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Vite App&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="app"&gt;&lt;/div&gt;
+    &lt;script type="module" src="/src/main.js"&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+                <p>「index.html」のbody内では、id属性にappを持つdivタグとtype="module"を指定した&lt;script&gt;タグでモジュールとしてmain.jsを読み込んでいるだけで、コンテンツ自体の記述はない。ただこれまでの学習の過程から、これがルートインスタンスを反映するためのHTMLテンプレートであることは予想できる。試しにtitleを変更すると、開発サーバにアクセスしたときに表示された前記のページのtitleも即座に更新されたので、現状ブラウザに表示されているのはこの「index.html」と考えていいと思う。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">main.js</h4>
+            <div class="u-mb2">
+<pre v-pre>
+import Vue from 'vue'
+import App from './App.vue'
+
+import './assets/main.css'
+
+new Vue({
+render: (h) => h(App)
+}).$mount('#app')
+</pre>
+              <p>「main.js」では、new Vueで生成されたルートインスタンスを、elオプションではなく$mountメソッドというvue独自のメソッドで要素（#app）に紐づけ（マウント）している。ちなみにelオプションでマウントしても結果は同じだった。あえて$mountを使っている理由はなんなのか、これについては残念ながら調べがつかなかった。</p>
+              <p>renderオプションで定義した「(h) => h(App)」は描画（render）処理をする関数で、省略せずに書けば以下になる。</p>
+<pre>
+render: function(createElement){
+  return createElement(App)
+}
+</pre>
+              <p>createElementは引数に指定した要素をDOM要素として生成する関数で、ここではimportしたApp.vueが渡されているため、結果index.htmlの&lt;div id="app"&gt;内にその内容（HTMLとスタイル）が書き出される。</p>
+              <p>またmain.cssはプロジェクト共通のデフォルトスタイルが記述されており、必要に応じてカスタマイズしていくものと思われる。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">App.vue</h4>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;script setup&gt;
+import HelloWorld from './components/HelloWorld.vue'
+import TheWelcome from './components/TheWelcome.vue'
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div id="app"&gt;
+    &lt;header&gt;
+      &lt;img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" /&gt;
+
+      &lt;div class="wrapper"&gt;
+        &lt;HelloWorld msg="You did it!" /&gt;
+      &lt;/div&gt;
+    &lt;/header&gt;
+
+    &lt;main&gt;
+      &lt;TheWelcome /&gt;
+    &lt;/main&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+header {
+  line-height: 1.5;
+}
+
+.logo {
+  display: block;
+  margin: 0 auto 2rem;
+}
+
+@media (min-width: 1024px) {
+  header {
+    display: flex;
+    place-items: center;
+    padding-right: calc(var(--section-gap) / 2);
+  }
+
+  .logo {
+    margin: 0 2rem 0 0;
+  }
+
+  header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+&lt;/style&gt;
+</pre>
+              <p>「App.vue」はコンテンツ部分の大枠になるコンポーネント。importで別のコンポーネントを2つ読み込んでいて、自身のtemplateでそれを設置している。&lt;script&gt;タグに「setup」があるのは、Vue.jsのv3.2から導入された「&lt;script setup&gt;構文」というもの。詳しくはここでは割愛。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">ビルド</h3>
+            <div class="u-mb2">
+              <p>だいたいのファイルの構成がわかったところで、これをサーバー上でも動作するファイル形式に変換（ビルド）してみる。</p>
+              <pre><code>npm run build</code></pre>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_04.png" alt="" width="660" height="163"></p>
+              <p class="u-mb1">少し時間があって、無事に「dist」ディレクトリにビルドされたファイルが格納された。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_05.png" alt="" width="285" height="427"></p>
+              <p class="u-mb1">「dist」の中身をすべてサーバーに上げ、開発サーバーのもの（ビルド前）とをブラウザで見比べてみると、</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_06.png" alt="" class="u-fullImg"></p>
+              <p class="u-mb1">ビルド前↑は&lt;style&gt;要素でcss設定がされているのに対して、ビルド後↓はきちんとcssが分離され外部ファイルとして読み込まれている。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_07.png" alt="" class="u-fullImg"></p>
+              <p>「dist > assets」のcssファイルは「index.92ba09d0.css」1つだけで、これに全体の共通スタイルとコンポーネントごとのスタイルがまとめられたようだ。jsは今回はVue2で環境を作ったので「index.a4e45033.js」の他に、レガシーブラウザ用のjsファイルが2つ生成されていた。</p>
+              <p>と、ここで思うのは、cssとjs、画像ファイルが「assets」にどさっと入れられているけどフォルダ分けはできないのか（そもそもしないものなのか）ということと、ページ数が増えたらどうなるのかということ。直接触るファイルでないから気にしなくてもいいのかな。下層ページの作り方やページ遷移の書き方などはまた別の回にまとめていこうと思う。</p>
+            </div>
+          </div>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/task/others.html" class="m-paging_prev">その他の機能</a>
+            <a href="/" class="m-paging_page">INDEX</a>
+            <a href="#" class="m-paging_next is-inactive">Vue.js v2とv3の違い</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/inc/layout/footer.html" -->
+  </div>
+</body>
+</html>

@@ -405,8 +405,6 @@ Vue.directive('custom-directive', {
     console.group('bind');
     console.log(el);
     console.log(binding);
-    console.log(vnode);
-    console.log(oldVnode);
     el.style.backgroundColor = binding.value;
     el.style.padding = '5px';
     el.placeholder = 'コンソールも確認'
@@ -602,7 +600,7 @@ Vue.directive('custom-directive', {
           <div class="m-paging">
             <a href="/task/prototyping-01.html" class="m-paging_prev">練習その1</a>
             <a href="/" class="m-paging_page">INDEX</a>
-            <a href="#" class="m-paging_next is-inactive">単一ファイルコンポーネント</a>
+            <a href="/task/sfc.html" class="m-paging_next">単一ファイルコンポーネント</a>
           </div>
         </div>
       </div>
