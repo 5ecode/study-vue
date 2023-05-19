@@ -10,7 +10,7 @@
     border: 1px solid $baseColor;
     border-radius: 4px;
     background: #fff;
-    font-size: 1.6rem;
+    font-size: rem(16);
   }
   &input:not(textarea),
   &select{

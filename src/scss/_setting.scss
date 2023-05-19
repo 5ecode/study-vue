@@ -14,9 +14,17 @@ $mainColor: #53c0d3;
 $subColor: #4d7dc5;
 $linkColor: #00a7a7;
 
+/* font-size */
+$baseFontSize: 16;
+
 /* --------------------------------------------------------------------
   @function
 ---------------------------------------------------------------------- */
+/* フォントrem */
+@function rem($px) {
+  @return $px / $baseFontSize * 1rem;
+}
+
 /* レスポンシブ%値 */
 @function percent($size, $viewport: 750) {
   $rate: calc($size / $viewport);
@@ -115,4 +123,16 @@ $linkColor: #00a7a7;
   @if $cell == 11{
     max-width: calc(((100% / 12) * 11) - $margin);
   }
+}
+
+/* キーフレーム 例：@include keyframes(menu-bar01);*/
+@mixin keyframes($animation-name: animaton){
+  @keyframes #{$animation-name}{
+    @content;
+  }
+}
+
+/* アニメーション 例：@include animation(menu-bar01 .75s forwards);*/
+@mixin animation($animation-name){
+  animation: $animation-name;
 }

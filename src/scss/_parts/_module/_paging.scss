@@ -12,7 +12,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    font-size: 18px;
+    font-size: rem(18);
     font-weight: bold;
     &_prev,
     &_next{

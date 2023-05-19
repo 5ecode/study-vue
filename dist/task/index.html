@@ -19,11 +19,14 @@
           </div>
           <h1 class="c-ttlType01 u-mb1">Vue.jsってこういうもの</h1>
           <div class="u-mb2">
-            <p>Vue.jsは、独自のテンプレート構文とVueインスタンスでDOM（Document Object Model）を描画することができるJavaScriptのフレームワーク。</p>
-            <p>データに変更があれば描画は自動で更新され、何らかのアクションを起こしたり、挙動を変わったりする。こういったデータありきで動く仕組みを<strong>データバインディング</strong>という。<br>Vue.jsでは「何を」「どうしたいか」を記述すればDOMが構築される仕組みになっていて、どうやってするかはコンパイラ（Vue.jsの本体）が勝手にやってくれるので気にしなくてもいいらしい。</p>
+            <p>Vue.jsは、独自のテンプレート構文とVueインスタンスでDOM（Document Object Model）を描画することができるJavaScriptのフレームワークである。</p>
+            <p>データに変更があれば描画は自動で更新され、何らかのアクションを起こしたり、挙動に変化があったりする。こういったデータありきで動く仕組みを<strong>データバインディング</strong>という。<br>Vue.jsでは「何を」「どうしたいか」を記述すればDOMが構築される仕組みになっていて、どうやってするかはコンパイラ（Vue.jsの本体）が勝手にやってくれるので気にしなくてもいいらしい。</p>
           </div>
+
+          <h2 class="c-ttlType02 u-mb1">インストール</h2>
           <div class="u-mb2">
-            <p>Vue.jsのインストールはひとまず<a href="https://jp.vuejs.org/v2/guide/installation.html" target="_blank" class="c-txtLink">公式</a>からダウンロードするか、CDN版を利用する。</p>
+            <p>Vue.jsの使用するには、本体をnpmでインストールするか、専用の開発環境を構築するか、CDN版を利用する方法がある。今回は一番手軽なCDN版でVue.js v2から学習を進めていく（v2は2023年12月31日でサポートが終了するので、追ってv3の学習も入れていく）。</p>
+            <pre><code>https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js</code></pre>
           </div>
 
           <h2 class="c-ttlType02 u-mb1">Vue.js基本的な書き方</h2>
@@ -301,7 +304,7 @@ new Vue({
 &lt;button type="button" @click="counter--"&gt;カウントダウン&lt;/button&gt;
 //v-on:イベント名="式（またはメソッド名）"
 //v-on:は@に省略可。
-&lt;p&gt;[counter = {{counter}}]&gt;/p&gt;
+&lt;p&gt;[counter = {{counter}}]&lt;/p&gt;
 ---------------------------
 new Vue({
   el: '#App',
@@ -506,7 +509,7 @@ new Vue({
 
             <h2 class="c-ttlType02 u-mb1">filters</h2>
             <div class="u-mb2">
-              <p>共通のテキストフォーマットを適用するための機能。コンポーネント内にオプションとして記述し特定のコンポーネント内でのみ使用可能なローカルフィルターと、コンポーネントの外に記述しすべてのコンポーネントから使用できるグローバルフィルターがある。加工したデータを返す処理はcomputedと同じだが、filtersの中ではthisが使えないのが特徴。Vue.js 3では廃止されていて、methodsやcomputedを使うよう推奨されている。</p>
+              <p>共通のテキストフォーマットを適用するための機能。コンポーネント内にオプションとして記述し特定のコンポーネント内でのみ使用可能なローカルフィルターと、コンポーネントの外に記述しすべてのコンポーネントから使用できるグローバルフィルターがある。加工したデータを返す処理はcomputedと同じだが、filtersの中ではthisが使えないのが特徴。Vue 3では廃止されていて、methodsやcomputedを使うよう推奨されている。</p>
             </div>
             <h3 class="c-ttlType03 u-mb1">フィルターの使い方</h3>
             <div class="u-mb2">
@@ -607,15 +610,15 @@ new Vue({
                   </tr>
                   <tr>
                     <th>beforeDestroy</th>
-                    <td>インスタンスが破棄される直前。<br>createdやmountedなどでaddeventlistener関数を使ってイベントハンドラを登録している場合、このタイミングか次のdestoryedでremoveEventListener関数を使って必ず解除する。</td>
+                    <td>インスタンスが破棄される直前。<br>createdやmountedなどでaddeventlistener関数を使ってイベントハンドラを登録している場合、このタイミングか次のdestoryedでremoveEventListener関数を使って必ず解除する。Vue 3では「beforeUnmount」に名称が変更。</td>
                   </tr>
                   <tr>
                     <th>destoryed</th>
-                    <td>インスタンスが破棄された直後。<br><small>※インスタンスは「$destroy()」で意図的に破棄できる。</small></td>
+                    <td>Vueインスタンスが破棄された直後。Vue 3では「unmounted」に名称が変更。</td>
                   </tr>
                 </tbody>
               </table>
-              <p>Chromeデベロッパーツールを開いて確認。<br>↓クリックするとこのページで紐づけたインスタンスが破棄される。</p>
+              <p>Chromeデベロッパーツールを開いて確認。<br>↓クリックするとこのページで紐づけたインスタンスが破棄される。<small>※インスタンスは「$destroy()」で意図的に破棄できる。</small></p>
               <button v-on:click="$destroy()">破棄</button>
             </div>
           </div>

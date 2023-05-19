@@ -11,7 +11,7 @@
 .mainTtl{
   margin-bottom: .5em;
   text-align: center;
-  font-size: 4rem;
+  font-size: rem(40);
   font-weight: bold;
   &::before{
     display: block;
@@ -33,7 +33,7 @@
 
 .taskList{
   text-align: center;
-  font-size: 2.5rem;
+  font-size: rem(25);
   &_item{
     margin-bottom: .5em;
   }

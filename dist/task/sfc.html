@@ -136,7 +136,7 @@ import App from './App.vue'
 import './assets/main.css'
 
 new Vue({
-render: (h) => h(App)
+  render: (h) => h(App)
 }).$mount('#app')
 </pre>
               <p>「main.js」では、new Vueで生成されたルートインスタンスを、elオプションではなく$mountメソッドというvue独自のメソッドで要素（#app）に紐づけ（マウント）している。ちなみにelオプションでマウントしても結果は同じだった。あえて$mountを使っている理由はなんなのか、これについては残念ながら調べがつかなかった。</p>
@@ -229,7 +229,7 @@ header {
           <div class="m-paging">
             <a href="/task/others.html" class="m-paging_prev">その他の機能</a>
             <a href="/" class="m-paging_page">INDEX</a>
-            <a href="#" class="m-paging_next is-inactive">Vue.js v2とv3の違い</a>
+            <a href="/task/difference.html" class="m-paging_next">Vue.js v2とv3の違い</a>
           </div>
         </div>
       </div>
