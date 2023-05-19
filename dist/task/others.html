@@ -18,7 +18,7 @@
             <p class="st-pageFront_ttl" data-ttl="Others">Others</p>
           </div>
           <h1 class="c-ttlType01 u-mb1">その他の機能</h1>
-          <div id="App">
+          <div id="App" class="testCloak" v-cloak>
             <div class="u-mb2">
               <p>前述してきたのはVue.jsのごく基本的な内容で、その他にも機能は細かく色々ある。</p>
             </div>
@@ -33,7 +33,7 @@
                 <tbody>
                   <tr>
                     <th>v-enter</th>
-                    <td>対象要素がDOMに追加される前に適用され、トランジション（アニメーション効果）の開始直後に削除される。トランジションの開始時の状態（標準はopacity: 0）を指定。</td>
+                    <td>対象要素がDOMに追加される前に適用され、トランジション（アニメーション効果）の開始直後に削除される。トランジションの開始時の状態（標準はopacity: 0）を指定。Vue 3では「v-enter-from」に名称変更。</td>
                   </tr>
                   <tr>
                     <th>v-enter-active</th>
@@ -45,7 +45,7 @@
                   </tr>
                   <tr>
                     <th>v-leave</th>
-                    <td>トランジションの開始直前に追加され、直後に削除される。要素が削除される前、トランジションの開始時の状態（標準はopacity: 1）を指定。</td>
+                    <td>トランジションの開始直前に追加され、直後に削除される。要素が削除される前、トランジションの開始時の状態（標準はopacity: 1）を指定。Vue 3では「v-leave-from」に名称変更。</td>
                   </tr>
                   <tr>
                     <th>v-leave-active</th>
@@ -162,6 +162,7 @@ const tabContents3 = {
 ---------------------------
 // 親テンプレート
 &lt;button v-for="tab in tabs" v-bind:key="tab.key" v-bind:class="['tabMenu', { 'is-active': currentTab === tab.key }]" v-on:click="currentTab = tab.key"&gt;{{ tab.name }}&lt;/button&gt;
+
 &lt;component v-bind:is="tabComponents" v-model="testCheckbox"&gt;&lt;/component&gt;
 ---------------------------
 // 親コンポーネント
@@ -341,7 +342,7 @@ Vue.component('toggle-component', {
 
             <h2 class="c-ttlType02 u-mb1">カスタムディレクティブ</h2>
             <div class="u-mb2">
-              <p>「v-**」の形でディレクティブを自作できる。カスタムディレクティブの定義方法はdirective関数を使ってグローバルに登録するか、コンポーネントのdirectiveオプションで登録するか2通り。グローバルであれば全てのコンポーネントで使用できるのでこちらの方が利便性はありそう。まだ理解は足りていないので触りだけ。</p>
+              <p>「v-**」の形でディレクティブを自作できる。カスタムディレクティブの定義方法はdirective関数を使ってグローバルに登録するか、コンポーネントのdirectiveオプションで登録するかの2通り。グローバルであれば全てのコンポーネントで使用できるのでこちらの方が利便性はありそう。まだ理解は足りていないので触りだけ。</p>
 <pre v-pre>
 // グローバルカスタムディレクティブ
 Vue.directive('カスタムディレクティブ名', {
@@ -445,8 +446,8 @@ Vue.directive('custom-directive', {
                 </tr>
               </table>
 <pre v-pre>
-&lt;div class="testCloak" v-cloak&gt;
-  {{ message }}
+&lt;div id="App" class="testCloak" v-cloak&gt;
+  ...コンテンツ...
 &lt;/div&gt;
 ---------------------------
 // CSS
@@ -460,9 +461,6 @@ Vue.directive('custom-directive', {
   0% {opacity: 0;}
 }
 </pre>
-              <div class="testCloak" v-cloak>
-                {{ message }}
-              </div>
             </div>
 
             <h2 class="c-ttlType02 u-mb1">修飾子</h2>

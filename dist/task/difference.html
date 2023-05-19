@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <link rel="stylesheet" href="/assets/css/pages/task/difference.css">
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Difference">Difference</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">Vue.js v2とv3の違い</h1>
+          <div id="App">
+            <div class="u-mb2">
+              <p>ここまでVue.js v2で学習してきた内容で変更された点と、Vue.js v3で新たに追加された機能のまとめ。公式は<a href="https://v3-migration.vuejs.org/ja/" target="_blank" class="c-txtLink">こちら</a>。インストールについては今回もCDN版を使用する。</p>
+              <pre><code>https://unpkg.com/vue@3/dist/vue.global.js</code></pre>
+              <p><a href="https://v3.ja.vuejs.org/guide/installation.html" target="_blank" class="c-txtLink">公式</a>ではv3の開発環境ツールとして新たに<a href="https://vitejs.dev/" target="_blank" class="c-txtLink">Vite</a>も紹介されていてる。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">変更点</h2>
+            <h3 class="c-ttlType03 u-mb1">新しいインスタンスの書き方</h3>
+            <div class="u-mb2">
+              <p>Vue 3ではcreateApp関数でインスタンスを生成する。これを<strong>アプリケーションインスタンス</strong>と呼び、描画エリアに紐付け（マウント）するには<strong>mountメソッド</strong>を使って引数にHTML要素またはcssセレクタの文字列を指定する。</p>
+<pre v-pre>
+const app = Vue.createApp({
+  /* options */
+})
+app.mount('#App')
+
+Vue.createApp({
+  // ...
+}).mount('#App')
+</pre>
+              <p>CDN版以外でVue.js本体を使用する場合は↓</p>
+<pre v-pre>
+import { createApp } from 'vue'
+
+const app = createApp({
+  /* options */
+})
+app.mount('#App')
+
+createApp({
+  // ...
+}).mount('#App')
+</pre>
+            </div>
+            <h3 class="c-ttlType03 u-mb1">dataオプション</h3>
+            <div class="u-mb2">
+              <p>Vue 2でルートインスタンスにおいてはオブジェクト（object）、コンポーネントでは関数（function）で定義していたdataオプションは、Vue 3からはオブジェクトを返す（return）関数でのみ定義するようになった。</p>
+<pre v-pre>
+Vue.createApp({
+  data() {
+    return {
+      message: 'Vue 3'
+    }
+  }
+}).mount('#App')
+---------------------------
+// テンプレート
+&lt;p class="u-fontB"&gt;Hello {{ message }} !&lt;/p&gt;
+</pre>
+            <p class="u-fontB">Hello {{ message }}</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">グローバルコンポーネント</h3>
+            <div class="u-mb1">
+              <p>グローバルコンポーネントはcomponentメソッドで定義する。</p>
+<pre v-pre>
+const app = Vue.createApp({})
+app.component('global-component', {
+  template: `
+    &lt;p class="u-fontB"&gt;{{ message }}&lt;/p&gt;
+    &lt;p&gt;&lt;strongp&gt;グローバルコンポーネントの使い方&lt;/strongp&gt;&lt;/p&gt;
+  `,
+  data: function () {
+    return {
+      message: 'Hello Vue!'
+    }
+  }
+})
+app.mount('#App')
+---------------------------
+// テンプレート
+&lt;global-component&gt;&lt;/global-component&gt;
+</pre>
+              <global-component></global-component>
+            </div>
+            <div class="u-mb2">
+              <p>インスタンスを変数に代入しない場合は以下のようにメソッドチェーンで繋げていく。<br>どちらの書き方が良いのか、または主流なのかは現時点では不明。</p>
+
+<pre v-pre>
+Vue.createApp({
+  // ...
+}).component('global-component', {
+  // ...
+}).mount('#App')
+</pre>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">templateオプション</h4>
+            <div class="u-mb2">
+              <p>v2ではローカル、グローバルどちらのコンポーネントでもtemplateは単一のタグで終了しなければならなかったが、v3からは上記の例のように単一のタグで囲わなくても複数の要素が使用できる。</p>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">コンポーネントのv-model</h3>
+            <div class="u-mb2">
+              <p>コンポーネントで使用するv-modelのvalue属性に紐づけられるプロパティは<strong>modelValue</strong>に、$emitするイベントは<strong>update:modelValue</strong>がデフォルト設定なった。<br>また追加ルールとして、すべてのカスタムイベントは<strong>emits</strong>オプションに定義することが<a href="https://v3.ja.vuejs.org/guide/component-custom-events.html#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%82%A4%E3%83%98%E3%82%99%E3%83%B3%E3%83%88%E3%81%AE%E5%AE%9A%E7%BE%A9" class="c-txtLink" target="_blank">推奨</a>されている。</p>
+<pre v-pre>
+Vue.createApp({
+  data() {
+    return {
+      testText:'初期値'
+    }
+  }
+}).component('custom-input', {
+  template: `&lt;p&gt;
+    &lt;input v-bind:value="modelValue" v-on:input="$emit('update:modelValue', $event.target.value)"&gt;
+    子側：{{modelValue}}
+    &lt;/p&gt;
+  `,
+  props: {'modelValue': [String, Number]},
+  emits: ['update:modelValue'] ←emitsオプション
+}).mount('#App')
+---------------------------
+// テンプレート
+&lt;p&gt;親側：{{testText}}&lt;/p&gt;
+&lt;custom-input v-model="testText"&lt;/custom-input&gt;
+↓ 同義 ↓
+&lt;custom-input v-bind:model-value="testText" v-on:update:model-value="testText = $event"&gt;&lt;/custom-input&gt;
+</pre>
+              <p>親側：{{testText}}</p>
+              <custom-input v-model="testText"></custom-input>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">v-modelのオプションの廃止</h4>
+            <div class="u-mb2">
+              <p>使用するフォーム要素や状況に応じてデフォルトの設定を変えたいときはmodelオプションの代わりに、v-modelの引数（コロンで繋げた値）を渡してイベントやプロパティの名前を変更する。</p>
+<pre v-pre>
+Vue.createApp({
+  data() {
+    return {
+      testCheckbox: false
+    }
+  }
+}).component('custom-input-checkbox', {
+  template: `
+    &lt;label&gt;&lt;input type="checkbox" v-bind:checked="checked" v-on:change="$emit('update:checked', $event.target.checked)"&gt;{{checked}}&lt;/label&gt;
+  `,
+  props: { checked: Boolean },
+  emits: ['update:checked']
+}).mount('#App')
+---------------------------
+// テンプレート
+&lt;custom-input-checkbox v-model:checked="testCheckbox"&gt;&lt;/custom-input-checkbox&gt;
+</pre>
+              <custom-input-checkbox v-model:checked="testCheckbox"></custom-input-checkbox>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">v-modelの複数使用</h4>
+            <div class="u-mb2">
+              <p>v-modelの引数が使えるようになったことで.sync修飾子は廃止され、v-modelは1つのカスタムタグに複数使用できるようになった。</p>
+<pre v-pre>
+Vue.createApp({
+  data() {
+    return {
+      login: { email: '', password: '' }
+    }
+  }
+}).component('login-component', {
+  template: `
+    &lt;div class="u-mb1"&gt;
+      &lt;label&gt;メール&lt;input type="email" :value="email" @input="$emit('update:email', $event.target.value)"&gt;&lt;/label&gt;
+      &lt;label&gt;パスワード&lt;input type="password" :value="password" @input="$emit('update:password', $event.target.value)" size="10"&gt;&lt;/label&gt;
+      子側props【{{email}} : {{password}}】
+    &lt;/div&gt;
+  `,
+  props: { email: String, password: String },
+  emits: ['update:email', 'update:password']
+}).mount('#App')
+---------------------------
+// テンプレート
+&lt;login-component v-model:email="login.email" v-model:password="login.password"&gt;&lt;/login-component&gt;
+</pre>
+              <login-component v-model:email="login.email" v-model:password="login.password"></login-component>
+              <p>親側dataオプション: {{login}}</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">v-modelのカスタム修飾子</h4>
+            <div class="u-mb2">
+              <p>v-modelには元々いくつかの修飾子（.lazyなど）があったが、v3からはさらに<a href="https://v3.ja.vuejs.org/guide/component-custom-events.html#v-model-%E4%BF%AE%E9%A3%BE%E5%AD%90%E3%81%AE%E5%87%A6%E7%90%86" target="_blank" class="c-txtLink">カスタム修飾子</a>の作成ができるようになった。今のところ使いどころの想像がつかないので、詳細は保留。</p>
+            </div>
+
+            <h2 class="c-ttlType02 u-mb1">v3注目の新機能</h2>
+            <div class="u-mb2">
+              <p>v3で新規追加された最低限抑えておくべき機能。</p>
+            </div>
+            <h3 class="c-ttlType03 u-mb1">Composition API</h3>
+            <div class="u-mb1">
+              <p><strong>Composition API</strong>とは大規模なコンポーネントの開発に適した仕組みのこと。v2ではdata、methods、computedなどをオプションごとにロジックを切り分けて記述しコンポーネントを定義する<strong>Options API</strong>という仕組みが使われていた。v3ではオプションを定義する代わりに、すべて<strong>setupメソッド</strong>内の処理として各種関数を使って定義。それをオブジェクト形式で返すことでコンポーネントのテンプレート内でオブジェクトのプロパティにアクセスすることができる。</p>
+<pre v-pre>
+Vue.createApp({
+  setup() {
+    // リアクティブデータの定義
+    const counter = Vue.ref(0);
+    const watchCounter = Vue.reactive({
+      newValue: null,
+      oldValue: null,
+    });
+
+    // 関数の定義
+    const increment = function () {
+      counter.value ++;
+    };
+    const decrement = function () {
+      counter.value --;
+    };
+
+    // 算出プロパティの定義（computedメソッド）
+    const doubleCounter = Vue.computed(function() {
+      return counter.value * 2;
+    });
+
+    // 監視プロパティの定義（watchメソッド）
+    Vue.watch(counter, function (newValue, oldValue) {
+      watchCounter.newValue = newValue;
+      watchCounter.oldValue = oldValue;
+    });
+
+    // 定義したものをオブジェクトで返す（プロパティの短縮構文）
+    return {
+      counter,
+      watchCounter,
+      increment,
+      decrement,
+      doubleCounter
+    }
+
+    // ライフサイクルフック
+    Vue.onMounted(function () {
+      console.log(`コンポーネントがマウントされました。`);
+    })
+    Vue.onUpdated(function () {
+      console.log(`リアクティブデータが変更されました！`);
+    })
+  }
+})
+.mount('#App')
+---------------------------
+// テンプレート
+&lt;button type="button" v-on:click="increment"&gt;カウントアップ&lt;/button&gt;&nbsp;&lt;button type="button" v-on:click="decrement"&gt;カウントダウン&lt;/button&gt;
+&lt;p&gt;カウント[counter = {{counter}}]&lt;/p&gt;
+&lt;p&gt;カウント2倍[doubleCounter = {{doubleCounter}}]&lt;/p&gt;
+&lt;p&gt;カウント監視{{watchCounter}}&lt;/p&gt;
+</pre>
+              <button type="button" v-on:click="increment">カウントアップ</button>&nbsp;<button type="button" v-on:click="decrement">カウントダウン</button>
+              <p>カウント[counter = {{counter}}]</p>
+              <p>カウント2倍[doubleCounter = {{doubleCounter}}]</p>
+              <p>カウント監視{{watchCounter}}</p>
+            </div>
+            <div class="u-mb2">
+              <p>リアクティブデータの定義に使用するrefとreactiveの使い分けは、データがオブジェクトであればreactiveを使用して、それ以外はrefを使うようにすればよさそう。またrefで定義した値はsetup内でアクセスする際に「.value」を付ける必要がある（テンプレート内では不要）。</p>
+              <p>ライフサイクルフックも各種関数として使用することができるが、一部v2のライフサイクルフックと名称が変更になっているのと、Composition APIのライフサイクルフック名は、従来の名称の前にonが付いていることに注意（mounted→onMounted）。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">親子間でのデータの受け渡し</h4>
+            <div class="u-mb2" id="vm">
+              <p>子がデータを受け取るために受け皿（propsオプション）を用意して、親から送られるプロパティを定義するのは従来と同じ。Composition APIではsetupメソッドの第一引数でpropsを受け取ることでsetup内で「props.プロパティ名」のように記述して使うことができるようになる。</p>
+              <p>子から親へデータを送るための仕組みも基本的には変わらない。setupの第二引数にcontextオブジェクトを渡すことで、setup内でemitメソッドが使用可能となる。emitはcontextのプロパティ（attrs、slots、emit、expose）のひとつなので、書き方は「context.emit(eventName)」。</p>
+<pre v-pre>
+const childProduct = {
+  template: `
+    &lt;li&gt;
+      ◎{{name}}:在庫{{stock}}
+      &lt;button v-if="stock" v-on:click="doSaleStock"&gt;買う&lt;/button&gt;
+      &lt;span v-else&gt;完売しました&lt;/span&gt;
+    &lt;/li&gt;
+  `,
+  props: {
+    name: String,
+    stock: Number,
+    index: Number
+  },
+  emits: ['child-click'],
+  setup(props, context) {
+    const doSaleStock = function() {
+      context.emit('child-click', props.index);
+    }
+
+    return { doSaleStock }
+  }
+};
+
+Vue.createApp({})
+.component('parent-component', {
+  components: {
+    'child-product': childProduct
+  },
+  template: `&lt;child-product v-for="(item,i) in product" v-bind:key="item.id" v-bind:index="i" v-bind="item" v-on:child-click="saleStock"&gt;&lt;/child-product&gt;`,
+  setup() {
+    const product = Vue.ref([
+      { id: 1, name: 'フルーツタルト', stock: 3, price: 410 },
+      { id: 2, name: '極生塩パン', stock: 10, price: 180 },
+      { id: 3, name: '草餅', stock: 1, price: 240 }
+    ])
+
+    const saleStock = function(i) {
+      if (product.value[i].stock &gt; 0) {
+        product.value[i].stock -= 1;
+      }
+    }
+
+    return { product, saleStock }
+  }
+}).mount('#App');
+---------------------------
+// テンプレート
+&lt;ul&gt;
+  &lt;parent-component&gt;&lt;/parent-component&gt;
+&lt;/ul&gt;
+</pre>
+              <ul>
+                <parent-component></parent-component>
+              </ul>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">Teleport</h3>
+            <div class="u-mb2">
+              <p><strong>Teleport</strong>は、コンポーネントの一部（&lt;teleport&gt;タグで囲んだ内側）をそのコンポーネントのDOM階層の外側に存在する任意の場所へ移動（テレポート）させることができる。移動先をto属性でDOMノードかCSSセレクター文字列で指定すると、指定された要素内の末尾に&lt;teleport&gt;の中身が移動する。また&lt;teleport&gt;にdisabledプロパティを付与することで移動を無効化することも可能。</p>
+<pre v-pre>
+app.component('teleport-component', {
+  template: `
+    &lt;button @click="open = !open" ref="trigger"&gt;モーダルを開く&lt;/button&gt;
+    &lt;Teleport to="#secTeleport"&gt;
+      &lt;div v-if="open" class="modalPanel" ref="modalPanel"&gt;
+        &lt;div class="modalPanel_inner"&gt;
+          &lt;p class="u-fontB u-mb1"&gt;モーダルコンテンツ&lt;/p&gt;
+          &lt;p&gt;teleportの移動先は&lt;teleport&gt;が...省略&lt;/p&gt;
+          &lt;p&gt;&lt;img src="/assets/images/task/difference/img_01.png" alt=""&gt;&lt;/p&gt;
+          &lt;button @click="open = false" class="modalPanel_btn"&gt;Close&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/Teleport&gt;
+    &lt;Teleport to="body"&gt;
+      &lt;div v-if="open" class="modalOverlay" @click="open = false"&gt;&lt;/div&gt;
+    &lt;/Teleport&gt;
+  `,
+  setup() {
+    const open = Vue.ref(false);
+    const modalPanel = Vue.ref(null);
+    Vue.onUpdated(function () {
+      if (open.value) {
+        const target = modalPanel.value;
+        adjustSize(target);
+      }
+    })
+
+    const largeClass = 'is-lgSize';
+    adjustSize = function (modalPanel) {
+      let panelHeight = modalPanel.clientHeight,
+        windowHeight = document.documentElement.clientHeight;
+
+      if (panelHeight >= windowHeight) {
+        modalPanel.classList.add(largeClass);
+      }
+    }
+
+    let scrollY;
+    const fixedClass = 'is-fixed';
+    Vue.watch(open, function (newValue) {
+      if (newValue) {
+        scrollY = Vue.ref(window.pageYOffset);
+        document.documentElement.style.top = `-${scrollY.value}px`;
+        adjustScreen(true);
+        document.getElementsByTagName('html')[0].classList.add(fixedClass);
+      } else {
+        document.documentElement.style.top = '';
+        adjustScreen(false);
+        document.getElementsByTagName('html')[0].classList.remove(fixedClass);
+        if (scrollY.value) {
+          window.scrollTo(0, scrollY.value);
+        }
+      }
+    });
+
+    const scrollbarWidth = window.innerWidth - document.body.clientWidth;
+    adjustScreen = function(fixed) {
+      if (fixed) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      } else {
+        document.body.style = "";
+      }
+    }
+
+    return { open, modalPanel, adjustSize, adjustScreen }
+  }
+})
+---------------------------
+// テンプレート
+&lt;teleport-component&gt;&lt;/teleport-component&gt;
+</pre>
+              <teleport-component></teleport-component>
+            </div>
+          </div><!--/#App-->
+          <div id="secTeleport"></div>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/task/sfc.html" class="m-paging_prev">単一ファイルコンポーネント</a>
+            <a href="/" class="m-paging_page">INDEX</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/inc/layout/footer.html" -->
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="/assets/js/task/difference.js"></script>
+</body>
+</html>

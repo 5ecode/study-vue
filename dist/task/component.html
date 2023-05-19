@@ -204,8 +204,8 @@ props: { '属性（プロパティ）名': 型 }
 <pre v-pre>
 // 子コンポーネント
 Vue.component('obj-bundle', {
-template: '&lt;p v-bind:style="styling"&gt;&lt;/p&gt;',
-props: ['styling']
+  template: '&lt;p v-bind:style="styling"&gt;&lt;/p&gt;',
+  props: ['styling']
 });
 ---------------------------
 // 親のテンプレートに子コンポーネントのカスタムタグを設置
@@ -363,21 +363,21 @@ new Vue({
 </pre>
               <custom-input v-on:input="testText = $event" v-bind:value="testText"></custom-input>
               <p class="u-mb1">親側：{{testText}}</p>
-              <p>ただしこれだけではまだこのフォームに入力してもデータは反映されず用を成さない。<br>現状フォームに入力された値は$emitされたカスタムイベント「child-input」の引数として親のイベントハンドラに渡されることになっているからだ。親テンプレートではv-modelを使うことにしたので、子のカスタムイベントを検知する術がなく入力値を受け取れないのである。これを解消するには単純にカスタムイベントを「input」とすればよい。</p>
+              <p>ただしこれだけではまだこのフォームに入力してもデータは反映されず用を成さない。<br>現状フォームに入力された値は$emitされたカスタムイベント「child-input」の引数として親のイベントハンドラに渡されることになっている。しかし親テンプレート側ではv-modelを使うことにしたので、子のカスタムイベントを検知する術（v-on:child-input）がなく入力値を受け取れない。これを解消するには単純に子側で$emitするカスタムイベントを「input」とすればよい。</p>
 <pre v-pre>
 $emit('input', $event.target.value)
 </pre>
-              <p>コンポーネントのv-modelは下記に置き換えることができ、子から送られるイベントが「input」であれば、発火を検知してイベントハンドラで入力値を受け取るが可能である。</p>
+              <p>v-modelは糖衣構文でありコンポーネントにおけるv-modelは下記と等しいため、</p>
 <pre v-pre>
-&lt;custom-input v-on:input="testText = $event" v-bind:value="testText"&gt;&lt;/custom-input&gt;
+&lt;custom-input v-bind:value="testText" v-on:input="testText = $event"&gt;&lt;/custom-input&gt;
 </pre>
-              <p>ここで登場した<strong>$event</strong>は$emitの第2引数に指定したデータを受け入れることができる特別な変数であり、ここではそれをtestTextプロパティに代入している。</p>
+              <p>子から送られるイベントが「input」であれば、親側で発火を検知しイベントハンドラで入力値を受け取れるからである。なお、ここで登場した「<strong>$event</strong>」は$emitの第2引数に指定したデータを受け入れられる特別な変数であり、ここではそれをtestTextプロパティに代入している。</p>
               <p>このような値を代入するだけの単純なケースであればv-modelを使用したほうが、記述量は抑えられるため状況に応じて使い分けていくといいのかと思う。</p>
             </div>
 
             <h5 class="u-mb1">v-modelのオプション</h5>
             <div class="u-mb2">
-              <p>コンポーネントにおけるv-modelはデフォルトでvalueをプロパティ、inputをイベントとして設定されている。使用するフォーム要素や状況に応じて別のイベントやプロパティを使うときはmodelオプションでカスタマイズが可能。</p>
+              <p>コンポーネントにおけるv-modelはvalueをプロパティとして、inputをイベントとして使うことがデフォルトで設定されているが、使用するフォーム要素や状況に応じて別のイベントやプロパティを使いたいときはmodelオプションでカスタマイズが可能である。</p>
 <pre v-pre>
 // 子コンポーネント
 Vue.component('custom-input-checkbox', {
@@ -395,6 +395,8 @@ Vue.component('custom-input-checkbox', {
 ---------------------------
 // 親テンプレート
 &lt;custom-input-checkbox v-model="testCheckbox"&gt;&lt;/custom-input-checkbox&gt;
+↓ 同義 ↓
+&lt;custom-input-checkbox v-on:change="testCheckbox = $event" v-bind:checked="testCheckbox"&gt;&lt;/custom-input-checkbox&gt;
 ---------------------------
 // 親コンポーネント
 new Vue({
@@ -409,7 +411,7 @@ new Vue({
 
             <h4 class="c-ttlType04 u-mb1">.sync修飾子で複数のプロパティをバインド</h4>
             <div class="u-mb2">
-              <p>1つのコンポーネントに1つしか使用できないv-model（親から子へ単一の値の受け渡し）に対して、.sync修飾子は際限なく利用できるので複数の値の受け渡しが可能。基本的な使い方はv-modelと同じだが、$emitの第一引数は「update:propsで受け取る属性名」の形でイベントを発火する。Vue.js 3ではv-modelを複数使用することができるようになっているため、この機能は廃止されていている。</p>
+              <p>1つのコンポーネントに1つしか使用できないv-model（親から子へ単一の値の受け渡し）に対して、.sync修飾子は際限なく利用できるので複数の値の受け渡しが可能。基本的な使い方はv-modelと同じだが、$emitの第一引数は「update:propsで受け取る属性名」の形でイベントを発火する。なおVue 3ではv-modelを複数使用することができるようになっているため、この機能は廃止されていている。</p>
 <pre v-pre>
 // 子コンポーネント
 Vue.component('sync-component',{
@@ -744,26 +746,26 @@ Vue.component('name-slot-component', {
   &lt;template v-slot:slot3&gt;
     &lt;p class="bgC02"&gt;こちらはスロット名「slot3」に埋め込まれます。&lt;/p&gt;
   &lt;/template&gt;
-  &lt;template&gt;タグの範囲外のこのテキストは名前なしスロットに入ります。ただしv-slot:defaultがある場合は、無視されます。
   &lt;template #slot2&gt;
     &lt;p class="bgC01"&gt;スロット名「slot2」に差し込まれます。「v-slot:スロット名」は「#スロット名」と省略することも可能。&lt;/p&gt;
   &lt;/template&gt;
   &lt;template v-slot:default&gt;
   このテキストだけが名前なしスロットに入ります。
   &lt;/template&gt;
+  templateタグの範囲外のこのテキストは名前なしスロットに入ります。ただしv-slot:defaultがある場合は、無視されます。
 &lt;/name-slot-component&gt;
 </pre>
               <name-slot-component>
                 <template v-slot:slot3>
                   <p class="bgC02">こちらはスロット名「slot3」に埋め込まれます。</p>
                 </template>
-                &lt;template&gt;タグの範囲外のこのテキストは名前なしスロットに入ります。ただしv-slot:defaultがある場合は、無視されます。
                 <template #slot2>
                   <p class="bgC01">スロット名「slot2」に差し込まれます。「v-slot:スロット名」は「#スロット名」と省略することも可能。</p>
                 </template>
                 <template v-slot:default>
                 このテキストだけが名前なしスロットに入ります。
                 </template>
+                templateタグの範囲外のこのテキストは名前なしスロットに入ります。ただしv-slot:defaultがある場合は、無視されます。
               </name-slot-component>
             </div>
 

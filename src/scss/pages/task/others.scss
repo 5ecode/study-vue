@@ -37,3 +37,13 @@
   opacity: 1;
 }
 
+/* v-cloak */
+.testCloak{
+  animation: cloak-in 1s;
+}
+.testCloak[v-cloak]{
+  opacity: 0;
+}
+@keyframes cloak-in{
+  0% {opacity: 0;}
+}
