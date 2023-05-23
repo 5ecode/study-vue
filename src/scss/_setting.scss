@@ -22,7 +22,7 @@ $baseFontSize: 16;
 ---------------------------------------------------------------------- */
 /* フォントrem */
 @function rem($px) {
-  @return $px / $baseFontSize * 1rem;
+  @return calc($pixels / $baseFontSize) * 1rem;
 }
 
 /* レスポンシブ%値 */
