@@ -189,6 +189,7 @@ Vue.createApp({
 ---------------------------
 // テンプレート
 &lt;login-component v-model:email="login.email" v-model:password="login.password"&gt;&lt;/login-component&gt;
+&lt;p&gt;親側dataオプション: {{login}}&lt;/p&gt;
 </pre>
               <login-component v-model:email="login.email" v-model:password="login.password"></login-component>
               <p>親側dataオプション: {{login}}</p>
