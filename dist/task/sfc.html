@@ -27,30 +27,24 @@
             <div class="u-mb2">
 <pre v-pre>
 &lt;template&gt;
-  &lt;div id="App"&gt;
-    &lt;h1 class="ttl"&gt;{{ mainTtl }}&lt;/h1&gt;
+  &lt;div class="greeting"&gt;
+    &lt;p&gt;Hello, {{ text }}!&lt;/p&gt;
   &lt;/div&gt;
 &lt;/template&gt;
 
 &lt;script&gt;
 export default {
-  name: 'App'
-  data: function () {
+  data() {
     return {
-      mainTtl: '単一ファイルコンポーネント'
+      text: '単一ファイルコンポーネント'
     }
   }
 }
 &lt;/script&gt;
 
 &lt;style scoped&gt;
-.ttl {
-  text-align: center;
+.greeting {
   color: #4d7dc5;
-  font-family: "Verdana";
-  font-size: 100px;
-  font-weight: bold;
-  line-height: 1.2;
 }
 &lt;/style&gt;
 </pre>
@@ -58,12 +52,13 @@ export default {
 
             <h3 class="c-ttlType03 u-mb1">&lt;template&gt;</h3>
             <div class="u-mb2">
-              <p>HTMLの部分。これまで記述してきたコンポーネントのtemplateプロパティと同じもの。</p>
+              <p>表示されるHTMLの部分。これまで学習してきたコンポーネントのtemplateプロパティと同じ。1ファイルに1つ定義できる。</p>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">&lt;script&gt;</h3>
             <div class="u-mb2">
-              <p>コンポーネントのロジック。JavaScriptの部分。先述のコンポーネントのtemplate以外の部分にあたる。<br>「export default」は、ES6のモジュール構文のひとつで、ざっくり言うと関数やオブジェクトを外部に書き出すための記述。1ファイル内で、1度しか使えないという特徴を持つ。そして書き出された内容は「import」で別のモジュールで読み込むことができる。SFCではこの「export default」と「import」で部品同士を組み合わせてひとつのページを構築していく。</p>
+              <p>コンポーネントのロジック・データ・メソッドなどを記述する。<br>「export default」は、ES6のモジュール構文のひとつで、ざっくり言うと関数やオブジェクトを外部に書き出すための記述。1ファイル内で、1度しか使えないという特徴を持つ。</p>
+              <p>そして書き出された内容は「import」で別のモジュールで読み込むことができる。SFCではこの「export default」と「import」で部品同士を組み合わせてひとつのページを構築していく。</p>
 <pre v-pre>
 &lt;script&gt;
   import コンポーネント名 from "単一ファイルコンポーネントのファイルパス"
@@ -73,38 +68,51 @@ export default {
 &lt;/script&gt;
 </pre>
             </div>
+            <h3 class="c-ttlType03 u-mb1">&lt;script setup&gt;</h3>
+            <div class="u-mb2">
+              <p>Composition APIを使う場合は、&lt;script&gt;に<code>setup</code>属性を追加すると、コンポーネントの<code>setup()</code>関数の中の処理として扱われる（ただし<code>return</code>は不要）。簡潔にComposition APIを使用できるためVue 3 推奨スタイルとなっている。また子コンポーネントを<code>components</code>オプションとして登録しなくても、インポートするだけで使用できる。</p>
+<pre v-pre>
+&lt;script setup&gt;
+import { ref } from 'vue'
+
+const text = ref('単一ファイルコンポーネント')
+&lt;/script&gt;
+</pre>
+              
+            </div>
 
             <h3 class="c-ttlType03 u-mb1">&lt;style&gt;</h3>
             <div class="u-mb2">
-              <p>コンポーネントの見た目を調整する所謂cssの部分。&lt;style&gt;要素にscoped属性を設定すると、同ファイル内のテンプレートにのみ適用される。scoped属性のない&lt;style&gt;を記述できるが、他のコンポーネントに影響してしまうことを考えると積極的には使えない気がする。</p>
+              <p>コンポーネントの見た目を調整する所謂cssの部分。&lt;style&gt;に<code>scoped</code>属性を設定すると、同ファイル内のテンプレートにのみ適用される。scoped属性のない&lt;style&gt;も記述はできるが、他のコンポーネントに影響してしまうことを考えると積極的には使えない気がする。</p>
             </div>
 
             <h2 class="c-ttlType02 u-mb1">Vue開発環境の構築</h2>
             <div class="u-mb2">
-              <p>SFCは専用の開発環境下でのみ実行することができる特殊な形式なので、サーバーに反映するときはブラウザ上でも動作するファイルに変換（ビルド）する必要がある。このビルド機能を持ったVueの開発環境には「Vue CLI」が広く使用されていたが、2023年4月現在は「create-vue」が推奨されている<a href="https://cli.vuejs.org/index.html" target="_blank" class="c-txtLink">様子</a>なので、現行インストールされているNode.js「v14.20.0」で環境構築を開始。</p>
+              <p>SFCは専用の開発環境下でのみ実行することができる特殊な形式なので、サーバーに反映するときはブラウザ上でも動作するファイルに変換（ビルド）する必要がある。<br>このビルド機能を持ったVueの開発環境には「Vue CLI」が広く使用されていたが、2023年4月現在は「create-vue」が<a href="https://cli.vuejs.org/index.html" target="_blank" class="c-txtLink">推奨</a>されている。</p>
+              <p><a href="https://vuejs.org/guide/scaling-up/tooling.html">公式の案内</a>に従ってvue.js 最新版のインストールを始めると、</p>
 <pre>
-// vue.js 2の場合
-<code>npm create vue@2</code>
-
-// vue.js 3の場合
-<code>npm create vue@3</code>
+npm create vue@latest
 </pre>
-              <p class="u-mb1">プロジェクト名とオプションを有無を聞かれるので、ひとまずオプションはすべてNOを選択。</p>
-              <p class="u-mb1"><img src="/assets/images/task/sfc/img_01.png" alt="" width="655" height="211"></p>
-              <p>次に上記で決めたプロジェクトに移動（例だと「cd create-vue-test」）して、コマンドを順に実行する。</p>
+              <p class="u-mb1">どのフレームワークにするか聞かれるので「Vue」を選択する。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_01.png" alt="" width="655" height="524"></p>
+              <p class="u-mb1">次に使用言語の選択をする。普通にJavaScriptでもいいけど、今回はTypeScriptも学習のためを入れてみた。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_02.png" alt="" width="280" height="185"></p>
+              <p>あと使用中の Node.js のバージョンが要求されたバージョンよりも低いと警告が出ているのでNode.js をアップデート（v20.14.0 → v22.17.0）。Volta使ってると<code>volta install node</code>だけで済むからホント楽。</p>
+              <p>create-vueのインストールが終わったら、インストールしたプロジェクトに移動（例だと「cd create-sfc」でOK）して、以下のコマンドを順に実行する。</p>
 <pre>
-<code>npm install
-npm run dev</code>
+npm install
+npm run dev
 </pre>
-              <p class="u-mb1"><img src="/assets/images/task/sfc/img_02.png" alt="" class="u-fullImg"></p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_03.png" alt="" class="u-fullImg"></p>
               <p class="u-mb1">表示されたURLにアクセスするとプロジェクトのTOPページが表示される。これでひとまず環境は整ったことになるので、思ったよりは手軽と言える。</p>
+              <p>ちなみにインストールされたのは、現時点での最新版なのでバージョンはv3。以降の記述はVue 3で進めていく。</p>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">ディレクトリ構成</h3>
             <div class="u-mb2">
               <p class="u-mb1">作成したプロジェクトのデフォルトの構成は以下の通り。</p>
-              <p class="u-mb1"><img src="/assets/images/task/sfc/img_03.png" alt="" width="283" height="730"></p>
-              <p class="u-mb1">ぱっと見でわかるのは「src &gt; components」が、子コンポーネントの格納場所で、「src &gt; assets」が、コンポーネント以外のもの（画像やcssなど）を格納するようになっているんだろうということ。「public」フォルダは現在ファビコンしかないけど、用途はまだわらかないので保留。他に気になるのは設定ファイル以外では、ルートの「index.html」と「src」配下の「App.vue」「main.js」の3つ。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_04.png" alt="" width="280" height="576"></p>
+              <p class="u-mb1">ぱっと見で気になるのはルートディレクトリの「index.html」「vite.config.ts」と「src」配下の「App.vue」「main.ts」「vite-env.d.ts」。同じく「src」下層の「HelloWorld.vue」はディレクトリ名からコンポーネントだろうという予想。「/src/assets/vue.svg」「/public/vite.svg」は画像だけど、なぜ「src」と「public」で分かれているのかが謎。</p>
             </div>
 
             <h4 class="c-ttlType04 u-mb1">index.html</h4>
@@ -114,111 +122,195 @@ npm run dev</code>
 &lt;html lang="en"&gt;
   &lt;head&gt;
     &lt;meta charset="UTF-8" /&gt;
-    &lt;link rel="icon" href="/favicon.ico" /&gt;
+    &lt;link rel="icon" type="image/svg+xml" href="/vite.svg" /&gt;
     &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
-    &lt;title&gt;Vite App&lt;/title&gt;
+    &lt;title&gt;Vite + Vue + TS&lt;/title&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;div id="app"&gt;&lt;/div&gt;
-    &lt;script type="module" src="/src/main.js"&gt;&lt;/script&gt;
+    &lt;script type="module" src="/src/main.ts"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </pre>
-                <p>「index.html」のbody内では、id属性にappを持つdivタグとtype="module"を指定した&lt;script&gt;タグでモジュールとしてmain.jsを読み込んでいるだけで、コンテンツ自体の記述はない。ただこれまでの学習の過程から、これがルートインスタンスを反映するためのHTMLテンプレートであることは予想できる。試しにtitleを変更すると、開発サーバにアクセスしたときに表示された前記のページのtitleも即座に更新されたので、現状ブラウザに表示されているのはこの「index.html」と考えていいと思う。</p>
+                <p>「index.html」のbody内では、id属性にappを持つdivタグとtype="module"を指定した&lt;script&gt;タグでモジュールとしてmain.tsを読み込んでいるだけで、コンテンツ自体の記述はない。<br>ただこれまでの学習の過程から、<code>&lt;div id="app"&gt;&lt;/div&gt;</code>があるので、これがHTMLテンプレートであることはわかる。試しにtitleを変更すると前述したTOPページのtitleも即座に更新されたので、現状ブラウザに表示されているのはこの「index.html」と考えていいと思う。</p>
             </div>
 
-            <h4 class="c-ttlType04 u-mb1">main.js</h4>
+            <h4 class="c-ttlType04 u-mb1">vite.config.ts</h4>
             <div class="u-mb2">
 <pre v-pre>
-import Vue from 'vue'
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+export default defineConfig({
+  plugins: [vue()]
+})
+</pre>
+              <p>vite.configと付いているので、Viteの設定ファイルなのはわかる。Vite（ヴィート）とは、フロントエンド開発のための高速なビルドツールおよび開発サーバーのこと。<br>最初にインストールした<code>create-vue</code>はこのViteを元にした Vueプロジェクトのひな形（テンプレート）を作るためのツール（スキャフォールディングツール）。<code>create-vue</code>には設定ファイルなどはなく、Vite 自体の設定ファイルでビルドや開発サーバーの挙動、プラグイン、エイリアス、環境変数などを定義する。<br>初期設定では、Vueのプラグインが読み込まれている状態。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">/src/main.ts</h4>
+            <div class="u-mb2">
+<pre v-pre>
+import { createApp } from 'vue'
+import './style.css'
 import App from './App.vue'
 
-import './assets/main.css'
-
-new Vue({
-  render: (h) => h(App)
-}).$mount('#app')
+createApp(App).mount('#app')
 </pre>
-              <p>「main.js」では、new Vueで生成されたルートインスタンスを、elオプションではなく$mountメソッドというvue独自のメソッドで要素（#app）に紐づけ（マウント）している。ちなみにelオプションでマウントしても結果は同じだった。あえて$mountを使っている理由はなんなのか、これについては残念ながら調べがつかなかった。</p>
-              <p>renderオプションで定義した「(h) => h(App)」は描画（render）処理をする関数で、省略せずに書けば以下になる。</p>
-<pre>
-render: function(createElement){
-  return createElement(App)
-}
-</pre>
-              <p>createElementは引数に指定した要素をDOM要素として生成する関数で、ここではimportしたApp.vueが渡されているため、結果index.htmlの&lt;div id="app"&gt;内にその内容（HTMLとスタイル）が書き出される。</p>
-              <p>またmain.cssはプロジェクト共通のデフォルトスタイルが記述されており、必要に応じてカスタマイズしていくものと思われる。</p>
+              <p>Vue.js本体を読み込み、アプリケーションインスタンスを生成し、DOM（HTML）の指定位置に「マウント」する役割を持つファイル。ちなみに拡張子が.tsなのは、環境構築の際に使用言語をTypeScriptにしているから。</p>
+              <p>style.cssはプロジェクト共通のデフォルトスタイルが記述されいるので、必要に応じてカスタマイズしていくものと思われる。</p>
             </div>
 
-            <h4 class="c-ttlType04 u-mb1">App.vue</h4>
+            <h4 class="c-ttlType04 u-mb1">/src/vite-env.d.ts</h4>
             <div class="u-mb2">
 <pre v-pre>
-&lt;script setup&gt;
+/// &lt;reference types="vite/client" /&gt;
+</pre>
+            <p>Viteプロジェクトで環境変数に型を定義するためのTypeScriptの型定義ファイル、らしい。正直まだよくわからない。とりあえず、TypeScriptのためのファイルということらしい。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">/src/App.vue</h4>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;script setup lang="ts"&gt;
 import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
 &lt;/script&gt;
 
 &lt;template&gt;
-  &lt;div id="app"&gt;
-    &lt;header&gt;
-      &lt;img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" /&gt;
-
-      &lt;div class="wrapper"&gt;
-        &lt;HelloWorld msg="You did it!" /&gt;
-      &lt;/div&gt;
-    &lt;/header&gt;
-
-    &lt;main&gt;
-      &lt;TheWelcome /&gt;
-    &lt;/main&gt;
+  &lt;div&gt;
+    &lt;a href="https://vite.dev" target="_blank"&gt;
+      &lt;img src="/vite.svg" class="logo" alt="Vite logo" /&gt;
+    &lt;/a&gt;
+    &lt;a href="https://vuejs.org/" target="_blank"&gt;
+      &lt;img src="./assets/vue.svg" class="logo vue" alt="Vue logo" /&gt;
+    &lt;/a&gt;
   &lt;/div&gt;
+  &lt;HelloWorld msg="Vite + Vue" /&gt;
 &lt;/template&gt;
 
 &lt;style scoped&gt;
-header {
-  line-height: 1.5;
-}
-
 .logo {
-  display: block;
-  margin: 0 auto 2rem;
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.vue:hover {
+  filter: drop-shadow(0 0 2em #42b883aa);
 }
 &lt;/style&gt;
 </pre>
-              <p>「App.vue」はコンテンツ部分の大枠になるコンポーネント。importで別のコンポーネントを2つ読み込んでいて、自身のtemplateでそれを設置している。&lt;script&gt;タグに「setup」があるのは、Vue.jsのv2.7から導入された「&lt;script setup&gt;構文」というもの。詳しくはここでは割愛。</p>
+              <p>「App.vue」はコンテンツ部分の大枠になるコンポーネント（ルートコンポーネント）。importで別のコンポーネント（<code>HelloWorld.vue</code>）を読み込んでいて、自身のtemplateでそれを設置している。<code>lang="ts"</code>はTypeScriptを使うことを明示。<code>.vue</code>ファイル内で型安全なコードが書ける。</p>
+            </div>
+
+            <h4 class="c-ttlType04 u-mb1">/src/components/HelloWorld.vue</h4>
+            <div class="u-mb2">
+<pre v-pre>
+&lt;script setup lang="ts"&gt;
+import { ref } from 'vue'
+
+defineProps&lt;{ msg: string }&gt;()
+
+const count = ref(0)
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;h1&gt;{{ msg }}&lt;/h1&gt;
+
+  &lt;div class="card"&gt;
+    &lt;button type="button" @click="count++"&gt;count is {{ count }}&lt;/button&gt;
+    &lt;p&gt;Edit&lt;code&gt;components/HelloWorld.vue&lt;/code&gt; to test HMR&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;p&gt;Check out&lt;a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"&gt;create-vue&lt;/a&gt;, the official Vue + Vite starter&lt;/p&gt;
+  &lt;p&gt;Learn more about IDE Support for Vue in the&lt;a href="https://vuejs.org/guide/scaling-up/tooling.html#ide-support" target="_blank"&gt;Vue Docs Scaling up Guide&lt;/a&gt;.&lt;/p&gt;
+  &lt;p class="read-the-docs"&gt;Click on the Vite and Vue logos to learn more&lt;/p&gt;
+&lt;/template&gt;
+
+&lt;style scoped&gt;
+.read-the-docs {
+  color: #888;
+}
+&lt;/style&gt;
+</pre>
+              <p>App.vue に読み込まれている子コンポーネント。</p>
+              <p>ここで初見なのは以下の一行。</p>
+<pre v-pre>
+defineProps&lt;{ msg: string }&gt;()
+</pre>
+              <p>まず<code>defineProps()</code>は、<code>&lt;script setup&gt;</code>内で、親コンポーネントから渡されたプロパティを受け取るための関数。つまり<code>props: ['msg']</code>と同義。これをTypeScriptで記述すると上記のような型付きの定義になる。</p>
+<pre v-pre>
+// 型定義なし
+defineProps()
+
+// 複数のプロパティの場合
+defineProps&lt;{
+  message: string,
+  count: number
+}&gt;()
+</pre>
+              <p>その他は、特に気になる記述はない。<code>count</code>は0が初期値で、<code>&lt;button @click="count++"&gt;</code>でボタンをクリックするたびにカウントが増えるようになっている。</p>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">ビルド</h3>
             <div class="u-mb2">
               <p>だいたいのファイルの構成がわかったところで、これをサーバー上でも動作するファイル形式に変換（ビルド）してみる。</p>
-              <pre><code>npm run build</code></pre>
-              <p class="u-mb1"><img src="/assets/images/task/sfc/img_04.png" alt="" width="660" height="163"></p>
-              <p class="u-mb1">少し時間があって、無事に「dist」ディレクトリにビルドされたファイルが格納された。</p>
-              <p class="u-mb1"><img src="/assets/images/task/sfc/img_05.png" alt="" width="285" height="427"></p>
-              <p class="u-mb1">「dist」の中身をすべてサーバーに上げ、開発サーバーのもの（ビルド前）とをブラウザで見比べてみると、</p>
+              <pre>npm run build</pre>
+              <p class="u-mb1">無事に「dist」ディレクトリにビルドされたファイルが格納された。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_05.png" alt="" width="280" height="576"></p>
+              <p class="u-mb1">スクリプトは<code>/assets/index-DA1xjUjD.js</code>に、cssは<code>/assets/index-BYiJVlY3.css</code>にそれぞれまとめられた様子。<code>/public/vite.svg</code>は、<code>/dist/vite.svg</code>と同じものだったのでそのまま出力された感じ。<code>/src/assets/vue.svg</code>はどこへいったのか…。ビルド前のルート直下<code>index.html</code>は、<code>/dist/index.html</code>に出力され内容も少し変化した。</p>
+<pre v-pre>
+&lt;!doctype html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;link rel="icon" type="image/svg+xml" href="/vite.svg" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Vite + Vue + TS&lt;/title&gt;
+    &lt;script type="module" crossorigin src="/assets/index-DA1xjUjD.js"&gt;&lt;/script&gt;
+    &lt;link rel="stylesheet" crossorigin href="/assets/index-BYiJVlY3.css"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div id="app"&gt;&lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+              <p class="u-mb1">ビルド前と後をブラウザで見比べてみると、</p>
               <p class="u-mb1"><img src="/assets/images/task/sfc/img_06.png" alt="" class="u-fullImg"></p>
               <p class="u-mb1">ビルド前↑は&lt;style&gt;要素でcss設定がされているのに対して、ビルド後↓はきちんとcssが分離され外部ファイルとして読み込まれている。</p>
               <p class="u-mb1"><img src="/assets/images/task/sfc/img_07.png" alt="" class="u-fullImg"></p>
-              <p>「dist > assets」のcssファイルは「index.92ba09d0.css」1つだけで、これに全体の共通スタイルとコンポーネントごとのスタイルがまとめられたようだ。jsは今回はVue2で環境を作ったので「index.a4e45033.js」の他に、レガシーブラウザ用のjsファイルが2つ生成されていた。</p>
-              <p>と、ここで思うのは、cssとjs、画像ファイルが「assets」にどさっと入れられているけどフォルダ分けはできないのか（そもそもしないものなのか）ということと、ページ数が増えたらどうなるのかということ。直接触るファイルでないから気にしなくてもいいのかな。下層ページの作り方やページ遷移の書き方などはまた別の回にまとめていこうと思う。</p>
+              <p class="u-mb1">あと画像に関して。<br><code>/src/assets/vue.svg</code>と<code>/public/vite.svg</code>で同じようなロゴ画像なのに、ディレクトリが違うのが謎だったけど、ビルドしたら以下のような違いがあった。</p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_08.png" alt="" width="1250" height="300" class="u-fullImg"></p>
+              <p class="u-mb2"><img src="/assets/images/task/sfc/img_09.png" alt="" width="1250" height="300" class="u-fullImg"></p>
+              <p class="u-mb1">viteのロゴ画像は、App.vueのテンプレートでは<code>&lt;img src="/vite.svg" class="logo" alt="Vite logo" /&gt;</code>と記述されていて、ビルド後のソースと同じ。一方、Vueのロゴ画像は<code>&lt;img src="./assets/vue.svg" class="logo vue" alt="Vue logo" /&gt;</code>から、ビルド後はインラインSVGとして変換されている。<br>調べてみたら、Vite では 小さな画像ファイル（デフォルトは4KB未満） はビルド時に自動でインライン化されるそうで。4KB以上の画像の場合は、<code>/dist/assets/</code>にコピー（圧縮なし）されるとのこと。<br>この時、ディレクトリ構造は破棄され、<code>/dist/assets/</code>に、「出力名は ファイル名.ハッシュ.拡張子」の形式で出力される。プラグインを使って構造を保持することも可能なので、必要な時は検索すること。<br>また画像の圧縮処理をしたい場合は、別途プラグイン（<code>vite-plugin-imagemin</code>）が必要になる。</p>
+              <pre v-pre>npm install vite-plugin-imagemin --save-dev</pre>
+<pre v-pre>
+// vite.config.ts
+import viteImagemin from 'vite-plugin-imagemin'
+
+export default defineConfig({
+  plugins: [
+    vue(),
+    viteImagemin({
+      gifsicle: { optimizationLevel: 7 },
+      optipng: { optimizationLevel: 7 },
+      mozjpeg: { quality: 75 },
+      svgo: {
+        plugins: [
+          { name: 'removeViewBox' },
+          { name: 'removeEmptyAttrs', active: false }
+        ]
+      }
+    })
+  ]
+})
+</pre>
+              <p>ちなみに<code>/src/assets/</code>に、Vueとは別の.jsや.cssファイルがあった場合、結合され、圧縮（minify）されて出力されるらしい。つまりこのディレクトリ配下にあるファイルは、画像以外でもビルド処理の対象（未使用ファイルは対象外）になる。</p>
+              <p>対して<code>/public/</code>フォルダの役割は、ビルド対象外のファイルの格納場所で、ディレクトリ構造を保ったまま<code>/dist/</code>にそのままコピーされる。</p>
+              <p>なんでこんな複雑なのかはわからないが、とりあえずそんな構成が分かったところで、あとは実践しながら覚えていくしかないかな。</p>
             </div>
           </div>
         </div>
@@ -227,9 +319,8 @@ header {
       <div class="st-flowFoot">
         <div class="l-base">
           <div class="m-paging">
-            <a href="/task/others.html" class="m-paging_prev">その他の機能</a>
+            <a href="/task/difference.html" class="m-paging_prev">Vue.js v2とv3の違い</a>
             <a href="/" class="m-paging_page">INDEX</a>
-            <a href="/task/difference.html" class="m-paging_next">Vue.js v2とv3の違い</a>
           </div>
         </div>
       </div>

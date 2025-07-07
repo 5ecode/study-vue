@@ -21,49 +21,86 @@
           <div id="App">
             <div class="u-mb2">
               <p>ここまでVue.js v2で学習してきた内容で変更された点と、Vue.js v3で新たに追加された機能のまとめ。公式は<a href="https://v3-migration.vuejs.org/ja/" target="_blank" class="c-txtLink">こちら</a>。インストールについては今回もCDN版を使用する。</p>
-              <pre><code>https://unpkg.com/vue@3/dist/vue.global.js</code></pre>
+              <pre>https://unpkg.com/vue@3/dist/vue.global.js</pre>
               <p><a href="https://v3.ja.vuejs.org/guide/installation.html" target="_blank" class="c-txtLink">公式</a>ではv3の開発環境ツールとして新たに<a href="https://vitejs.dev/" target="_blank" class="c-txtLink">Vite</a>も紹介されていてる。</p>
             </div>
 
             <h2 class="c-ttlType02 u-mb1">変更点</h2>
             <h3 class="c-ttlType03 u-mb1">新しいインスタンスの書き方</h3>
             <div class="u-mb2">
-              <p>Vue 3ではcreateApp関数でインスタンスを生成する。これを<strong>アプリケーションインスタンス</strong>と呼び、描画エリアに紐付け（マウント）するには<strong>mountメソッド</strong>を使って引数にHTML要素またはcssセレクタの文字列を指定する。</p>
+              <p class="u-mb1">Vue 3ではcreateApp関数でインスタンスを生成する。これを<strong>アプリケーションインスタンス</strong>と呼び、描画エリアに紐付け（マウント）するには<strong>mountメソッド</strong>を使って引数にHTML要素またはcssセレクタの文字列を指定する。</p>
+            </div>
+            <h4 class="c-ttlType04">変数に代入するパターン（多くの場面で推奨される）</h4>
+            <div class="u-mb2">
+              <ul class="c-dotList">
+                <li>app に Vue アプリケーションインスタンスが代入されます。</li>
+                <li>後からプラグインを使ったり、グローバル設定をするのに便利。</li>
+              </ul>
 <pre v-pre>
 const app = Vue.createApp({
-  /* options */
+  // options
 })
 app.mount('#App')
-
-Vue.createApp({
-  // ...
-}).mount('#App')
 </pre>
-              <p>CDN版以外でVue.js本体を使用する場合は↓</p>
+            </div>
+            <h4 class="c-ttlType04">その場でチェーンして完結させるパターン（シンプルな構成向け）</h4>
+            <div class="u-mb2">
+              <ul class="c-dotList">
+                <li>一行で完結。</li>
+                <li>小規模なアプリやチュートリアルなどに向いている。</li>
+                <li>後から  .use() や .component() で拡張したい場合には不向き。</li>
+              </ul>
 <pre v-pre>
-import { createApp } from 'vue'
-
-const app = createApp({
-  /* options */
-})
-app.mount('#App')
-
-createApp({
-  // ...
+Vue.createApp({
+  // options
 }).mount('#App')
 </pre>
             </div>
+            <h4 class="c-ttlType04">省略形の書き方（分割代入を使う）</h4>
+            <div class="u-mb2">
+<pre v-pre>
+const { createApp, ref } = Vue
+
+const app = createApp({
+  // options
+})
+
+app.mount('#app')
+</pre>
+              <p><code>const { createApp, ref } = Vue</code> でVueオブジェクトから必要な関数だけ取り出して短く書く方法。</p>
+            </div>
+            <h4 class="c-ttlType04">CDN版以外でVue.js本体を使用する場合</h4>
+            <div class="u-mb2">
+<pre v-pre>
+import { createApp } from 'vue'
+</pre>
+              <p>上記で、モジュールとしてvueを読み込んでから、</p>
+<pre v-pre>
+const app = createApp({
+  // options
+})
+app.mount('#App')
+</pre>
+              <p>または、</p>
+<pre v-pre>
+createApp({
+  // options
+}).mount('#App')
+</pre>
+            </div>
+
             <h3 class="c-ttlType03 u-mb1">dataオプション</h3>
             <div class="u-mb2">
-              <p>Vue 2でルートインスタンスにおいてはオブジェクト（object）、コンポーネントでは関数（function）で定義していたdataオプションは、Vue 3からはオブジェクトを返す（return）関数でのみ定義するようになった。</p>
+              <p>Vue 2でルートインスタンスにおいてはオブジェクト（object）、コンポーネントでは関数（function）で定義していたdataオプションは、Vue 3からはオブジェクトを返す（return）関数でのみ定義するようになった。ただし後述するComposition API を使う方向に移行しているため、主流ではない。</p>
 <pre v-pre>
-Vue.createApp({
+const app = Vue.createApp({
   data() {
     return {
       message: 'Vue 3'
     }
   }
-}).mount('#App')
+})
+app.mount('#App')
 ---------------------------
 // テンプレート
 &lt;p class="u-fontB"&gt;Hello {{ message }} !&lt;/p&gt;
@@ -79,7 +116,7 @@ const app = Vue.createApp({})
 app.component('global-component', {
   template: `
     &lt;p class="u-fontB"&gt;{{ message }}&lt;/p&gt;
-    &lt;p&gt;&lt;strongp&gt;グローバルコンポーネントの使い方&lt;/strongp&gt;&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;グローバルコンポーネントの使い方&lt;/strong&gt;&lt;/p&gt;
   `,
   data: function () {
     return {
@@ -90,7 +127,9 @@ app.component('global-component', {
 app.mount('#App')
 ---------------------------
 // テンプレート
-&lt;global-component&gt;&lt;/global-component&gt;
+&lt;div id="App"&gt;
+  &lt;global-component&gt;&lt;/global-component&gt;
+&lt;/div&gt;
 </pre>
               <global-component></global-component>
             </div>
@@ -105,15 +144,14 @@ Vue.createApp({
 }).mount('#App')
 </pre>
             </div>
-
             <h4 class="c-ttlType04 u-mb1">templateオプション</h4>
             <div class="u-mb2">
               <p>v2ではローカル、グローバルどちらのコンポーネントでもtemplateは単一のタグで終了しなければならなかったが、v3からは上記の例のように単一のタグで囲わなくても複数の要素が使用できる。</p>
             </div>
 
-            <h3 class="c-ttlType03 u-mb1">コンポーネントのv-model</h3>
+            <h3 class="c-ttlType03 u-mb1">カスタムコンポーネントでのv-model</h3>
             <div class="u-mb2">
-              <p>コンポーネントで使用するv-modelのvalue属性に紐づけられるプロパティは<strong>modelValue</strong>に、$emitするイベントは<strong>update:modelValue</strong>がデフォルト設定なった。<br>また追加ルールとして、すべてのカスタムイベントは<strong>emits</strong>オプションに定義することが<a href="https://v3.ja.vuejs.org/guide/component-custom-events.html#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%82%A4%E3%83%98%E3%82%99%E3%83%B3%E3%83%88%E3%81%AE%E5%AE%9A%E7%BE%A9" class="c-txtLink" target="_blank">推奨</a>されている。</p>
+              <p>コンポーネントで使用するv-modelのvalue属性に紐づけられるプロパティは<strong>modelValue</strong>と変わり、$emitする（変更を通知する）イベントは<strong>update:modelValue</strong>がデフォルト設定なった。<br>また追加ルールとして、すべてのカスタムイベントは<strong>emits</strong>オプションに定義することが<a href="https://v3.ja.vuejs.org/guide/component-custom-events.html#%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%A0%E3%82%A4%E3%83%98%E3%82%99%E3%83%B3%E3%83%88%E3%81%AE%E5%AE%9A%E7%BE%A9" class="c-txtLink" target="_blank">推奨</a>されている。</p>
 <pre v-pre>
 Vue.createApp({
   data() {
@@ -133,14 +171,13 @@ Vue.createApp({
 ---------------------------
 // テンプレート
 &lt;p&gt;親側：{{testText}}&lt;/p&gt;
-&lt;custom-input v-model="testText"&lt;/custom-input&gt;
+&lt;custom-input v-model="testText"&gt;&lt;/custom-input&gt;
 ↓ 同義 ↓
 &lt;custom-input v-bind:model-value="testText" v-on:update:model-value="testText = $event"&gt;&lt;/custom-input&gt;
 </pre>
               <p>親側：{{testText}}</p>
               <custom-input v-model="testText"></custom-input>
             </div>
-
             <h4 class="c-ttlType04 u-mb1">v-modelのオプションの廃止</h4>
             <div class="u-mb2">
               <p>使用するフォーム要素や状況に応じてデフォルトの設定を変えたいときはmodelオプションの代わりに、v-modelの引数（コロンで繋げた値）を渡してイベントやプロパティの名前を変更する。</p>
@@ -164,10 +201,9 @@ Vue.createApp({
 </pre>
               <custom-input-checkbox v-model:checked="testCheckbox"></custom-input-checkbox>
             </div>
-
             <h4 class="c-ttlType04 u-mb1">v-modelの複数使用</h4>
             <div class="u-mb2">
-              <p>v-modelの引数が使えるようになったことで.sync修飾子は廃止され、v-modelは1つのカスタムタグに複数使用できるようになった。</p>
+              <p>Vue 3 では、複数の v-model を1つのカスタムコンポーネントに対して使うことができるようになった。引数（後ろにコロンで繋げた値）が使えるようになったことでそれぞれ別の値を個別にバインドできる。これにより.sync修飾子は廃止になった。</p>
 <pre v-pre>
 Vue.createApp({
   data() {
@@ -194,10 +230,93 @@ Vue.createApp({
               <login-component v-model:email="login.email" v-model:password="login.password"></login-component>
               <p>親側dataオプション: {{login}}</p>
             </div>
-
-            <h4 class="c-ttlType04 u-mb1">v-modelのカスタム修飾子</h4>
+            <h4 class="c-ttlType04 u-mb1">修飾子の処理</h4>
             <div class="u-mb2">
-              <p>v-modelには元々いくつかの修飾子（.lazyなど）があったが、v3からはさらに<a href="https://v3.ja.vuejs.org/guide/component-custom-events.html#v-model-%E4%BF%AE%E9%A3%BE%E5%AD%90%E3%81%AE%E5%87%A6%E7%90%86" target="_blank" class="c-txtLink">カスタム修飾子</a>の作成ができるようになった。今のところ使いどころの想像がつかないので、詳細は保留。</p>
+              <p>カスタムコンポーネントで 「<code>.trim</code>」 や 「<code>.number</code>」 を使用する場合、その処理を <code>modelModifiers</code>として<code>props</code>で受け取り、手動で変換処理をする必要がある。</p>
+              <p>一方、「<code>.lazy</code>」は、「同期タイミングの制御」に関する修飾子で、前者の「値の変換」に関する修飾子とは性質が異なるため<code>modelModifiers</code>には含まれない。「<code>.lazy</code>」の機能を使うためには子コンポーネント側で、手動でchangeイベントを使って <code>emit</code> しなければならない。</p>
+<pre v-pre>
+// テンプレート
+&lt;div id="App"&gt;
+  &lt;smart-input v-model.trim.lazy="name" label="名前: "&gt;
+  &lt;p&gt;名前：{{ name }}&lt;/p&gt;
+  &lt;smart-input v-model.number="age" label="年齢: "&gt;
+  &lt;p&gt;年齢：{{ age }}（型：{{ typeof age }}）&lt;/p&gt;
+&lt;/div&gt;
+</pre>
+<pre v-pre>
+// カスタムコンポーネント
+const SmartInput = {
+  template: `
+    &lt;label&gt;
+      {{ label }}
+      &lt;input type="text" :value="modelValue" @input="onInput" @change="onChange" /&gt;
+    &lt;/label&gt;
+  `,
+  props: {
+    modelValue: {
+      type: [String, Number],
+      required: true
+    },
+    modelModifiers: {
+      type: Object,
+      default: () => ({})
+    },
+    label: {
+      type: String,
+      default: ''
+    }
+  },
+  emits: ['update:modelValue'],
+  methods: {
+    // 通常入力用（.lazy がない場合）
+    onInput(event) {
+      if (this.modelModifiers.lazy) return  // .lazy のときは無視
+      const value = this.processValue(event.target.value)
+      this.$emit('update:modelValue', value)
+    },
+    // .lazy のときに使う（change イベント）
+    onChange(event) {
+      if (!this.modelModifiers.lazy) return  // .lazy でないときは無視
+      const value = this.processValue(event.target.value)
+      this.$emit('update:modelValue', value)
+    },
+    // .trim, .number の処理共通化
+    processValue(rawValue) {
+      let value = rawValue
+      // 修飾子があるか確認して変換
+      if (this.modelModifiers.trim) {
+        value = value.trim()
+      }
+      if (this.modelModifiers.number) {
+        value = Number(value)
+      }
+      return value
+    }
+  }
+}
+</pre>
+<pre v-pre>
+const app = Vue.createApp({
+  components: {
+    CustomInput
+  },
+  setup() {
+    const name = Vue.ref('')
+    const age = Vue.ref(null)
+
+    return {
+      name,
+      age
+    }
+  }
+})
+app.mount('#App')
+</pre>
+              <smart-input v-model.trim.lazy="name" label="名前: "></smart-input>
+              <p>名前：{{ name }}</p>
+
+              <smart-input v-model.number="age" label="年齢: "></smart-input>
+              <p>年齢：{{ age }}（型：{{ typeof age }}）</p>
             </div>
 
             <h2 class="c-ttlType02 u-mb1">v3注目の新機能</h2>
@@ -206,7 +325,7 @@ Vue.createApp({
             </div>
             <h3 class="c-ttlType03 u-mb1">Composition API</h3>
             <div class="u-mb1">
-              <p><strong>Composition API</strong>とは大規模なコンポーネントの開発に適した仕組みのこと。v2ではdata、methods、computedなどをオプションごとにロジックを切り分けて記述しコンポーネントを定義する<strong>Options API</strong>という仕組みが使われていた。v3ではオプションを定義する代わりに、すべて<strong>setupメソッド</strong>内の処理として各種関数を使って定義。それをオブジェクト形式で返すことでコンポーネントのテンプレート内でオブジェクトのプロパティにアクセスすることができる。</p>
+              <p><strong>Composition API</strong>とは大規模なコンポーネントの開発に適した仕組みのこと。v2ではdata、methods、computedなどをオプションごとにロジックを切り分けて記述しコンポーネントを定義する<strong>Options API</strong>という仕組みが使われていた。<br>v3ではオプションを定義する代わりに、すべて<strong>setupメソッド</strong>内の処理として各種関数を使って定義。それをオブジェクト形式で返すことでコンポーネントのテンプレート内でオブジェクトのプロパティにアクセスすることができる。</p>
 <pre v-pre>
 Vue.createApp({
   setup() {
@@ -230,11 +349,19 @@ Vue.createApp({
       return counter.value * 2;
     });
 
-    // 監視プロパティの定義（watchメソッド）
+    // 変化の監視（watchメソッド）
     Vue.watch(counter, function (newValue, oldValue) {
       watchCounter.newValue = newValue;
       watchCounter.oldValue = oldValue;
     });
+
+    // ライフサイクルフック
+    Vue.onMounted(function () {
+      console.log(`コンポーネントがマウントされました。`);
+    })
+    Vue.onUpdated(function () {
+      console.log(`リアクティブデータが変更されました！`);
+    })
 
     // 定義したものをオブジェクトで返す（プロパティの短縮構文）
     return {
@@ -244,17 +371,8 @@ Vue.createApp({
       decrement,
       doubleCounter
     }
-
-    // ライフサイクルフック
-    Vue.onMounted(function () {
-      console.log(`コンポーネントがマウントされました。`);
-    })
-    Vue.onUpdated(function () {
-      console.log(`リアクティブデータが変更されました！`);
-    })
   }
-})
-.mount('#App')
+}).mount('#App')
 ---------------------------
 // テンプレート
 &lt;button type="button" v-on:click="increment"&gt;カウントアップ&lt;/button&gt;&nbsp;&lt;button type="button" v-on:click="decrement"&gt;カウントダウン&lt;/button&gt;
@@ -267,21 +385,38 @@ Vue.createApp({
               <p>カウント2倍[doubleCounter = {{doubleCounter}}]</p>
               <p>カウント監視{{watchCounter}}</p>
             </div>
+            <h4 class="c-ttlType04 u-mb1">リアクティブデータの定義</h4>
             <div class="u-mb2">
-              <p>リアクティブデータの定義に使用するrefとreactiveの使い分けは、データがオブジェクトであればreactiveを使用して、それ以外はrefを使うようにすればよさそう。またrefで定義した値はsetup内でアクセスする際に「.value」を付ける必要がある（テンプレート内では不要）。</p>
-              <p>ライフサイクルフックも各種関数として使用することができるが、一部v2のライフサイクルフックと名称が変更になっているのと、Composition APIのライフサイクルフック名は、従来の名称の前にonが付いていることに注意（mounted→onMounted）。</p>
+              <p>リアクティブデータの定義に使用する<strong>ref</strong>と<strong>reactive</strong>の使い分けは、データがオブジェクトであればreactiveを使用して、それ以外はrefを使うようにすればよさそう。またrefで定義した値はsetup内でアクセスする際に「<strong>.value</strong>」を付ける必要がある（テンプレート内では不要）。</p>
             </div>
-
+            <h4 class="c-ttlType04 u-mb1">変化の監視</h4>
+            <div class="u-mb2">
+              <p>Vue 2ではリアクティブデータの変化を監視するための機能としてwatchプロパティを使用したが、Vue 3では<code>watch()</code>もしくは<code class="u-fontB">watchEffect()</code>を使う。後者は、監視する値の指定が不要で引数で新しい値と古い値を受け取る必要もない。関数内でリアクティブデータを使うと値の変化が起こるたびに再実行される。<br>使い分けとしては基本的には<code>watch()</code>でよい。必要な時があれば<code>watchEffect()</code>を使うくらいの温度感。</p>
+<pre v-pre>
+Vue.createApp({
+  setup() {
+    const counter = Vue.ref(0);
+    watchEffect(() => {
+      console.log('counterの値が変わりました:', counter.value)
+    })
+  }
+}).mount('#App')
+</pre>
+            </div>
+            <h4 class="c-ttlType04 u-mb1">ライフサイクルフック</h4>
+            <div class="u-mb2">
+              <p>ライフサイクルフックも各種関数として使用することができるが、Composition APIのライフサイクルフック名は、従来の名称の前にonが付いている（mounted→onMounted）。<br>例外として、destroyed→onUnmounted、beforeDestroy→onBeforeUnmountなど名前が変更されているものもある。またbeforeCreate / created はsetup()の中では使えない（setup() が created 相当）。</p>
+            </div>
             <h4 class="c-ttlType04 u-mb1">親子間でのデータの受け渡し</h4>
             <div class="u-mb2" id="vm">
-              <p>子がデータを受け取るために受け皿（propsオプション）を用意して、親から送られるプロパティを定義するのは従来と同じ。Composition APIではsetupメソッドの第一引数でpropsを受け取ることでsetup内で「props.プロパティ名」のように記述して使うことができるようになる。</p>
-              <p>子から親へデータを送るための仕組みも基本的には変わらない。setupの第二引数にcontextオブジェクトを渡すことで、setup内でemitメソッドが使用可能となる。emitはcontextのプロパティ（attrs、slots、emit、expose）のひとつなので、書き方は「context.emit(eventName)」。</p>
+              <p>子がデータを受け取るために受け皿（propsオプション）を用意して、親から送られるプロパティを定義するのは従来と同じ。<br>Composition APIでは<strong>setupメソッドの第一引数でpropsを受け取る</strong>ことで<strong>setup内で「props.プロパティ名」のように記述</strong>して使うことができるようになる。</p>
+              <p>子から親へデータを送るための仕組み（イベントの発火をemitで送る）も基本的には変わらないが、<code>setup()</code>関数内でイベントを発火するには、<strong><code>setup</code>の第2引数として渡される<code>context</code>オブジェクト</strong>を使い、その中の<strong><code>emit</code>プロパティを呼び出す</strong>。</p>
 <pre v-pre>
-const childProduct = {
+const ChildProduct = {
   template: `
-    &lt;li&gt;
-      ◎{{name}}:在庫{{stock}}
-      &lt;button v-if="stock" v-on:click="doSaleStock"&gt;買う&lt;/button&gt;
+    &lt;li class="formUnit"&gt;
+      &lt;p&gt;◎{{name}}（在庫{{stock}}）&lt;/p&gt;
+      &lt;button v-if="stock" v-on:click="clickBuy"&gt;買う&lt;/button&gt;
       &lt;span v-else&gt;完売しました&lt;/span&gt;
     &lt;/li&gt;
   `,
@@ -290,36 +425,112 @@ const childProduct = {
     stock: Number,
     index: Number
   },
-  emits: ['child-click'],
+  emits: ['buy'],
   setup(props, context) {
-    const doSaleStock = function() {
-      context.emit('child-click', props.index);
+    const clickBuy = function() {
+      context.emit('buy', props.index);
     }
 
-    return { doSaleStock }
+    return { clickBuy }
   }
 };
+</pre>
+              <p><code>context</code> は正しい書き方ではあるが、実際には <a href="#Destructuring" class="c-txtLink">分割代入</a>してよりシンプルなコードにすることが多い。</p>
+<pre v-pre>
+const ChildAddProduct = {
+  template: `
+  &lt;div class="formUnit"&gt;
+    &lt;label&gt;品名：&lt;input type="text" v-bind:value="name" v-on:input="onInput"&gt;&lt;/label&gt;
+    &lt;label&gt;仕入数：&lt;select v-bind:value="stock" v-on:change="onChange"&gt;
+    &lt;option&gt; value="5"&gt;5&lt;/option&gt;
+    &lt;option&gt; value="10"&gt;10&lt;/option&gt;
+    &lt;option&gt; value="15"&gt;15&lt;/option&gt;
+    &lt;option&gt; value="20"&gt;20&lt;/option&gt;
+    &lt;/select&gt;&lt;/label&gt;
+    &lt;button&gt; v-on:click="addItem"&gt;リストに追加する&lt;/button&gt;
+  &lt;/div&gt;
+  `,
+  props: {
+    name: String,
+    stock: Number,
+    nameModifiers: Object,
+    stockModifiers: Object
+  },
+  emits: ['update:name', 'update:stock', 'add'],
+  setup(props, { emit }){
+    // 商品の入力
+    const onInput = function(event){
+      let value = event.target.value;
+      // 修飾子があれば変換
+      if (props.nameModifiers?.trim) {
+        value = value.trim();
+      }
+      emit('update:name', value);
+    }
 
+    // 仕入数の入力
+    const onChange = function(event){
+      let value = event.target.value;
+      // 修飾子があれば変換
+      if (props.stockModifiers?.number) {
+        value = Number(value);
+      }
+      emit('update:stock', value);
+    }
+
+    const addItem = function(){
+      emit('add');
+    }
+    return { onInput, onChange, addItem }
+  }
+}
+</pre>
+              <p>v-model に引数を使った場合（例：<code>v-model:hoge.trim</code>）、修飾子は<code>props</code>で<code>hogeModifiers</code>という名前で受け取る。props で受け取ったfooModifiers に、指定した修飾子（例：trim）が含まれているかは「<code>?.</code>」を使って、条件分岐する（例：props.fooModifiers?.trim）</p>
+<pre v-pre>
 Vue.createApp({})
 .component('parent-component', {
   components: {
-    'child-product': childProduct
+    'child-product': ChildProduct,
+    'child-add-product': ChildAddProduct
   },
-  template: `&lt;child-product v-for="(item,i) in product" v-bind:key="item.id" v-bind:index="i" v-bind="item" v-on:child-click="saleStock"&gt;&lt;/child-product&gt;`,
+  template: `
+  &lt;ul class="c-list u-mb1"&gt;
+    &lt;child-product v-for="(item,i) in product" v-bind:key="item.id" v-bind:index="i" v-bind:name="item.name" v-bind:stock="item.stock" v-on:buy="decreaseStock"&gt;&lt;/child-product&gt;
+  &lt;/ul&gt;
+  &lt;child-add-product v-model:name.trim="newItemName" v-model:stock.number="newItemStock" v-on:add="addItem"&gt;&lt;/child-add-product&gt;
+  `,
   setup() {
+    const newItemName = Vue.ref('');
+    const newItemStock = Vue.ref(10);
     const product = Vue.ref([
       { id: 1, name: 'フルーツタルト', stock: 3, price: 410 },
       { id: 2, name: '極生塩パン', stock: 10, price: 180 },
       { id: 3, name: '草餅', stock: 1, price: 240 }
     ])
 
-    const saleStock = function(i) {
-      if (product.value[i].stock &gt; 0) {
+    // 買うボタン押下で在庫マイナス1
+    const decreaseStock = function(i) {
+      if (product.value[i].stock > 0) {
         product.value[i].stock -= 1;
       }
     }
 
-    return { product, saleStock }
+    // 商品を追加する
+    const addItem = function() {
+      const max = product.value.reduce(function(a,b){
+        return a.id > b.id ? a.id : b.id;
+      },0)
+      if(newItemName.value){
+        product.value.push({
+          id: max + 1,
+          name: newItemName.value,
+          stock: newItemStock.value
+        });
+        newItemName.value = '';
+        newItemStock.value = 10;
+      }
+    }
+    return { newItemName, newItemStock, product, decreaseStock, addItem }
   }
 }).mount('#App');
 ---------------------------
@@ -328,57 +539,76 @@ Vue.createApp({})
   &lt;parent-component&gt;&lt;/parent-component&gt;
 &lt;/ul&gt;
 </pre>
-              <ul>
-                <parent-component></parent-component>
-              </ul>
+              <parent-component></parent-component>
+            </div>
+            <h4 id="Destructuring" class="c-ttlType04 u-mb1">setupの中の分割代入とは</h4><div class="u-mb2">
+              <p>setup() の第二引数に渡している <code>{ emit }</code> は、contextオブジェクトから、<code>emit</code>だけを分割代入で抜き出している状態である。</p>
+<pre v-pre>
+context = {
+  attrs: {...},
+  slots: {...},
+  emit: function,
+  expose: function
+}
+const { emit } = context;
+</pre>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">Teleport</h3>
             <div class="u-mb2">
-              <p><strong>Teleport</strong>は、コンポーネントの一部（&lt;teleport&gt;タグで囲んだ内側）をそのコンポーネントのDOM階層の外側に存在する任意の場所へ移動（テレポート）させることができる。移動先をto属性でDOMノードかCSSセレクター文字列で指定すると、指定された要素内の末尾に&lt;teleport&gt;の中身が移動する。また&lt;teleport&gt;にdisabledプロパティを付与することで移動を無効化することも可能。</p>
+              <p><strong>Teleport</strong>は、コンポーネントの一部（<code>teleport</code>タグで囲んだ内側）をそのコンポーネントのDOM階層の外側に存在する任意の場所へ移動（テレポート）させることができる。移動先を<strong>to属性</strong>でDOMノードかCSSセレクター文字列で指定すると、指定された要素内の末尾に<code>&lt;teleport&gt;</code>の中身が移動する。また<code>&lt;teleport&gt;</code>に<code>disabled</code>プロパティを付与することで移動を無効化することも可能。</p>
 <pre v-pre>
 app.component('teleport-component', {
   template: `
-    &lt;button @click="open = !open" ref="trigger"&gt;モーダルを開く&lt;/button&gt;
+    &lt;button @click="showModal = !showModal"&gt;モーダルを開く&lt;/button&gt;
     &lt;Teleport to="#secTeleport"&gt;
-      &lt;div v-if="open" class="modalPanel" ref="modalPanel"&gt;
+      &lt;div v-if="showModal" class="modalPanel" ref="modalPanelRef"&gt;
         &lt;div class="modalPanel_inner"&gt;
           &lt;p class="u-fontB u-mb1"&gt;モーダルコンテンツ&lt;/p&gt;
           &lt;p&gt;teleportの移動先は&lt;teleport&gt;が...省略&lt;/p&gt;
           &lt;p&gt;&lt;img src="/assets/images/task/difference/img_01.png" alt=""&gt;&lt;/p&gt;
-          &lt;button @click="open = false" class="modalPanel_btn"&gt;Close&lt;/button&gt;
+          &lt;button @click="showModal = false" class="modalPanel_btn"&gt;Close&lt;/button&gt;
         &lt;/div&gt;
       &lt;/div&gt;
     &lt;/Teleport&gt;
     &lt;Teleport to="body"&gt;
-      &lt;div v-if="open" class="modalOverlay" @click="open = false"&gt;&lt;/div&gt;
+      &lt;div v-if="showModal" class="modalOverlay" @click="showModal = false"&gt;&lt;/div&gt;
     &lt;/Teleport&gt;
   `,
   setup() {
-    const open = Vue.ref(false);
-    const modalPanel = Vue.ref(null);
-    Vue.onUpdated(function () {
-      if (open.value) {
-        const target = modalPanel.value;
-        adjustSize(target);
-      }
-    })
+    // リアクティブデータ
+    const showModal = Vue.ref(false);
+    const modalPanelRef = Vue.ref(null);
+    const scrollY = Vue.ref(0);
 
+    // 変数
     const largeClass = 'is-lgSize';
-    adjustSize = function (modalPanel) {
-      let panelHeight = modalPanel.clientHeight,
-        windowHeight = document.documentElement.clientHeight;
+    const fixedClass = 'is-fixed';
+    const scrollbarWidth = window.innerWidth - document.body.clientWidth;
+
+    // モーダルがビューポートより大きい場合はクラスを付与
+    function adjustSize(modalPanelRef) {
+      let panelHeight = modalPanelRef.clientHeight,
+          windowHeight = document.documentElement.clientHeight;
 
       if (panelHeight >= windowHeight) {
-        modalPanel.classList.add(largeClass);
+        modalPanelRef.classList.add(largeClass);
       }
-    }
+    };
 
-    let scrollY;
-    const fixedClass = 'is-fixed';
-    Vue.watch(open, function (newValue) {
+    // モーダルの開閉時にスタイルを変更
+    function adjustScreen(fixed) {
+      if (fixed) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      } else {
+        document.body.style = "";
+      }
+    };
+
+    // showModalの監視
+    Vue.watch(showModal, function (newValue) {
       if (newValue) {
-        scrollY = Vue.ref(window.pageYOffset);
+        scrollY.value = window.pageYOffset;
         document.documentElement.style.top = `-${scrollY.value}px`;
         adjustScreen(true);
         document.getElementsByTagName('html')[0].classList.add(fixedClass);
@@ -386,22 +616,29 @@ app.component('teleport-component', {
         document.documentElement.style.top = '';
         adjustScreen(false);
         document.getElementsByTagName('html')[0].classList.remove(fixedClass);
+
         if (scrollY.value) {
           window.scrollTo(0, scrollY.value);
         }
       }
     });
 
-    const scrollbarWidth = window.innerWidth - document.body.clientWidth;
-    adjustScreen = function(fixed) {
-      if (fixed) {
-        document.body.style.paddingRight = `${scrollbarWidth}px`;
-      } else {
-        document.body.style = "";
+    // ライフサイクルフック
+    Vue.onUpdated(function () {
+      if (showModal.value) {
+        const target = modalPanelRef.value;
+        if (modalPanelRef.value) {
+          adjustSize(target);
+        }
       }
-    }
+    });
 
-    return { open, modalPanel, adjustSize, adjustScreen }
+    return {
+      showModal,
+      modalPanelRef,
+      adjustSize,
+      adjustScreen
+    };
   }
 })
 ---------------------------
@@ -409,6 +646,65 @@ app.component('teleport-component', {
 &lt;teleport-component&gt;&lt;/teleport-component&gt;
 </pre>
               <teleport-component></teleport-component>
+            </div>
+            <div class="u-mb2">
+              <p>上記の場合、仮に<code>watch()</code>を<code>watchEffect()</code>に変更しても挙動は変わらない。</p>
+<pre v-pre>
+Vue.watchEffect(() => {
+  const isOpen = open.value;
+  if(isOpen) {
+    scrollY.value = window.pageYOffset;
+    document.documentElement.style.top = `-${scrollY.value}px`;
+    adjustScreen(true);
+    document.getElementsByTagName('html')[0].classList.add(fixedClass);
+  } else {
+    document.documentElement.style.top = '';
+    adjustScreen(false);
+    document.getElementsByTagName('html')[0].classList.remove(fixedClass);
+
+    if (scrollY.value) {
+      window.scrollTo(0, scrollY.value);
+    }
+  }
+})
+</pre>
+            </div>
+
+            <h3 class="c-ttlType03 u-mb1">Suspense</h3>
+            <div class="u-mb2">
+              <p><strong>Suspense</strong>は、内部で非同期処理（特に非同期コンポーネントの読み込みや<code>setup()</code>での<code>await</code>）が完了するまで、<strong>フォールバック（代替UI）</strong>を表示することができる。<br><code>suspense</code>配下の<code>template</code>タグに<code> #fallback</code>を付与した内容が非同期が解決されるまで表示される代替UI（ローディングなど）となり、<code>#default</code>がメインの表示内容（通常のコンポーネント）になる。</p>
+<pre v-pre>
+app.component('async-component', {
+  template: `&lt;p&gt;読み込み完了！&lt;/p&gt;`,
+  async setup() {
+    // 疑似的に3秒待つ
+    await new Promise(resolve => {
+      setTimeout(() => {
+        resolve()
+      }, 3000)
+    })
+  }
+})
+---------------------------
+&lt;div id="App"&gt;
+  &lt;suspense&gt;
+    &lt;template #default&gt;
+      &lt;async-component>&lt;/async-component&gt;
+    &lt;/template&gt;
+    &lt;template #fallback&gt;
+      &lt;p>読み込み中...&lt;/p&gt;
+    &lt;/template&gt;
+  &lt;/suspense&gt;
+&lt;/div&gt;
+</pre>
+              <suspense>
+                <template #default>
+                  <async-component></async-component>
+                </template>
+                <template #fallback>
+                  <p>読み込み中...</p>
+                </template>
+              </suspense>
             </div>
           </div><!--/#App-->
           <div id="secTeleport"></div>
@@ -418,8 +714,9 @@ app.component('teleport-component', {
       <div class="st-flowFoot">
         <div class="l-base">
           <div class="m-paging">
-            <a href="/task/sfc.html" class="m-paging_prev">単一ファイルコンポーネント</a>
+            <a href="/task/others.html" class="m-paging_prev">その他の機能</a>
             <a href="/" class="m-paging_page">INDEX</a>
+            <a href="/task/sfc.html" class="m-paging_next">単一ファイルコンポーネント</a>
           </div>
         </div>
       </div>

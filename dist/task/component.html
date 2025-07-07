@@ -25,7 +25,7 @@
 
             <h2 class="c-ttlType02 u-mb1">コンポーネントの定義</h2>
             <div class="u-mb2">
-              <p>再利用可能なコンポーネントには、すべてのVueインスタンスで利用可能な<strong>グローバルコンポーネント</strong>と、特定のコンポーネントの領域内でのみ使用する<strong>ローカルコンポーネント</strong>があり、どちらも任意の名前で作成したタグ（<strong>カスタムタグ</strong>）で呼び出すことができる。</p>
+              <p>再利用可能なコンポーネント（カスタムコンポーネント）には、すべてのVueインスタンスで利用可能な<strong>グローバルコンポーネント</strong>と、特定のコンポーネントの領域内でのみ使用する<strong>ローカルコンポーネント</strong>があり、どちらも任意の名前で作成したタグ（<strong>カスタムタグ</strong>）で呼び出すことができる。</p>
               <p>コンポーネントを定義するポイントは、必ずルートインスタンスが生成される前に定義すること。コンポーネントが記述されたスクリプトファイルを読み込む際は、new Vue()を記述したファイルより前になるよう順番に気をつける。</p>
             </div>
 
@@ -61,7 +61,7 @@ const vm = new Vue({
               <p>ローカルコンポーネントはコンポーネント名を変数名として、オブジェクトリテラルで定義。<br>特定のコンポーネントの<strong>componentsオプション</strong>に登録することでそのコンポーネントの範囲内でのみ使用が可能なローカルスコープとなる。<br></p>
 <pre v-pre>
 // 子となるローカルコンポーネント
-const localComponent = {
+const LocalComponent = {
   template: '&lt;div&gt;&lt;p&gt;{{ message }}&lt;/p&gt;&lt;p&gt;ローカルコンポーネントの使い方&lt;/p&gt;&lt;/div&gt;',
   data: function(){
     return {
@@ -79,7 +79,7 @@ const localComponent = {
 const vm = new Vue({
   el: '#App',
   components: {
-    'local-component': localComponent
+    'local-component': LocalComponent
   }
 });
 </pre>
@@ -124,13 +124,13 @@ const vm = new Vue({
 
             <h3 class="c-ttlType03 u-mb1">親コンポーネントから子コンポーネントにデータを受け渡す方法</h3>
             <div class="u-mb2">
-              <p>まずデータを受け取る側（子）がデータの受け皿となるpropsオプションに、親から受け取る属性（プロパティ）名を定義する。<br>次にデータを送る側（親）は子コンポーネントのpropsオプションに定義した属性をそのカスタムタグに追加して送りたいデータを値として持たせる。これで親の持つデータを子コンポーネントで扱うことができるようになる。</p>
+              <p>まずデータを受け取る側（子）がデータの受け皿となる<strong>propsオプション</strong>に、<strong>親から受け取る属性（プロパティ）名を定義</strong>する。<br>次にデータを送る側（親）は、子コンポーネントのpropsオプションに定義した属性をそのカスタムタグに追加して、送りたいデータを値として持たせる。これで親の持つデータを子コンポーネントで扱うことができるようになる。</p>
               <p>イメージとしては、上層階にいる親が下層に向けて属性という容器に入れたデータを落とし、子がそれを受け皿でキャッチしている感じ。このため親から子へのデータのやり取りは単方向になる。</p>
 <pre v-pre>
 // 子となるコンポーネント
 Vue.component('text-link', {
-  props: ['text', 'url'],
   template: '&lt;p&gt;&lt;a v-bind:href="url" class="c-txtLink" target="_blank"&gt;{{ text }}&lt;/a&gt;&lt;/p&gt;'
+  props: ['text', 'url'],
 });
 ---------------------------
 // 親となるテンプレート
@@ -225,13 +225,53 @@ new Vue({
               <obj-bundle v-for="styling in styleObject" v-bind:style="styling"></obj-bundle>
             </div>
 
+            <h5 class="c-ttlType05 u-mb1">親から来た不要な属性を DOM に継承させたくない場合</h5>
+            <div class="u-mb2">
+              <p>v-bindを使って複数のプロパティを一括でバインドする方法は便利だが、実はちょっとした落とし穴というか、気をつけたい特徴がある。</p>
+<pre v-pre>
+Vue.component('child-component', {
+  template: '&lt;li&gt;{{name}}&lt;/li&gt;',
+  props: {'name': String}
+});
+---------------------------
+&lt;div id="App"&gt;
+  &lt;ul&gt;
+    &lt;child-component v-for="(person, i) in persons" v-bind:key="person.id" v-bind="person"&gt;&lt;/child-component&gt;
+  &lt;/ul&gt;
+&lt;/div&gt;
+---------------------------
+new Vue({
+  el: '#App',
+  data: {
+    persons: [
+      {id: 1, name: 'Akitaka', age: 17, gender: male},
+      {id: 2, name: 'Yuumi', age: 16, gender: female},
+    ]
+  }
+});
+---------------------------
+// HTMLには以下のように出力される
+&lt;ul&gt;
+  &lt;li id="1" age="17" gender="male"&gt;Akitaka&lt;/li&gt;
+  &lt;li id="2" age="16" gender="female"&gt;Yuumi&lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+              <p>上記を見ると、テンプレートで出力したい属性は<code>name</code>だけなのに、実際は、id、age、gender属性がタグに付与された状態で出力されている。<br>これは<code>v-bind="person"</code>で、personオブジェクトのすべてのプロパティを渡しているが、<code>props</code>で、きちんと受け取っていない（定義されていない）、こぼれたプロパティが、意図していないところに付着してしまってHTML属性としてそのまま DOM に反映されているような状態。</p>
+              <p>これを防ぐには、<code>v-bind:name="person.name"</code>のように明示的に必要なものだけを渡すようにするか、子コンポーネント側に<code>inheritAttrs: false</code>を追加すると、未定義の属性を HTML要素に自動で渡さなくなる。</p>
+<pre v-pre>
+Vue.component('child-component', {
+  inheritAttrs: false, // ← ここに追加
+  template: `
+</pre>
+            </div>
             <h3 class="c-ttlType03 u-mb1">子コンポーネントから親コンポーネントにデータを受け渡す方法</h3>
             <div class="u-mb2">
-              <p>子から親にデータを渡す仕組みをざっくり例えると、子は自力で親のいる上階へ荷（データ）を運ぶことができないので、親が荷を受け取るためのリフト（イベントハンドラ）を用意する。子が$emitという装置を使って合図（カスタムイベント）を送ると、親側でv-onが子の合図を検知しリフトが自動可動しデータを受け取るといった感じになる（あくまで個人的な解釈）。</p>
+              <p>子から親にデータを渡す仕組みをざっくり例えると、子は自力で親のいる上階へ荷（データ）を運ぶことができないので、親が荷を受け取るためのリフト（<strong>イベントハンドラ</strong>）を用意する。子が<strong>$emit</strong>という装置を使って合図（<strong>カスタムイベント</strong>）を送ると、親側でv-onが子の合図を検知しリフトが自動可動しデータを受け取るといった感じになる（あくまで個人的な解釈）。</p>
               <p>$emitはVueのインスタンスメソッドのひとつで、第一引数にイベント名、第二引数以降にイベントハンドラに渡す任意のデータを必要なだけ持たせることができる。</p>
 <pre v-pre>
 // 子となるコンポーネント
-const childProduct = {
+const ChildProduct = {
+  inheritAttrs: false,
   template: `
     &lt;li&gt;
       ◎{{name}}:在庫{{stock}}
@@ -246,7 +286,7 @@ const childProduct = {
   },
   methods: {
     doSaleStock() {
-      // 親に知らせるイベントを発火
+      // カスタムイベント（親に知らせるイベントを発火）
       this.$emit('child-click', this.index);
     }
   }
@@ -263,17 +303,17 @@ const childProduct = {
 new Vue({
   el: '#App',
   components: {
-    'child-product': childProduct
+    'child-product': ChildProduct
   }
   data: {
     product: [
       {id: 1, name: 'フルーツタルト', stock: 3, price: 410},
       {id: 2, name: '極生塩パン', stock: 10, price: 180},
-      {id: 3, name: '草餅', stock: 1, price: 240}
+      {id: 3, name: '草餅', stock: 1, price: 80}
     ]
   },
   methods: {
-    // 子のイベントを検知して発火
+    // イベントハンドラ（子のイベントを検知して発火）
     saleStock(i) {
       if (this.product[i].stock > 0) {
         this.product[i].stock -= 1;
