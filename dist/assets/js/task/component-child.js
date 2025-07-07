@@ -20,7 +20,8 @@ Vue.component('obj-bundle', {
   template: '<p v-bind:style="styling"></p>',
   props: ['styling']
 });
-const childProduct = {
+const ChildProduct = {
+  inheritAttrs: false,
   template: `
   <li>
     ◎{{name}}:在庫{{stock}}

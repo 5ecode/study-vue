@@ -9,6 +9,11 @@
   }
 }
 .c-{
+  &list{
+    > * {
+      margin-bottom: 5px;
+    }
+  }
   &dotList{
     @extend %listCommonPl;
     >*{

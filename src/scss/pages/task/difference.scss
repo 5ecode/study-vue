@@ -6,6 +6,11 @@
 .pageImg01{
   aspect-ratio: 987/504;
 }
+.formUnit{
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
 .modalPanel{
   overflow: hidden;
   position: fixed;

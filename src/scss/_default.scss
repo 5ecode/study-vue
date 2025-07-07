@@ -96,7 +96,7 @@ sub{
   top: 0;
 }
 
-/* pre
+/* ソースコード
 --------------------------------------------------*/
 pre{
   overflow: auto;
@@ -107,6 +107,12 @@ pre{
   font-family: Consolas, monospace, sans-serif;
   font-size: rem(18);
   white-space: pre-wrap;
+}
+code {
+  margin-inline: 5px;
+  background: rgba(83, 192, 211, .2);
+  font-family: "Source Code Pro", monospace;
+  font-optical-sizing: auto;
 }
 
 /* table

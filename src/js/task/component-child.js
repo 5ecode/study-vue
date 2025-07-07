@@ -22,7 +22,8 @@ Vue.component('obj-bundle', {
   props: ['styling']
 });
 
-const childProduct = {
+const ChildProduct = {
+  inheritAttrs: false,
   template:`
   <li>
     ◎{{name}}:在庫{{stock}}

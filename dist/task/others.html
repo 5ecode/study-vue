@@ -290,7 +290,7 @@ Vue.component('mixin-component-02', {
 
             <h2 class="c-ttlType02 u-mb1">DOM要素へのアクセス</h2>
             <div class="u-mb2">
-              <p class="u-mb1">特別な属性refとインスタンスプロパティ$refsを使うことで、getElementbyIdのように特定の要素を取得できる。</p>
+              <p class="u-mb1">特別な属性refとインスタンスプロパティ$refsを使うことで、特定の DOM 要素やコンポーネントのインスタンスを取得できる。</p>
               <toggle-component>
 <pre v-pre>
 // 子コンポーネント
@@ -483,7 +483,7 @@ Vue.directive('custom-directive', {
                 <tbody>
                   <tr>
                     <th>.lazy</th>
-                    <td>入力されたタイミングではなく、入力が確定されたタイミングでバインドさせる。</td>
+                    <td>入力されたタイミング（inputイベント）ではなく、入力が確定したタイミング（changeイベント）で値を反映させる。</td>
                   </tr>
                   <tr>
                     <th>.number</th>
@@ -598,7 +598,7 @@ Vue.directive('custom-directive', {
           <div class="m-paging">
             <a href="/task/prototyping-01.html" class="m-paging_prev">練習その1</a>
             <a href="/" class="m-paging_page">INDEX</a>
-            <a href="/task/sfc.html" class="m-paging_next">単一ファイルコンポーネント</a>
+            <a href="/task/difference.html" class="m-paging_next">Vue.js v2とv3の違い</a>
           </div>
         </div>
       </div>

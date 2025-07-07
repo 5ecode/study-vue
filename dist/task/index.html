@@ -26,7 +26,7 @@
           <h2 class="c-ttlType02 u-mb1">インストール</h2>
           <div class="u-mb2">
             <p>Vue.jsの使用するには、本体をnpmでインストールするか、専用の開発環境を構築するか、CDN版を利用する方法がある。今回は一番手軽なCDN版でVue.js v2から学習を進めていく（v2は2023年12月31日でサポートが終了するので、追ってv3の学習も入れていく）。</p>
-            <pre><code>https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js</code></pre>
+            <pre>https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js</pre>
           </div>
 
           <h2 class="c-ttlType02 u-mb1">Vue.js基本的な書き方</h2>
@@ -97,7 +97,7 @@ const vm = new Vue({
                 </tr>
                 <tr>
                   <th>filters</th>
-                  <td>テンプレートにバインドしたテキストの変換処理のみを行う。mustacheもしくはv-bindの値の末尾に「|」でフィルター名をフィルター名を繋げて記述することで呼び出せる。</td>
+                  <td>テンプレートにバインドしたテキストの変換処理のみを行う。mustacheもしくはv-bindの値の末尾に「|」でフィルター名をフィルター名を繋げて記述することで呼び出せる。Vue 3では廃止。</td>
                 </tr>
                 <tr>
                   <th>ライフサイクルフック</th>
@@ -202,10 +202,10 @@ new Vue({
               <p>v-forを使用する際は、必ずv-bindを使ってkey属性を指定する必要がある。この必要性は下記のkeyのないリスト、あるリストのテキストボックスにそれぞれ左から順に1～3の数字を入れて、「先頭を削除」ボタンをクリックするとわかる。</p>
 <pre v-pre>
 &lt;ul&gt;
-  &lt;li v-for="(item,i) in items"&gt;{{item}}: &lt;input type="text"&gt;&lt;/li&gt;
+  &lt;li v-for="(item,i) in colors"&gt;{{item}}: &lt;input type="text"&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;ul&gt;
-  &lt;li v-for="(item,i) in items" v-bind:key="item"&gt;{{item}}: &lt;input type="text"&gt;&lt;/li&gt;
+  &lt;li v-for="(item,i) in colors" v-bind:key="item"&gt;{{item}}: &lt;input type="text"&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;button @click="removeColor"&gt;先頭を削除&lt;/button&gt;
 ---------------------------
@@ -348,6 +348,13 @@ new Vue({
 &lt;/template&gt;
 &lt;/dl&gt;
 &lt;button @click="ok = !ok"&gt;表示切替&lt;/button&gt;
+---------------------------
+new Vue({
+  el: '#App',
+  data: {
+    ok: true
+  }
+})
 </pre>
               <dl class="u-mb1">
               <template v-if="ok">
@@ -443,7 +450,7 @@ new Vue({
             <div class="u-mb2">
 <pre v-pre>
 &lt;label v-for="item in filtersort" v-bind:key="item.id"&gt;&lt;input type="checkbox" v-model="order" v-bind:value="item.price"&gt;{{item.name}} : {{item.price}}円&lt;/label&gt;
-&lt;p&gt;合計：{{totalPrice}}円&lt;/p&gt;
+&lt;p&gt;合計：{{totalPrice}}円（税込）&lt;/p&gt;
 ---------------------------
 new Vue({
   el: '#App',
@@ -509,7 +516,7 @@ new Vue({
 
             <h2 class="c-ttlType02 u-mb1">filters</h2>
             <div class="u-mb2">
-              <p>共通のテキストフォーマットを適用するための機能。コンポーネント内にオプションとして記述し特定のコンポーネント内でのみ使用可能なローカルフィルターと、コンポーネントの外に記述しすべてのコンポーネントから使用できるグローバルフィルターがある。加工したデータを返す処理はcomputedと同じだが、filtersの中ではthisが使えないのが特徴。Vue 3では廃止されていて、methodsやcomputedを使うよう推奨されている。</p>
+              <p>共通のテキストフォーマットを適用するための機能。コンポーネント内にオプションとして記述し特定のコンポーネント内でのみ使用可能なローカルフィルターと、コンポーネントの外に記述しすべてのコンポーネントから使用できるグローバルフィルターがある。加工したデータを返す処理はcomputedと同じだが、filtersの中ではthisが使えないのが特徴。<strong>Vue 3では廃止</strong>されていて、methodsやcomputedを使うよう推奨されている。</p>
             </div>
             <h3 class="c-ttlType03 u-mb1">フィルターの使い方</h3>
             <div class="u-mb2">
@@ -586,11 +593,11 @@ new Vue({
                 <tbody>
                   <tr>
                     <th>beforeCreate</th>
-                    <td>インスタンスの生成時リアクティブデータが初期化される前に実行される。<br>このタイミングでインスタンスプロパティ利用し、dataオプションの内容やelオプションで紐づけた要素を例えばconsole.log($data)やconsole.log($el)と呼び出しても「undefined」になる。</td>
+                    <td>インスタンスの生成時リアクティブデータが初期化される前に実行される。<br>このタイミングでインスタンスプロパティ利用し、dataオプションの内容やelオプションで紐づけた要素を例えばconsole.log($data)やconsole.log($el)と呼び出しても「undefined」になる。Vue 3のComposition APIでは使用しない。</td>
                   </tr>
                   <tr>
                     <th>created</th>
-                    <td>インスタンスの生成時リアクティブデータが初期化される後に実行される。<br>この時点でインスタンス自身を指すthisにアクセスできるので、dataオプションに予め定義したプロパティに外部から読み込んだjsonなどのデータを代入することができる。</td>
+                    <td>インスタンスの生成時リアクティブデータが初期化される後に実行される。<br>この時点でインスタンス自身を指すthisにアクセスできるので、dataオプションに予め定義したプロパティに外部から読み込んだjsonなどのデータを代入することができる。Vue 3のComposition APIでは使用しない。</td>
                   </tr>
                   <tr>
                     <th>beforeMount</th>

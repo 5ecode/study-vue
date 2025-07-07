@@ -2,8 +2,8 @@
 new Vue({
   el: '#App',
   components: {
-    'local-component': localComponent,
-    'child-product': childProduct
+    'local-component': LocalComponent,
+    'child-product': ChildProduct
   },
   data: {
     items: [{
@@ -43,15 +43,18 @@ new Vue({
     product: [{
       id: 1,
       name: 'フルーツタルト',
-      stock: 3
+      stock: 3,
+      price: 410
     }, {
       id: 2,
       name: '極生塩パン',
-      stock: 10
+      stock: 10,
+      price: 180
     }, {
       id: 3,
       name: '草餅',
-      stock: 1
+      stock: 1,
+      price: 80
     }],
     msg: 'イベント待機',
     testText: '初期値',
