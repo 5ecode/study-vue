@@ -243,16 +243,31 @@ defineProps&lt;{ msg: string }&gt;()
 </pre>
               <p>まず<code>defineProps()</code>は、<code>&lt;script setup&gt;</code>内で、親コンポーネントから渡されたプロパティを受け取るための関数。つまり<code>props: ['msg']</code>と同義。これをTypeScriptで記述すると上記のような型付きの定義になる。</p>
 <pre v-pre>
-// 型定義なし
-defineProps()
-
 // 複数のプロパティの場合
 defineProps&lt;{
-  message: string,
+  msg: string,
   count: number
 }&gt;()
+
+// 型定義なし
+const props = defineProps([msg, count])
 </pre>
               <p>その他は、特に気になる記述はない。<code>count</code>は0が初期値で、<code>&lt;button @click="count++"&gt;</code>でボタンをクリックするたびにカウントが増えるようになっている。</p>
+              <p>ちなみに、子から親にイベントを<code>emit</code>したい場合は、<code>defineEmits</code>関数を使ってイベントを定義する。</p>
+<pre v-pre>
+// イベント定義
+const emit = defineEmits(['notify'])
+
+// 型付きイベント定義
+const emit = defineEmits&lt;{
+  (e: 'notify', message: string): void
+}&gt;()
+
+// イベント発火
+function handleClick() {
+  emit('notify', '子からのメッセージです')
+}
+</pre>
             </div>
 
             <h3 class="c-ttlType03 u-mb1">ビルド</h3>
@@ -260,7 +275,7 @@ defineProps&lt;{
               <p>だいたいのファイルの構成がわかったところで、これをサーバー上でも動作するファイル形式に変換（ビルド）してみる。</p>
               <pre>npm run build</pre>
               <p class="u-mb1">無事に「dist」ディレクトリにビルドされたファイルが格納された。</p>
-              <p class="u-mb1"><img src="/assets/images/task/sfc/img_05.png" alt="" width="280" height="576"></p>
+              <p class="u-mb1"><img src="/assets/images/task/sfc/img_05.png" alt="" width="270" height="543"></p>
               <p class="u-mb1">スクリプトは<code>/assets/index-DA1xjUjD.js</code>に、cssは<code>/assets/index-BYiJVlY3.css</code>にそれぞれまとめられた様子。<code>/public/vite.svg</code>は、<code>/dist/vite.svg</code>と同じものだったのでそのまま出力された感じ。<code>/src/assets/vue.svg</code>はどこへいったのか…。ビルド前のルート直下<code>index.html</code>は、<code>/dist/index.html</code>に出力され内容も少し変化した。</p>
 <pre v-pre>
 &lt;!doctype html&gt;
@@ -321,6 +336,7 @@ export default defineConfig({
           <div class="m-paging">
             <a href="/task/difference.html" class="m-paging_prev">Vue.js v2とv3の違い</a>
             <a href="/" class="m-paging_page">INDEX</a>
+            <a href="/task/spa.html" class="m-paging_next">シングルページアプリケーション</a>
           </div>
         </div>
       </div>
