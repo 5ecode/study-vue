@@ -318,6 +318,48 @@ app.mount('#App')
               <smart-input v-model.number="age" label="年齢: "></smart-input>
               <p>年齢：{{ age }}（型：{{ typeof age }}）</p>
             </div>
+            <h4 class="c-ttlType04 u-mb1">スロット</h4>
+            <div class="u-mb2">
+              <p>機能的な変更はなし。ただし親コンポーネント側のスロット指定方法（名前付きスロットやスコープ付きスロットの書き方）が変わっている。具体的には<code>slot</code>属性は廃止され、代わりに<code>v-slot:</code>や<code>#</code>（省略記法）を使う。</p>
+<pre v-pre>
+// 子コンポーネント
+Vue.component('name-slot-component', {
+  template: `
+    &lt;div class="nameSlotBox"&gt;
+      &lt;p class="noname"&gt;&lt;slot&gt;名前なしスロット&lt;/slot&gt;&lt;/p&gt;
+      &lt;slot name="slot2"&gt;名前ありスロットひとつめ&lt;/slot&gt;
+      &lt;slot name="slot3"&gt;名前ありスロットふたつめ&lt;/slot&gt;
+      &lt;slot name="slot4"&gt;&lt;/slot&gt;
+      &lt;p&gt;ここは子側のテンプレートに元々記述されているところ。&lt;/p&gt;
+    &lt;/div&gt;
+  `,
+})
+---------------------------
+// 親テンプレート
+&lt;name-slot-component&gt;
+  &lt;template #slot3&gt;
+    &lt;p class="bgC02"&gt;こちらはスロット名「slot3」に埋め込まれます。&lt;/p&gt;
+  &lt;/template&gt;
+  &lt;template #slot2&gt;
+    &lt;p class="bgC01"&gt;スロット名「slot2」に差し込まれます。&lt;/p&gt;
+  &lt;/template&gt;
+  &lt;template #default&gt;
+  このテキストが優先して名前なしスロットに入ります。
+  &lt;/template&gt;
+  templateタグの範囲外のこのテキストは名前なしスロットに入ります。ただし#defaultがある場合は、無視されます。
+&lt;/name-slot-component&gt;
+</pre>
+              <name-slot-component>
+                <template #slot3>
+                  <p class="bgC02">こちらはスロット名「slot3」に埋め込まれます。</p>
+                </template>
+                <template #slot2>
+                  <p class="bgC01">スロット名「slot2」に差し込まれます。</p>
+                </template>
+                <template #default>このテキストが優先して名前なしスロットに入ります。</template>
+                templateタグの範囲外のこのテキストは名前なしスロットに入ります。ただしdefaultの指定がある場合は、無視されます。
+              </name-slot-component>
+            </div>
 
             <h2 class="c-ttlType02 u-mb1">v3注目の新機能</h2>
             <div class="u-mb2">
@@ -387,7 +429,41 @@ Vue.createApp({
             </div>
             <h4 class="c-ttlType04 u-mb1">リアクティブデータの定義</h4>
             <div class="u-mb2">
-              <p>リアクティブデータの定義に使用する<strong>ref</strong>と<strong>reactive</strong>の使い分けは、データがオブジェクトであればreactiveを使用して、それ以外はrefを使うようにすればよさそう。またrefで定義した値はsetup内でアクセスする際に「<strong>.value</strong>」を付ける必要がある（テンプレート内では不要）。</p>
+              <p class="u-mb1">リアクティブデータの定義に使用する<strong>ref</strong>と<strong>reactive</strong>の使い分けは、データが再代入されないオブジェクトであればreactiveを使用して、それ以外はrefを使うようにすればよさそう。またrefで定義した値はsetup内でアクセスする際に「<strong>.value</strong>」を付ける必要がある（テンプレート内では不要）。</p>
+              <table class="c-table">
+                <thead>
+                  <tr>
+                    <th>比較項目</th>
+                    <th><code>ref([])</code></th>
+                    <th><code>reactive([])</code></th>
+                  </tr>
+                  <tbody><tr>
+                    <td>使い方</td>
+                    <td>変数名に<code>.value</code> でアクセス</td>
+                    <td>変数名でアクセス</td>
+                  </tr>
+                  <tr>
+                    <td>再代入</td>
+                    <td>できる</td>
+                    <td><strong>できない</strong></td>
+                  </tr>
+                  <tr>
+                    <td>v-for との相性</td>
+                    <td>良い</td>
+                    <td>場合によっては更新が効かないことがある</td>
+                  </tr>
+                  <tr>
+                    <td>Vueが監視する仕組み</td>
+                    <td><code>.value</code>の中身をトラッキング</td>
+                    <td>配列自体を Proxy 化してトラッキング</td>
+                  </tr>
+                  <tr>
+                    <td>どこで使う？</td>
+                    <td>配列・プリミティブ</td>
+                    <td>オブジェクト（フォームなどの複数プロパティ）</td>
+                  </tr></tbody>
+                </thead>
+              </table>
             </div>
             <h4 class="c-ttlType04 u-mb1">変化の監視</h4>
             <div class="u-mb2">

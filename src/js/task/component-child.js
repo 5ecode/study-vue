@@ -239,7 +239,7 @@ Vue.component('name-slot-component', {
       <slot name="slot2">名前ありスロットひとつめ</slot>
       <slot name="slot3">名前ありスロットふたつめ</slot>
       <slot name="slot4"></slot>
-      <p>ここは子側のテンプレートに元々記述されているところ。「v-slot:スロット名」は「#スロット名」と省略することも可能。</p>
+      <p>ここは子側のテンプレートに元々記述されているところ。</p>
     </div>
   `,
 })

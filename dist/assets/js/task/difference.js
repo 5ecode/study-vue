@@ -160,6 +160,17 @@ app.component('login-component', {
   },
   emits: ['update:email', 'update:password']
 });
+app.component('name-slot-component', {
+  template: `
+    <div class="nameSlotBox">
+      <p class="noname"><slot>名前なしスロット</slot></p>
+      <slot name="slot2">名前ありスロットひとつめ</slot>
+      <slot name="slot3">名前ありスロットふたつめ</slot>
+      <slot name="slot4"></slot>
+      <p>ここは子側のテンプレートに元々記述されているところ。</p>
+    </div>
+  `
+});
 const ChildProduct = {
   template: `
     <li class="formUnit">
