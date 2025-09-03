@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Prototyping">Prototyping</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">練習その2</h1>
+          <div class="u-mb2">
+            <p>ここまで学習した内容を使って、実践的なアプリを制作。</p>
+          </div>
+          <h2 class="c-ttlType02 u-mb1">BookShelfNote</h2>
+          <dl class="u-mb1">
+            <p class="u-mb1">個人的に欲しいと思った機能を盛り込んだ書籍管理ができるアプリ。</p>
+            <dt class="u-fontB">制作条件・仕様</dt>
+            <dd class="u-mb1">
+              <ul class="c-dotList">
+                <li>Vue3.js + Composition API + TypeScriptを使用。</li>
+                <li>楽天ブックス書籍検索APIから書籍情報を取得。</li>
+                <li>書籍の追加は、「書籍名・著者名から検索」「ISBNから検索」「バーコードを読み取って検索」「手入力」から選択可能。</li>
+                <li>書籍の表紙画像はISBNから取得する以外に、任意の画像をアップロードすることもできる。</li>
+                <li>LocalStorageで取得した書籍の情報を保存。</li>
+                <li>書籍名から巻数の表記を削除し、シリーズ名を自動で登録。。</li>
+                <li>シリーズ名一覧、著者ごとの作品一覧が表示可能。</li>
+                <li>シリーズ名と著者名が一括編集ができる。</li>
+                <li>新刊チェックができる。</li>
+                <li>貸出中と貸出済のラベルがつけられる。</li>
+                <li>TOPページでは表示の絞り込み（すべての書籍/貸出中/貸出済/検索）ができる。</li>
+              </ul>
+            </dd>
+            <dt class="u-fontB">URL</dt>
+            <dd class="u-mb1"><a href="https://book-shelf-note.5ecodework.com/" target="_blank" class="c-txtLink" rel="noopener noreferrer">https://book-shelf-note.5ecodework.com/</a></dd>
+            <dt class="u-fontB">ベーシック認証</dt>
+            <dd>book-shelf-note / vA2Q75Ib</dd>
+          </dl>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/task/spa.html" class="m-paging_prev">シングルページアプリケーション</a>
+            <a href="/" class="m-paging_page">INDEX</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/inc/layout/footer.html" -->
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script type="module">
+//ローカルコンポーネント
+const LocalComponent = {
+  template: `
+  <p>{{ message }}</p>
+  <p>ローカルコンポーネントの使い方</p>
+  `,
+  data: function(){
+    return {
+      message: 'Hello Vue!'
+    }
+  }
+}
+const ChildProduct = {
+  template: `
+    <li>
+      ◎{{name}}:在庫{{stock}}
+      <button v-if="stock" v-on:click="doSaleStock">買う</button>
+      <span v-else>完売しました</span>
+    </li>
+  `,
+  props: {
+    name: String,
+    stock: Number,
+    index: Number
+  },
+  emits: ['child-click'],//←カスタムイベントの定義
+  setup(props, context) {
+    const doSaleStock = function() {
+      context.emit('child-click', props.index);
+    }
+
+    return { doSaleStock }
+  }
+};
+
+//インスタンス
+const app = Vue.createApp({
+  data() {
+    return {
+      message: 'こんにちは、Vue!',
+      styleColor: {
+        'color': '#f00', 'font-weight': 'bold'
+      },
+      addClass: 'test-class',
+      date: new Date().toLocaleString(),
+      list: ['spring（春）','summer（夏）','autumn（秋）','winter（冬）'],
+      colors: ['あか','あお','きいろ'],
+      todos:[
+        {id:1, status: true, text: 'Vue.jsの学習'},
+        {id:2, status: false, text: '部屋の片づけ'}
+      ],
+      searchText:'初期値',
+      counter: 0,
+      ok: true,
+      wishlist: [
+        { id: 1, name: '人間工学オフィスチェア', price: 21817 },
+        { id: 2, name: 'FINAL FANTASY VII REBIRTH', price: 9000 },
+        { id: 3, name: 'PINARELLO Prince', price: 465000 },
+        { id: 4, name: 'エアウィーヴ 02 シングル', price: 100000 }
+      ],
+      tax: 10,
+      product: [
+        {id: 1, name: 'フルーツタルト', stock: 3, price: 410},
+        {id: 2, name: '極生塩パン', stock: 10, price: 180},
+        {id: 3, name: '草餅', stock: 1, price: 240}
+      ],
+      testText: ''
+    }
+  },
+  methods: {
+    removeColor(){
+      // 配列の先頭を削除
+      this.colors.shift();
+    },
+    
+    handSold(i){
+      saleStock(this.product, i);
+    },
+    testTextEvent(event) {
+      this.testText = event;
+    }
+  },
+  setup(){
+    const items = Vue.ref([
+      {id:1, name:'チーズケーキ', stock:3, price:370},
+      {id:2, name:'クリームパン', stock:10, price:200},
+      {id:3, name:'麩まんじゅう', stock:1, price:240},
+      {id:4, name:'タルト', stock:10}
+    ]);
+    const styleList = Vue.ref({listStyle: 'disc'});
+    const newItemName = Vue.ref('');
+    const newItemStock= Vue.ref(10);
+    const order= Vue.ref([0]);
+    const reducedTax= Vue.ref(8);
+    const counter1 = Vue.ref(0);
+    const counter2 = Vue.ref(0);
+    const state = Vue.reactive({
+      name: '',
+      age: 0
+    });
+    const showModal = Vue.ref(false)
+    // 関数
+    const addItem = function() {
+      const max = items.value.reduce(function(a,b){
+        return a.id > b.id ? a.id : b.id;
+      },0)
+
+      if(newItemName.value){
+        items.value.push({
+          id: max + 1,
+          name: newItemName.value,
+          stock: Number(newItemStock.value)
+        });
+      }
+    }
+
+    const handleSale = (i) => {
+      saleStock(items.value, i);
+    }
+
+    // 算出
+    const filtersort = Vue.computed(function() {
+      const sweets = items.value.filter(function(val){
+        return val.price;
+      });
+      return sweets.sort((a, b) => a.price - b.price);
+    });
+
+    const totalPrice = Vue.computed(function() {
+        const total = order.value.reduce(function(a,b){
+        return a + b;
+      });
+      return Math.round(total + total * reducedTax.value / 100);
+    });
+
+    // 監視
+    // 🟢 方法①: 個別watch
+    Vue.watch(counter1, (newVal, oldVal) => {
+      console.log(`counter1 changed: ${oldVal} → ${newVal}`);
+    });
+
+    Vue.watch(counter2, (newVal, oldVal) => {
+      console.log(`counter2 changed: ${oldVal} → ${newVal}`);
+    });
+
+    // 🟡 方法②: 配列でwatch
+    Vue.watch([counter1, counter2], ([new1, new2], [old1, old2]) => {
+      console.log(`まとめwatch: counter1 ${old1}→${new1}, counter2 ${old2}→${new2}`);
+    });
+
+    // 🔵 方法③: reactiveオブジェクトの特定プロパティをwatch
+    Vue.watch(
+      () => ({ name: state.name, age: state.age }),
+      (newVal, oldVal) => {
+        console.log('state変更:', oldVal, '→', newVal);
+      }
+    );
+    // ライフサイクルフック
+    Vue.onMounted(function () {
+      console.log(`コンポーネントがマウントされました。`);
+    })
+    Vue.onUpdated(function () {
+      console.log(`リアクティブデータが変更されました！`);
+    })
+
+    return {
+      styleList,items,newItemName,newItemStock,order,reducedTax,counter1,counter2,state,addItem,handleSale,filtersort,totalPrice,showModal
+    }
+  },
+  components: {
+    'local-component': LocalComponent,
+    'child-product': ChildProduct
+  }
+})
+
+// グローバルコンポーネント
+app.component('global-component', {
+  template: `
+    <p class="u-fontB">{{ message }}</p>
+    <p><strong>グローバルコンポーネントの使い方</strong></p>
+  `,
+  data: function () {
+    return {
+      message: 'Hello Vue!'
+    }
+  }
+})
+app.component('custom-input', {
+  template: `<p>
+    <input v-bind:value="modelValue" v-on:input="$emit('update:modelValue', $event.target.value)">
+    子側：{{modelValue}}
+    </p>
+  `,
+  props: {'modelValue': [String, Number]},
+  emits: ['update:modelValue']
+})
+
+app.component('text-link', {
+  props: {
+    text: String,
+    url: String
+  },
+  template: `<p><a v-bind:href="url" class="c-txtLink" target="_blank">{{ text }}</a></p>`
+});
+
+app.component('wish-list', {
+  template:`<li>{{name}} : {{filter}}円（税込）</li>`,
+  props: {
+    name: String,
+    price: Number,
+    tax: Number
+  },
+  computed: {
+    filter() {
+      const total = Math.round(this.price + this.price * this.tax / 100);
+      return total.toLocaleString();
+    }
+  }
+});
+app.component('custom-input2', {
+  template: `<p>
+    <input v-bind:value="value" v-on:input="$emit('child-input', $event.target.value)">
+    子側：{{value}}
+    </p>`,
+  props: ['value'],
+})
+
+app.component('parent-component', {
+  components: {
+    'child-product': ChildProduct
+  },
+  template: `<child-product v-for="(item,i) in product" v-bind:key="item.id" v-bind:index="i" v-bind="item" v-on:child-click="saleStock"></child-product>`,
+  setup() {
+    const product = Vue.ref([
+      { id: 1, name: 'フルーツタルト', stock: 3, price: 410 },
+      { id: 2, name: '極生塩パン', stock: 10, price: 180 },
+      { id: 3, name: '草餅', stock: 1, price: 240 }
+    ])
+
+    const saleStock = function(i) {
+      if (product.value[i].stock > 0) {
+        product.value[i].stock -= 1;
+      }
+    }
+
+    return { product, saleStock }
+  }
+})
+
+app.component('async-component', {
+  template: `<p>読み込み完了！</p>`,
+  async setup() {
+    // 疑似的に3秒待つ
+    await new Promise(resolve => setTimeout(resolve, 3000))
+  }
+})
+//
+export const saleStock = (items, i) => {
+  if (items[i].stock > 0) {
+    items[i].stock -= 1
+  }
+}
+app.mount('#App')
+
+const array = [1,2,3];
+console.log(array);
+console.log(...array);
+const array2 = [...array];
+const array3 = [...array, ...array];
+console.log(array2);
+console.log(array3);
+array2.push(10)
+console.log(array);
+const array4 = array;
+array4.push(10)
+console.log(array);
+
+function sum(x, y, z) {
+  return x + y + z;
+}
+const total = sum(...array4);
+console.log(total);
+
+const obj1 = { a: 1, b: 2 };
+console.log(obj1); // → {a: 1, b: 2}
+// console.log(...obj1);  // → エラー
+console.log({ ...obj1}); // → {a: 1, b: 2}
+const obj2 = { ...obj1};
+const obj3 = { ...obj1, b: 20 };
+const obj4 = { b: 10, c: 100 };
+
+console.log(obj3); // → {a: 1, b: 20}
+const merged = { ...obj3, ...obj4 };
+console.log(merged);  // → { a: 1, b: 10, c: 100 }
+
+const values = Object.values(obj1);
+console.log(values)
+function logChars(a, b, c) {
+  console.log(a, b, c);
+}
+
+async function searchBooks() {
+  const query = 'JavaScript本格入門'; // 検索ワード（タイトルなど）
+  const apiKey = 'AIzaSyC4HLP7FoDgP8XM0mB-j5Cf84cNgGRBmjI'; // 取得したAPIキーを入れる
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10&key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
+  
+  if (data.items) {
+    data.items.forEach(book => {
+      const info = book.volumeInfo;
+      const title = info.title || 'タイトルなし';
+      const authors = info.authors ? info.authors.join(', ') : '著者不明';
+      const link = info.infoLink;
+      console.log(title)
+    })
+  }
+}
+searchBooks()
+  </script>
+</body>
+</html>

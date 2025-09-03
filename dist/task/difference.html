@@ -437,31 +437,33 @@ Vue.createApp({
                     <th><code>ref([])</code></th>
                     <th><code>reactive([])</code></th>
                   </tr>
-                  <tbody><tr>
-                    <td>使い方</td>
-                    <td>変数名に<code>.value</code> でアクセス</td>
-                    <td>変数名でアクセス</td>
-                  </tr>
-                  <tr>
-                    <td>再代入</td>
-                    <td>できる</td>
-                    <td><strong>できない</strong></td>
-                  </tr>
-                  <tr>
-                    <td>v-for との相性</td>
-                    <td>良い</td>
-                    <td>場合によっては更新が効かないことがある</td>
-                  </tr>
-                  <tr>
-                    <td>Vueが監視する仕組み</td>
-                    <td><code>.value</code>の中身をトラッキング</td>
-                    <td>配列自体を Proxy 化してトラッキング</td>
-                  </tr>
-                  <tr>
-                    <td>どこで使う？</td>
-                    <td>配列・プリミティブ</td>
-                    <td>オブジェクト（フォームなどの複数プロパティ）</td>
-                  </tr></tbody>
+                  <tbody>
+                    <tr>
+                      <td>使い方</td>
+                      <td>変数名に<code>.value</code> でアクセス</td>
+                      <td>変数名でアクセス</td>
+                    </tr>
+                    <tr>
+                      <td>再代入</td>
+                      <td>できる</td>
+                      <td><strong>できない</strong></td>
+                    </tr>
+                    <tr>
+                      <td>v-for との相性</td>
+                      <td>良い</td>
+                      <td>場合によっては更新が効かないことがある</td>
+                    </tr>
+                    <tr>
+                      <td>Vueが監視する仕組み</td>
+                      <td><code>.value</code>の中身をトラッキング</td>
+                      <td>配列自体を Proxy 化してトラッキング</td>
+                    </tr>
+                    <tr>
+                      <td>どこで使う？</td>
+                      <td>配列・プリミティブ</td>
+                      <td>オブジェクト（フォームなどの複数プロパティ）</td>
+                    </tr>
+                  </tbody>
                 </thead>
               </table>
             </div>

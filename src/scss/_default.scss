@@ -70,6 +70,19 @@ a{
   }
 }
 
+a[target="_blank"]{
+  &::after{
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%2300a7a7%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20class%3D%22lucide%20lucide-external-link-icon%20lucide-external-link%22%3E%3Cpath%20d%3D%22M15%203h6v6%22%2F%3E%3Cpath%20d%3D%22M10%2014%2021%203%22%2F%3E%3Cpath%20d%3D%22M18%2013v6a2%202%200%200%201-2%202H5a2%202%200%200%201-2-2V8a2%202%200%200%201%202-2h6%22%2F%3E%3C%2Fsvg%3E');
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-left: .25em;
+    content: "";
+  }
+}
+
 /* button
 --------------------------------------------------*/
 button{

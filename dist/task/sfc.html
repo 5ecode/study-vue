@@ -300,7 +300,7 @@ function handleClick() {
               <p class="u-mb1">あと画像に関して。<br><code>/src/assets/vue.svg</code>と<code>/public/vite.svg</code>で同じようなロゴ画像なのに、ディレクトリが違うのが謎だったけど、ビルドしたら以下のような違いがあった。</p>
               <p class="u-mb1"><img src="/assets/images/task/sfc/img_08.png" alt="" width="1250" height="300" class="u-fullImg"></p>
               <p class="u-mb2"><img src="/assets/images/task/sfc/img_09.png" alt="" width="1250" height="300" class="u-fullImg"></p>
-              <p class="u-mb1">viteのロゴ画像は、App.vueのテンプレートでは<code>&lt;img src="/vite.svg" class="logo" alt="Vite logo" /&gt;</code>と記述されていて、ビルド後のソースと同じ。一方、Vueのロゴ画像は<code>&lt;img src="./assets/vue.svg" class="logo vue" alt="Vue logo" /&gt;</code>から、ビルド後はインラインSVGとして変換されている。<br>調べてみたら、Vite では 小さな画像ファイル（デフォルトは4KB未満） はビルド時に自動でインライン化されるそうで。4KB以上の画像の場合は、<code>/dist/assets/</code>にコピー（圧縮なし）されるとのこと。<br>この時、ディレクトリ構造は破棄され、<code>/dist/assets/</code>に、「出力名は ファイル名.ハッシュ.拡張子」の形式で出力される。プラグインを使って構造を保持することも可能なので、必要な時は検索すること。<br>また画像の圧縮処理をしたい場合は、別途プラグイン（<code>vite-plugin-imagemin</code>）が必要になる。</p>
+              <p class="u-mb1">viteのロゴ画像は、App.vueのテンプレートでは<code>&lt;img src="/vite.svg" class="logo" alt="Vite logo" /&gt;</code>と記述されていて、ビルド後のソースと同じ。一方、Vueのロゴ画像は<code>&lt;img src="./assets/vue.svg" class="logo vue" alt="Vue logo" /&gt;</code>から、ビルド後はインラインSVGとして変換されている。<br>調べてみたら、Vite では 小さな画像ファイル（デフォルトは4KB未満） はビルド時に自動でインライン化されるそうで。4KB以上の画像の場合は、<code>/dist/assets/</code>にコピー（圧縮なし）されるとのこと。<br>この時、ディレクトリ構造は破棄され、<code>/dist/assets/</code>に、「ファイル名.ハッシュ.拡張子」の形式で出力される。プラグインを使って構造を保持することも可能なので、必要な時は検索すること。<br>また画像の圧縮処理をしたい場合は、別途プラグイン（<code>vite-plugin-imagemin</code>）が必要になる。</p>
               <pre v-pre>npm install vite-plugin-imagemin --save-dev</pre>
 <pre v-pre>
 // vite.config.ts

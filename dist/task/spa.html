@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Vue.js学習帳</title>
+  <link rel="stylesheet" href="/assets/css/shared.css">
+</head>
+<body>
+  <div class="l-wrap">
+    <main class="l-main">
+      <div class="l-contents">
+        <div class="l-base">
+          <div class="st-pageFront">
+            <p class="st-pageFront_ttl" data-ttl="Single page Application">Single page Application</p>
+          </div>
+          <h1 class="c-ttlType01 u-mb1">シングルページアプリケーション</h1>
+          <div class="u-mb2">
+            <p>前回の単一ファイルコンポーネント（SFC）を用いてアプリケーションを構築する具体的な方法として、<strong>シングルページアプリケーション（SPA）</strong>を紐解いていく。</p>
+            <p>SPAは1つのhtmlファイル上で画面遷移せずにコンテンツの切り替えができるWebアプリケーションの構成スタイルの1つ。<br>ブラウザに最初に表示されるhtmlファイルに対し、ユーザーの操作に応じてJavaScriptで画面の更新に必要なものだけが部分的に描画される。そのため通常のWebページのようにページ全体を読み込む必要がなく、ユーザー体験がスムーズという利点を持つ。</p>
+          </div>
+
+          <h2 class="c-ttlType02 u-mb1">Vue Router</h2>
+          <div class="u-mb2">
+            <p>SPAでは、ページ全体のリロードをせずにURLに応じて中身だけを切り替える。このとき「どのコンポーネントを表示するか」を判断する役割を担うのが、「<strong>Vue Router</strong>」によるルーティング機能である。</p>
+            <p>ルーティング機能はSPA構築を行うにあたって必要不可欠な要素であり、Vue.jsの開発環境を構築した後に、Vueの公式拡張ライブラリ「Vue Router」を導入することで、URLに応じたコンポーネントの切り替えが可能となり、SPAとしてのページ遷移が実現できるようになる。</p>
+          </div>
+          <h3 class="c-ttlType03 u-mb1">Vue Router のインストール</h3>
+          <div class="u-mb2">
+            <pre v-pre>npm install vue-router@4</pre>
+            <p>Vue 3 用は<code>vue-router@4</code>を使用する。</p>
+            <p>インストール後は、前回作った作業環境の<code>src</code>配下に<code>views</code>と<code>router</code>ディレクトリと、それぞれ以下のファイルを追加。</p>
+<pre v-pre>
+src/
+├── views/
+│   ├── Home.vue
+│   └── About.vue
+├── router/
+│   └── index.ts
+├── App.vue
+└── main.ts
+</pre>
+          </div>
+
+          <h3 class="c-ttlType03 u-mb1">ルーター設定ファイル</h3>
+          <div class="u-mb2">
+            <p>ルーティングの設定と制御をまとめて管理する仕組み（オブジェクト）のことを<strong>ルーター</strong>と呼び、その定義を次の<code>/src/router/index.ts</code>で行う。</p>
+<pre v-pre>
+import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import Home from '../views/Home.vue'
+import About from '../views/About.vue'
+
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About
+  }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+export default router
+</pre>
+          </div>
+          <h4 class="c-ttlType04 u-mb1">&lt;import&gt;</h4>
+          <div class="u-mb2">
+            <p class="u-mb1">一、二行目の<code>import</code>は、設定に必要な関数と型をインポート。<br>三、四行目でHomeページ用とAboutページ用コンポーネント（<code>&lt;template&gt;, &lt;script&gt;, &lt;style&gt;</code>を含む.vueファイル）をそれぞれインポートしている。</p>
+          </div>
+          <h4 class="c-ttlType04 u-mb1">routes</h4>
+          <div class="u-mb2">
+            <p class="u-mb1">routes配列は、すべてのルート（URLとその表示コンポーネントを結びつける情報）をまとめたリストで、中のオブジェクトが1つの「ルート」。TypeScriptを使用するときは<code>RouteRecordRaw[]</code>で型注釈をする。</p>
+            <table class="c-table u-mb1">
+              <thead>
+                <tr>
+                  <th>プロパティ</th>
+                  <th>役割</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>path</code></td>
+                  <td>URLのパス（例：<code>/about</code>）</td>
+                </tr>
+                <tr>
+                  <td><code>name</code></td>
+                  <td>ルートに付ける名前（例：<code>About</code>）</td>
+                </tr>
+                <tr>
+                  <td><code>component</code></td>
+                  <td>表示する Vue コンポーネント（例：<code>About.vue</code>）</td>
+                </tr>
+              </tbody>
+            </table>
+            <p>必須なのは<code>path</code>と<code>component</code>のみ。<code>name</code>は必須でないが、つけておくとパスを直書きすることなく名前でそのコンポーネントに遷移できるようになる。特に、動的ルートやプログラムによる画面遷移を行う予定があるなら、最初から<code>name</code>を付けるのがベストプラクティス。この他にも多数プロパティがあるので必要になったら検索。</p>
+          </div>
+          <h4 class="c-ttlType04 u-mb1">router</h4>
+          <div class="u-mb2">
+            <p><code>createRouter(...)</code>は、アプリケーションにルーティング機能を追加するためのルーターを作成する関数。引数として渡すオブジェクトに、ルーターの動作設定を記述する。</p>
+<pre v-pre>
+createRouter({
+  history: createWebHistory(),  // ルーターの履歴モードを指定
+  routes: routes               // 先に定義したroutes（ルート）を渡す（routesだけでも可）
+})
+</pre>
+          </div>
+          <div class="u-mb2">
+            <table class="c-table">
+              <caption>historyオプション</caption>
+              <thead>
+                <tr>
+                  <th>メソッド</th>
+                  <th>URLの見え方</th>
+                  <th>説明</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>createWebHistory()</code></td>
+                  <td><code>/about</code></td>
+                  <td>HTML5 History API を使う（一般的でSEOに強い）</td>
+                </tr>
+                <tr>
+                  <td><code>createWebHashHistory()</code></td>
+                  <td><code>/#/about</code></td>
+                  <td>ハッシュベースのURL（古いブラウザや静的サーバー向け）</td>
+                </tr>
+                <tr>
+                  <td><code>createMemoryHistory()</code></td>
+                  <td>状態のみ（URLなし）</td>
+                  <td>主にテスト用・SSRで使われる</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4 class="c-ttlType04 u-mb1">export</h4>
+          <div class="u-mb2">
+            <p>外部でルーターを使えるようにするために<code>export</code>する。これは「デフォルトエクスポート」と「名前付きエクスポート」2つの方法があるが基本はデフォルトで行う。</p>
+<pre v-pre>
+const router = createRouter({ ... })
+export default router
+</pre>
+<pre v-pre>
+export const router = createRouter({ ... }) // 名前付きexport
+</pre>
+          </div>
+
+          <h3 class="c-ttlType03 u-mb1">ルーターを登録</h3>
+          <div class="u-mb2">
+            <p><code>/src/main.ts</code>に以下のように追記。</p>
+<pre v-pre>
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router' ← ここ追加
+
+createApp(App)
+.use(router) ← ここ追加
+.mount('#app')
+</pre>
+            <p>ルーターが<code>/src/router/index.ts</code>で名前付きエクスポートされていたらimportは以下に変更</p>
+<pre v-pre>
+import { router } from './router'
+</pre>
+          </div>
+
+          <h3 class="c-ttlType03 u-mb1">ルートごとに表示を切り替える</h3>
+          <div class="u-mb2">
+            <p><code>テンプレート</code>に<code>&lt;router-view /&gt;</code>を設置。これが「ページの切り替え部分」になる。ボタンのクリックイベントや、処理完了後に自動でページを遷移したいときなど、何かしらの処理を挟んで遷移したい場合は、JavaScriptのコード内からページ遷移を行うためのメソッド<code>router.push()</code>を使用する。</p>
+            <p>ちなみに遷移先（表示されるコンポーネント）は<code>/src/router/index.ts</code>で設定した<code>/src/views/</code>配下の.vueファイルになる。</p>
+<pre v-pre>
+&lt;template&gt
+  &lt;div id="app"&gt;
+    &lt;h1&gt;My Vue App&lt;/h1&gt;
+    &lt;nav&gt;
+      &lt;router-link to="/"&gt;Home&lt;/router-link&gt; |
+      &lt;router-link to="/about"&gt;About&lt;/router-link&gt;
+    &lt;/nav&gt;
+    &lt;router-view /&gt;
+  &lt;/div&gt;
+&lt;/template&gt
+</pre>
+<pre v-pre>
+&lt;!-- src/views/Home.vue --&gt;
+&lt;script setup&gt;
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+function goToAbout() {
+  router.push({ name: 'about' });
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;h2&gt;Home Page&lt;/h2&gt;
+    &lt;button @click="goToAbout"&gt;Aboutへ移動&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</pre>
+<pre v-pre>
+&lt;!-- src/views/About.vue --&gt;
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;h2&gt;About Page&lt;/h2&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+</pre>
+          </div>
+
+          <h4 class="c-ttlType04 u-mb1">&lt;router-link&gt;</h4>
+          <div class="u-mb2">
+            <p>「他のページ（ルート）に移動するリンク」を作るためのコンポーネント。</p>
+<pre v-pre>
+&lt;!-- パスで指定 --&gt;
+&lt;router-link to="/about"&gt;About&lt;/router-link&gt;
+
+&lt;!-- 名前付きルートで指定 --&gt;
+&lt;router-link :to="{ name: 'about' }"&gt;About&lt;/router-link&gt;
+
+&lt;!-- 動的パラメータ付き --&gt;
+&lt;router-link :to="{ name: 'user', params: { id: 123 } }"&gt;ユーザー詳細&lt;/router-link&gt;
+</pre>
+            <p>現在のルートにマッチしているときに追加されるクラス名を指定できる<code>active-class</code>など専用の属性もある。</p>
+<pre v-pre>
+&lt;router-link to="/home" active-class="is-active"&gt;Home&lt;/router-link&gt;
+</pre>
+          </div>
+          <h4 class="c-ttlType04 u-mb1">router.push()</h4>
+          <div class="u-mb2">
+          <p>JavaScriptのコード内からページ遷移を行うためのメソッド。</p>
+<pre v-pre>
+// 名前付きルートへの遷移
+router.push({ name: 'about' })
+
+// パス指定で遷移
+router.push('/about')
+
+// 動的ルート + パラメータ
+router.push({ name: 'user', params: { id: 42 } })
+</pre>
+          </div>
+
+          <h2 class="c-ttlType02 u-mb1">状態管理（Pinia）</h2>
+          <div class="u-mb2">
+            <p>状態管理とは、データをグローバルな状態として、どこからでも使えて、保存や編集できるようにする方法である。</p>
+            <p><code>Vue</code>では、<code>ref</code>や<code>reactive</code>を使って、データ（状態）を保持できるが、これはローカル（コンポーネント内または親子間）な範囲に限られている。そのため、先のルーターを使ってページの切り替えなどをする場合は<code>Vue 3</code>向けの公式状態管理ライブラリ「<strong>Pinia</strong>」を使うことで、どのコンポーネントからでもアクセス・更新可能な状態管理が実現できる。</p>
+          </div>
+          <h3 class="c-ttlType03 u-mb1">Pinia のインストールと登録</h3>
+          <div class="u-mb2">
+            <pre>npm install pinia</pre>
+            <p>まずはインストール。その後、<code>/src/main.ts</code>に以下のように追記。</p>
+<pre v-pre>
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import { createPinia } from 'pinia' ← ここ追加
+
+createApp(App)
+.use(router)
+.use(createPinia()) ← ここ追加
+.mount('#app')
+</pre>
+          </div>
+          <h3 class="c-ttlType03 u-mb1">ストアを作成</h3>
+          <div class="u-mb2">
+            <p>Piniaでは、「ストア（store）」単位で状態を定義する。イメージ的にはストアという箱の中に、アプリ全体で扱いたいデータや、その操作方法（メソッドなど）を保存しておき、必要なときにそれを取り出して使用する感じ。ストアの格納場所は<code>/src/stores/</code>が一般的で、ファイル名は端的に中身が分かるものにする。</p>
+<pre v-pre>
+&lt;!-- /src/stores/counter.ts --&gt;
+import { defineStore } from 'pinia'
+
+export const useCounterStore = defineStore('counter', {
+  // ストアの中身を定義するオブジェクト
+  state: () => ({ ... }),  // 状態（データ）
+  getters: { ... },        // 算出プロパティ（オプション）
+  actions: { ... }         // メソッド（オプション）
+})
+</pre>
+            <ul class="c-dotList">
+              <li><code>useCounterStore</code>は、ストアを使うための関数名。「use + ストア名 + Store」という名前を付けるのが一般的。</li>
+              <li><code>defineStore()</code>の第一引数（<code>'counter'</code>）は、ストアのID。Piniaが内部でこのストアを識別するためのユニークな名前（アプリ内で重複しない）。</li>
+              <li><code>defineStore()</code>の第二引数はストアの中身を定義するオブジェクト。</li>
+            </ul>
+          </div>
+          <h4 class="c-ttlType04 u-mb1">オブジェクトスタイルでストアを定義する</h4>
+          <div class="u-mb2">
+            <p>ストアの中身を<code>state</code>、<code>getters</code>、<code>actions</code>というプロパティを持つオブジェクトで定義する方法。</p>
+<pre v-pre>
+export const useCounterStore = defineStore('counter', {
+  // 状態（カウント値を管理）
+  state: () => ({
+    count: 0,
+    name: 'Vue学習中'
+  }),
+
+  // ゲッター（状態を加工した値）
+  getters: {
+    doubleCount: (state) => state.count * 2
+  },
+
+  // アクション（状態を変更する関数）
+  actions: {
+    increment() {
+      this.count++
+    },
+    reset() {
+      this.count = 0
+    }
+  }
+})
+</pre>
+            <table class="c-table">
+              <caption>第2引数に設定できる主なプロパティ</caption>
+              <tr>
+                <th><code>state</code></ｔ>
+                <td>保持したい「状態（データ）」を返す関数として定義する。</td>
+              </tr>
+              <tr>
+                <th><code>getters</code></th>
+                <td>計算された状態。Vueの算出プロパティのようなもの。</td>
+              </tr>
+              <tr>
+                <th><code>actions</code></th>
+                <td>ストアの状態を変更する関数。</td>
+              </tr>
+            </table>
+          </div>
+          <h4 class="c-ttlType04 u-mb1">setupスタイルでストアを定義する</h4>
+          <div class="u-mb2">
+            <p>setupスタイルは、<code>defineStore()</code>の第2引数は「関数」の戻り値として、Composition APIの<code>setup()</code>と同じように、<code>ref()</code>や<code>reactive()</code>で状態を、関数としてアクションを定義し、<code>return</code>でまとめて返す。</p>
+<pre v-pre>
+export const useCounterStore = defineStore('counter', {
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
+export const useCounterStore = defineStore('counter', () => {
+  const count = ref(0);
+  const name = ref('Vue学習中');
+
+  const doubleCount = computed(() => count.value * 2);
+
+  function increment() {
+    count.value++;
+  }
+
+  function reset() {
+    count.value = 0;
+  }
+
+  return {
+    count,
+    name,
+    doubleCount,
+    increment,
+    reset
+  }
+})
+</pre>
+          </div>
+          <h3 class="c-ttlType03 u-mb1">コンポーネントでストアを使う</h3>
+          <div class="u-mb2">
+            <p>オブジェクトスタイルと、setupスタイルどちらを使ってもコンポーネントでの使い方は同じ。どちらのスタイルを使うかは自由だが、アプリ内でスタイルは統一したほうが良い。</p>
+<pre v-pre>
+&lt;script setup&gt;
+import { useCounterStore } from '@/stores/counter'
+
+const counter = useCounterStore();
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;p&gt;Count: {{ counter.count }}&lt;/p&gt;
+  &lt;p&gt;Double: {{ counter.doubleCount }}&lt;/p&gt;
+  &lt;button @click="counter.increment"&gt;+1&lt;/button&gt;
+&lt;/template&gt;
+</pre>
+          </div>
+
+          <h2 class="c-ttlType02 u-mb1">補足</h2>
+          <div class="u-mb2">
+            <p>ルーターを実装している途中、<code>/src/router/index.ts</code>で以下のようなエラーが出た。</p>
+            <pre>モジュール '../views/Home.vue' またはそれに対応する型宣言が見つかりません。</pre>
+            <p>これは、Vue + TypeScript プロジェクトで .<code>vue</code>ファイルを TypeScript が認識できていないことが原因で出るエラーらしい。<br>これを解消するには、TypeScript に「.vue ファイルはVueコンポーネントですよ」と教える型定義ファイルが必要。プロジェクト直下（srcの外）に<code>env.d.ts</code>を作成し以下を記述する（環境構築の際に自動で生成されることもある）。</p>
+<pre v-pre>
+declare module '*.vue' {
+  import { DefineComponent } from 'vue'
+  const component: DefineComponent&lt;{}, {}, any&gt;
+  export default component
+}
+</pre>
+          </div>
+        </div>
+      </div><!--/l-contents-->
+
+      <div class="st-flowFoot">
+        <div class="l-base">
+          <div class="m-paging">
+            <a href="/task/sfc.html" class="m-paging_prev">単一ファイルコンポーネント</a>
+            <a href="/" class="m-paging_page">INDEX</a>
+            <a href="/task/prototyping-02.html" class="m-paging_next">練習その2</a>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!--#include virtual="/inc/layout/footer.html" -->
+  </div>
+</body>
+</html>
