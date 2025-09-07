@@ -1,1 +1,3 @@
 node_modules
+/dist/task/create-sfc/.env
+/dist/task/create-sfc
