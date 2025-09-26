@@ -21,7 +21,7 @@
             <p>ここまで学習した内容を使って、実践的なアプリを制作。</p>
           </div>
           <h2 class="c-ttlType02 u-mb1">BookShelfNote</h2>
-          <dl class="u-mb1">
+          <dl class="u-mb2">
             <p class="u-mb1">個人的に欲しいと思った機能を盛り込んだ書籍管理ができるアプリ。</p>
             <dt class="u-fontB">制作条件・仕様</dt>
             <dd class="u-mb1">
@@ -42,6 +42,31 @@
             <dt class="u-fontB">URL</dt>
             <dd class="u-mb1"><a href="https://book-shelf-note.5ecodework.com/" target="_blank" class="c-txtLink" rel="noopener noreferrer">https://book-shelf-note.5ecodework.com/</a></dd>
           </dl>
+
+          <h2 class="c-ttlType02 u-mb1">NewBookCheck</h2>
+          <dl class="u-mb2">
+            <p class="u-mb1">購読している書籍、作家の新刊がチェックできるアプリ。</p>
+            <dt class="u-fontB">制作条件・仕様</dt>
+            <dd class="u-mb1">
+              <ul class="c-dotList">
+                <li>Vue3.js + Composition API + TypeScriptを使用。</li>
+                <li>書籍情報の取得は楽天ブックス書籍検索APIを使用。</li>
+                <li>カレンダー表示にFullCalendarを使用。cssはTailwind CSSを使用。</li>
+                <li>書籍の検索は、登録したキーワード「書籍名」「著者名」の両方、またはいずれかで自動で行う。</li>
+                <li>キーワードは「書籍名」や「著者名」に合わせて「書籍のサイズ（文庫・コミック・新書・単行本）」を選択すると、ある程度は絞り込みも可能。</li>
+                <li>LocalStorageで登録したキーワードや取得した書籍の情報を保存。</li>
+                <li>新刊情報から、各書籍の「予約済」「購入済」「保留中」のタグを付けることができる。</li>
+                <li>新刊情報はカレンダー表示に切り替え可能。</li>
+                <li>「購入済」と「保留中」の付いた書籍は「本棚リスト」「保留リスト」で確認可能。</li>
+                <li>「予約済」タグの付いた書籍は、発売日を過ぎると自動でタグ購入済に変更され、本棚に追加される。</li>
+                <li>新刊の定義は発売から3か月で、それ以降は新刊情報に表示されない。</li>
+                <li>発売から3か月以上たった書籍が「本棚リスト」「保留リスト」から削除された場合、復元できない。</li>
+              </ul>
+            </dd>
+            <dt class="u-fontB">URL</dt>
+            <dd class="u-mb1"><a href="https://new-book-check.5ecodework.com/" target="_blank" class="c-txtLink" rel="noopener noreferrer">https://new-book-check.5ecodework.com/</a></dd>
+          </dl>
+
         </div>
       </div><!--/l-contents-->
 
